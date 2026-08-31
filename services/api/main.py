@@ -21,6 +21,7 @@ from readiness import readiness_report
 from runtime_flags import validate_runtime_safety
 from db.diag_admin import collect_admin_diag
 from db.sandbox_bootstrap import ensure_sandbox_admin
+from seed_all import run_seed_all
 
 
 # Trial/production must fail closed while the temporary audio bypass is enabled.
@@ -37,7 +38,9 @@ app = FastAPI(
 
 @app.on_event("startup")
 def bootstrap_sandbox_runtime() -> None:
-    ensure_sandbox_admin()
+    if os.getenv("ENV", "").strip().lower() == "sandbox":
+        run_seed_all()
+        ensure_sandbox_admin()
 
 
 # CORS — allows the Next.js dev server and production URL
