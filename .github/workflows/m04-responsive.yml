@@ -1,0 +1,65 @@
+name: Himma M04 — Responsive Visual Gate
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: ['recovery/*']
+    paths:
+      - 'apps/web/**'
+      - 'services/api/**'
+      - 'packages/content/**'
+      - 'assets/education/**'
+      - '.github/workflows/m04-responsive.yml'
+  workflow_dispatch:
+
+jobs:
+  responsive-smoke:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js
+        run: npm run build
+
+      - name: Start Next.js
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+        run: |
+          npm start > /tmp/himma-m04-next.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3000 && break
+            sleep 2
+          done
+          curl -sf http://localhost:3000 || (cat /tmp/himma-m04-next.log && exit 1)
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run responsive smoke matrix
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3000
+          CI: true
+        run: npx playwright test tests/e2e/responsive-smoke.spec.ts --reporter=list
+
+      - name: Upload responsive screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m04-responsive-screenshots
+          path: apps/web/playwright-report/responsive/
+          retention-days: 7
