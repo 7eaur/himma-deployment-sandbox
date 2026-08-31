@@ -19,6 +19,7 @@ from reports import router as reports_router
 from skill_reports import router as skill_reports_router
 from readiness import readiness_report
 from runtime_flags import validate_runtime_safety
+from db.diag_admin import collect_admin_diag
 
 
 # Trial/production must fail closed while the temporary audio bypass is enabled.
@@ -75,3 +76,8 @@ def readiness_check(response: Response):
     if report["status"] != "ready":
         response.status_code = 503
     return report
+
+
+@app.get("/debug/admin-diag")
+def debug_admin_diag():
+    return collect_admin_diag()
