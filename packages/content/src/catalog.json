@@ -1,0 +1,5638 @@
+{
+  "schema_version": 1,
+  "catalog_version": "HIMMA-CONTENT-1.0",
+  "language": "ar",
+  "direction": "rtl",
+  "source": {
+    "authority": "client_approved_docx",
+    "original_path": "reference/original/01_المحتوى_والتخطيط_المعتمد_لمنصة_همة.docx",
+    "original_sha256": "0689bccbac7803cdd5231eb46e519b7757f8432048fedaeda44df412740a7ad2",
+    "derived_path": "reference/derived/01_المحتوى_والتخطيط_المعتمد_لمنصة_همة.md",
+    "derived_sha256": "c8d26bc40a1eab27bc195813af30b32c99703aebb8c746dd2c15c4c2349da0cb"
+  },
+  "constraints": {
+    "pretest_questions": 30,
+    "posttest_questions": 30,
+    "assessment_level_distribution": {
+      "1": 10,
+      "2": 12,
+      "3": 8
+    },
+    "core_activities_per_level": 10,
+    "reinforcement_activities_per_level": 5,
+    "allowed_interactions": [
+      "build_word",
+      "choose_image",
+      "choose_many",
+      "choose_one",
+      "listen_choose_image",
+      "listen_choose_many",
+      "listen_choose_one",
+      "memory_sequence",
+      "path_sequence",
+      "read_aloud",
+      "sequence",
+      "timed_read_aloud"
+    ],
+    "one_skill_per_item": true,
+    "one_interaction_per_item": true
+  },
+  "summary": {
+    "item_count": 105,
+    "skill_count": 44,
+    "kind_counts": {
+      "core_activity": 30,
+      "posttest_question": 30,
+      "pretest_question": 30,
+      "reinforcement_activity": 15
+    },
+    "activity_counts_by_level": {
+      "1": {
+        "core": 10,
+        "reinforcement": 5
+      },
+      "2": {
+        "core": 10,
+        "reinforcement": 5
+      },
+      "3": {
+        "core": 10,
+        "reinforcement": 5
+      }
+    },
+    "declared_media_gap_count": 2
+  },
+  "levels": [
+    {
+      "level_id": 1,
+      "name": "الاستعداد للقراءة",
+      "core_activity_ids": [
+        "L1-CORE-01",
+        "L1-CORE-02",
+        "L1-CORE-03",
+        "L1-CORE-04",
+        "L1-CORE-05",
+        "L1-CORE-06",
+        "L1-CORE-07",
+        "L1-CORE-08",
+        "L1-CORE-09",
+        "L1-CORE-10"
+      ],
+      "reinforcement_activity_ids": [
+        "L1-REIN-01",
+        "L1-REIN-02",
+        "L1-REIN-03",
+        "L1-REIN-04",
+        "L1-REIN-05"
+      ]
+    },
+    {
+      "level_id": 2,
+      "name": "بناء الكلمة",
+      "core_activity_ids": [
+        "L2-CORE-01",
+        "L2-CORE-02",
+        "L2-CORE-03",
+        "L2-CORE-04",
+        "L2-CORE-05",
+        "L2-CORE-06",
+        "L2-CORE-07",
+        "L2-CORE-08",
+        "L2-CORE-09",
+        "L2-CORE-10"
+      ],
+      "reinforcement_activity_ids": [
+        "L2-REIN-01",
+        "L2-REIN-02",
+        "L2-REIN-03",
+        "L2-REIN-04",
+        "L2-REIN-05"
+      ]
+    },
+    {
+      "level_id": 3,
+      "name": "الطلاقة والفهم",
+      "core_activity_ids": [
+        "L3-CORE-01",
+        "L3-CORE-02",
+        "L3-CORE-03",
+        "L3-CORE-04",
+        "L3-CORE-05",
+        "L3-CORE-06",
+        "L3-CORE-07",
+        "L3-CORE-08",
+        "L3-CORE-09",
+        "L3-CORE-10"
+      ],
+      "reinforcement_activity_ids": [
+        "L3-REIN-01",
+        "L3-REIN-02",
+        "L3-REIN-03",
+        "L3-REIN-04",
+        "L3-REIN-05"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "skill_id": "b683911d-679d-50b5-afe7-d3e2dcc7f8c9",
+      "skill_code": "visual_motor_direction",
+      "level_id": 1,
+      "name": "التآزر البصري واتجاه القراءة"
+    },
+    {
+      "skill_id": "c8bf1eaf-e9cd-55a0-bbe4-80608af3d69d",
+      "skill_code": "logical_sequence",
+      "level_id": 1,
+      "name": "التسلسل المنطقي"
+    },
+    {
+      "skill_id": "44f41319-60ef-5fdc-a597-63fc00343108",
+      "skill_code": "letter_form_recognition",
+      "level_id": 1,
+      "name": "التعرف إلى أشكال الحرف"
+    },
+    {
+      "skill_id": "403d8043-24e5-5900-83c9-a41c7d474d15",
+      "skill_code": "visual_memory",
+      "level_id": 1,
+      "name": "الذاكرة البصرية"
+    },
+    {
+      "skill_id": "c4633067-8b28-5a3f-beea-a52797b25160",
+      "skill_code": "auditory_vocabulary",
+      "level_id": 1,
+      "name": "المفردات السمعية"
+    },
+    {
+      "skill_id": "baef38df-1b80-59a8-9804-a34cb4193e35",
+      "skill_code": "similar_letter_discrimination",
+      "level_id": 1,
+      "name": "تمييز الحروف المتشابهة"
+    },
+    {
+      "skill_id": "da186f2e-f39e-5d25-a703-74d7f138107a",
+      "skill_code": "visual_letter_discrimination",
+      "level_id": 1,
+      "name": "تمييز الحروف بصريًا"
+    },
+    {
+      "skill_id": "31386543-f99c-50a7-b969-e0622aefe0ef",
+      "skill_code": "sound_symbol_mapping",
+      "level_id": 1,
+      "name": "ربط الصوت بالحرف"
+    },
+    {
+      "skill_id": "1276612f-127d-5585-b60d-9c51c3dff5d4",
+      "skill_code": "final_sound_isolation",
+      "level_id": 1,
+      "name": "عزل الصوت الأخير"
+    },
+    {
+      "skill_id": "2b6a09c0-072c-5860-b281-3b30ae345077",
+      "skill_code": "initial_sound_isolation",
+      "level_id": 1,
+      "name": "عزل الصوت الأول"
+    },
+    {
+      "skill_id": "bb5c2939-c62b-5a7c-abbb-4334c52c637e",
+      "skill_code": "letter_reading",
+      "level_id": 1,
+      "name": "قراءة الحروف"
+    },
+    {
+      "skill_id": "13b8fbee-ff74-5155-980b-5fc29bff59bc",
+      "skill_code": "syllable_reading",
+      "level_id": 1,
+      "name": "قراءة المقاطع"
+    },
+    {
+      "skill_id": "a1dec92c-8fa9-59c9-ac83-394f95d684d4",
+      "skill_code": "print_concepts",
+      "level_id": 1,
+      "name": "مفاهيم المادة المطبوعة"
+    },
+    {
+      "skill_id": "2fc43a84-5ac0-53fd-84b5-a8dbd354e803",
+      "skill_code": "word_onset_comparison",
+      "level_id": 1,
+      "name": "مقارنة بدايات الكلمات"
+    },
+    {
+      "skill_id": "97b26115-7de5-55ee-a9ad-b0e5238a924e",
+      "skill_code": "word_completion",
+      "level_id": 2,
+      "name": "إكمال الكلمة"
+    },
+    {
+      "skill_id": "c319c896-8cc1-5843-8708-89fee10fc411",
+      "skill_code": "short_vowels",
+      "level_id": 2,
+      "name": "الحركات القصيرة"
+    },
+    {
+      "skill_id": "5cd02c46-ee8e-5c86-867c-87ce8724dac4",
+      "skill_code": "syllable_blending",
+      "level_id": 2,
+      "name": "الدمج المقطعي"
+    },
+    {
+      "skill_id": "b9c29c26-06e8-5c4c-b06c-91fb3441207b",
+      "skill_code": "long_vowels",
+      "level_id": 2,
+      "name": "المد"
+    },
+    {
+      "skill_id": "5cc83642-30ed-5a77-a86f-dd6fccb55ff4",
+      "skill_code": "sentence_building",
+      "level_id": 2,
+      "name": "بناء الجملة"
+    },
+    {
+      "skill_id": "74105bf0-10ac-5f54-9d79-a4eae8199116",
+      "skill_code": "word_building",
+      "level_id": 2,
+      "name": "بناء الكلمة"
+    },
+    {
+      "skill_id": "95c68721-2776-5974-979e-5e741b45ddeb",
+      "skill_code": "letter_order",
+      "level_id": 2,
+      "name": "ترتيب حروف الكلمة"
+    },
+    {
+      "skill_id": "a6c4994b-d905-5857-b71d-b7b71ce0d73c",
+      "skill_code": "tanween",
+      "level_id": 2,
+      "name": "تمييز التنوين"
+    },
+    {
+      "skill_id": "ef732112-3ddc-563a-95c6-f2b4b5dd76e0",
+      "skill_code": "auditory_word_discrimination",
+      "level_id": 2,
+      "name": "تمييز الكلمة سمعيًا"
+    },
+    {
+      "skill_id": "6dec8f84-369b-531d-ae73-283816e0fd86",
+      "skill_code": "sentence_reading",
+      "level_id": 2,
+      "name": "قراءة الجمل القصيرة"
+    },
+    {
+      "skill_id": "60b02f6b-15d3-5337-b809-94cf52155916",
+      "skill_code": "general_word_reading",
+      "level_id": 2,
+      "name": "قراءة الكلمات"
+    },
+    {
+      "skill_id": "5b2d5404-09ec-550f-9cca-6c9429eb7a59",
+      "skill_code": "syllable_reading",
+      "level_id": 2,
+      "name": "قراءة المقاطع"
+    },
+    {
+      "skill_id": "f75344e9-f8a0-51ec-a43c-24041a3dfc9b",
+      "skill_code": "short_vowel_word_reading",
+      "level_id": 2,
+      "name": "قراءة كلمات الحركات القصيرة"
+    },
+    {
+      "skill_id": "61415afc-e00c-53ee-8d3c-7e9c16a7f348",
+      "skill_code": "sukoon_word_reading",
+      "level_id": 2,
+      "name": "قراءة كلمات السكون"
+    },
+    {
+      "skill_id": "11a1116e-4682-5a2e-905f-910b8a582399",
+      "skill_code": "shadda_word_reading",
+      "level_id": 2,
+      "name": "قراءة كلمات الشدة"
+    },
+    {
+      "skill_id": "ed89b33e-c53f-5068-94be-44f4774d420c",
+      "skill_code": "madd_word_reading",
+      "level_id": 2,
+      "name": "قراءة كلمات المد"
+    },
+    {
+      "skill_id": "728e51b2-494a-5fd3-b177-8fc61d21c663",
+      "skill_code": "word_image_comprehension",
+      "level_id": 2,
+      "name": "مطابقة الكلمة بالصورة"
+    },
+    {
+      "skill_id": "fd3b607b-0e75-5d65-b255-6e42548401d8",
+      "skill_code": "text_evidence",
+      "level_id": 3,
+      "name": "الاستدلال من النص"
+    },
+    {
+      "skill_id": "d83b3a7d-6c58-5805-9359-2072d6018463",
+      "skill_code": "main_idea",
+      "level_id": 3,
+      "name": "الفكرة العامة"
+    },
+    {
+      "skill_id": "a5df512a-9aea-531f-8fc1-d4de3ea97e98",
+      "skill_code": "inferential_comprehension",
+      "level_id": 3,
+      "name": "الفهم الاستنتاجي"
+    },
+    {
+      "skill_id": "e76fd684-39f7-5476-ad97-7c80c2229cf7",
+      "skill_code": "literal_comprehension",
+      "level_id": 3,
+      "name": "الفهم المباشر"
+    },
+    {
+      "skill_id": "b38896f0-cce9-543c-948c-52c5d2bffea1",
+      "skill_code": "vocabulary",
+      "level_id": 3,
+      "name": "المفردات من السياق"
+    },
+    {
+      "skill_id": "10b38a81-e1c0-5cbd-9ce6-efa1b020cc45",
+      "skill_code": "sentence_building",
+      "level_id": 3,
+      "name": "بناء الجملة"
+    },
+    {
+      "skill_id": "72ccaada-556f-5660-a49b-99d836571289",
+      "skill_code": "event_sequence",
+      "level_id": 3,
+      "name": "تسلسل أحداث النص"
+    },
+    {
+      "skill_id": "f092cdea-44e6-5ee2-beb4-77390ab6d4b3",
+      "skill_code": "word_accuracy",
+      "level_id": 3,
+      "name": "دقة قراءة الكلمات"
+    },
+    {
+      "skill_id": "bd43e35d-2fe7-5fd8-b110-47c5d11a273b",
+      "skill_code": "passage_fluency",
+      "level_id": 3,
+      "name": "دقة وطلاقة قراءة النص"
+    },
+    {
+      "skill_id": "8fde2bd8-ba7b-5b1f-94b8-320b0b1d9ff8",
+      "skill_code": "timed_word_fluency",
+      "level_id": 3,
+      "name": "سرعة قراءة الكلمات مع الدقة"
+    },
+    {
+      "skill_id": "326762db-18a2-5bfd-ad53-63af165488d3",
+      "skill_code": "sentence_fluency",
+      "level_id": 3,
+      "name": "طلاقة قراءة الجملة"
+    },
+    {
+      "skill_id": "f45820be-96af-522c-bbe6-93e1d39d6115",
+      "skill_code": "timed_passage_fluency",
+      "level_id": 3,
+      "name": "طلاقة قراءة الفقرة الموقوتة"
+    },
+    {
+      "skill_id": "fff99737-7a27-5bec-b29f-aa253e646d20",
+      "skill_code": "meaning_units",
+      "level_id": 3,
+      "name": "قراءة وحدات المعنى"
+    }
+  ],
+  "media_gaps": [
+    {
+      "item_id": "L1-CORE-06",
+      "round_id": "L1-CORE-06-R01",
+      "asset_type": "audio",
+      "usage": "prompt",
+      "semantic_text": "موز",
+      "status": "declared_missing",
+      "reason": "No semantically matching approved asset exists in the current V1 manifest.",
+      "impact": "The round must not be activated until an approved asset release supplies this target."
+    },
+    {
+      "item_id": "L2-CORE-06",
+      "round_id": "L2-CORE-06-R04",
+      "asset_type": "audio",
+      "usage": "prompt",
+      "semantic_text": "سَا",
+      "status": "declared_missing",
+      "reason": "No semantically matching approved asset exists in the current V1 manifest.",
+      "impact": "The round must not be activated until an approved asset release supplies this target."
+    }
+  ],
+  "items": [
+    {
+      "canonical_id": "PRE-Q01",
+      "stable_key": "ddda607f-2cd9-5391-aca4-e0c2c21b1eed",
+      "kind": "pretest_question",
+      "level_id": 1,
+      "order_index": 1,
+      "title": "السؤال 1: تمييز الحرف بصريًا",
+      "skill_id": "da186f2e-f39e-5d25-a703-74d7f138107a",
+      "skill_name": "تمييز الحروف بصريًا",
+      "source_skill_name": "الانتباه والتمييز البصري",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد بالنقر.",
+      "criterion": "ب",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q01-R01",
+          "order_index": 1,
+          "source_text": "التعليمات: اضغط على الحرف «ب». الخيارات: ت، ب، ث، ن.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "88a54ab1c574af0c0a148b9a7e9a37837d1f4dd5851617668ef56e3a4ddd59ab"
+    },
+    {
+      "canonical_id": "PRE-Q02",
+      "stable_key": "a3cd1fac-776e-5ef0-bf61-4709480833b1",
+      "kind": "pretest_question",
+      "level_id": 1,
+      "order_index": 2,
+      "title": "السؤال 2: الحروف المتشابهة",
+      "skill_id": "baef38df-1b80-59a8-9804-a34cb4193e35",
+      "skill_name": "تمييز الحروف المتشابهة",
+      "source_skill_name": "تمييز الحروف المتشابهة",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد بالنقر.",
+      "criterion": "ج",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q02-R01",
+          "order_index": 1,
+          "source_text": "التعليمات: اضغط على الحرف «ج». الخيارات: ح، خ، ج، ع.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "c95d87fbf9d42c0a767a473be83bda3a212d279018d8f777cb28689079a3aac2"
+    },
+    {
+      "canonical_id": "PRE-Q03",
+      "stable_key": "25b3bd12-9ff1-53a9-aeae-b8e8539fdf61",
+      "kind": "pretest_question",
+      "level_id": 1,
+      "order_index": 3,
+      "title": "السؤال 3: مطابقة شكل الحرف",
+      "skill_id": "44f41319-60ef-5fdc-a597-63fc00343108",
+      "skill_name": "التعرف إلى أشكال الحرف",
+      "source_skill_name": "التعرف إلى أشكال الحرف",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "مـ",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q03-R01",
+          "order_index": 1,
+          "source_text": "يظهر الحرف «م». اختر الشكل الآخر للحرف نفسه: مـ، سـ، لـ، بـ.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "2ff519c77a2e0372f534a0ce4e30d1c075955f5d3ac03de322b4aa92bac56704"
+    },
+    {
+      "canonical_id": "PRE-Q04",
+      "stable_key": "8633c0b5-3b76-57c5-b3f7-99de2c8e9d54",
+      "kind": "pretest_question",
+      "level_id": 1,
+      "order_index": 4,
+      "title": "السؤال 4: ربط الصوت بالحرف",
+      "skill_id": "31386543-f99c-50a7-b969-e0622aefe0ef",
+      "skill_name": "ربط الصوت بالحرف",
+      "source_skill_name": "التمييز السمعي وربط الصوت بالرمز",
+      "interaction_type": "listen_choose_one",
+      "source_method": "سماع ثم اختيار.",
+      "criterion": "س",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q04-R01",
+          "order_index": 1,
+          "source_text": "يسمع الطالب صوت «س». الخيارات: س، ش، ص، ز.",
+          "media": [
+            {
+              "asset_id": "LET-03",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "س"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "d52bb7eedbe4ceb8cd91a7eeaafe4b7e7775aa70290a865ab2007dc55ff38425"
+    },
+    {
+      "canonical_id": "PRE-Q05",
+      "stable_key": "bfd22909-cbd9-59e0-bc9d-a5173376aa28",
+      "kind": "pretest_question",
+      "level_id": 1,
+      "order_index": 5,
+      "title": "السؤال 5: الصورة التي تبدأ بالصوت",
+      "skill_id": "2b6a09c0-072c-5860-b281-3b30ae345077",
+      "skill_name": "عزل الصوت الأول",
+      "source_skill_name": "تحديد الصوت الأول",
+      "interaction_type": "listen_choose_image",
+      "source_method": "سماع ثم اختيار صورة.",
+      "criterion": "الموزة",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q05-R01",
+          "order_index": 1,
+          "source_text": "يسمع الطالب صوت «م». الصور: موزة، كتاب، باب.",
+          "media": [
+            {
+              "asset_id": "LET-01",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "م"
+            },
+            {
+              "asset_id": "VOC-01",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "موزة"
+            },
+            {
+              "asset_id": "VOC-02",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "كتاب"
+            },
+            {
+              "asset_id": "VOC-03",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "باب"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "b82335de5147dbc4293e15a9960988ebb2b6d85e8e17893f56ae42fc84a63031"
+    },
+    {
+      "canonical_id": "PRE-Q06",
+      "stable_key": "0beca810-9654-552a-bda1-923e2bf5b36c",
+      "kind": "pretest_question",
+      "level_id": 1,
+      "order_index": 6,
+      "title": "السؤال 6: الصوت الأول",
+      "skill_id": "2b6a09c0-072c-5860-b281-3b30ae345077",
+      "skill_name": "عزل الصوت الأول",
+      "source_skill_name": "عزل الصوت الأول",
+      "interaction_type": "listen_choose_one",
+      "source_method": "سماع كلمة ثم اختيار حرف.",
+      "criterion": "ق",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q06-R01",
+          "order_index": 1,
+          "source_text": "يسمع «قَلَم». الخيارات: ق، ك، ف.",
+          "media": [
+            {
+              "asset_id": "WRD-04",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "قَلَم"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "c013b4ee0844d083b9d27585054e1b52bfd742dd6955de3d3f2914cb5d2a3a4f"
+    },
+    {
+      "canonical_id": "PRE-Q07",
+      "stable_key": "a719e510-745f-599d-9208-16345e0d0c0e",
+      "kind": "pretest_question",
+      "level_id": 1,
+      "order_index": 7,
+      "title": "السؤال 7: الصوت الأخير",
+      "skill_id": "1276612f-127d-5585-b60d-9c51c3dff5d4",
+      "skill_name": "عزل الصوت الأخير",
+      "source_skill_name": "عزل الصوت الأخير",
+      "interaction_type": "listen_choose_one",
+      "source_method": "سماع كلمة ثم اختيار حرف.",
+      "criterion": "ك",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q07-R01",
+          "order_index": 1,
+          "source_text": "يسمع «سَمَك». الخيارات: ك، ق، م.",
+          "media": [
+            {
+              "asset_id": "WRD-05",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "سَمَك"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "636fa293b6685076f0856093918cc9a0d57f63136e509cabeb9e3f47364579f2"
+    },
+    {
+      "canonical_id": "PRE-Q08",
+      "stable_key": "dbf04ea2-62e2-50cb-aff6-5b96982b5a38",
+      "kind": "pretest_question",
+      "level_id": 1,
+      "order_index": 8,
+      "title": "السؤال 8: الحرف من بين عناصر",
+      "skill_id": "a1dec92c-8fa9-59c9-ac83-394f95d684d4",
+      "skill_name": "مفاهيم المادة المطبوعة",
+      "source_skill_name": "مفاهيم المادة المطبوعة",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "ب",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q08-R01",
+          "order_index": 1,
+          "source_text": "العناصر: ب، بَاب، فَتَحَ سَالِمٌ الْبَابَ. التعليمات: اضغط على الحرف.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "c5fb5d8bfb5e010b110fbaa8c2e22c046785b17ef6b9b16b71330e14351f835b"
+    },
+    {
+      "canonical_id": "PRE-Q09",
+      "stable_key": "0438666e-5b33-5400-af7b-1a003d64b56e",
+      "kind": "pretest_question",
+      "level_id": 1,
+      "order_index": 9,
+      "title": "السؤال 9: الكلمة من بين عناصر",
+      "skill_id": "a1dec92c-8fa9-59c9-ac83-394f95d684d4",
+      "skill_name": "مفاهيم المادة المطبوعة",
+      "source_skill_name": "مفاهيم المادة المطبوعة",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "كِتَاب",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q09-R01",
+          "order_index": 1,
+          "source_text": "العناصر: م، كِتَاب، ذَهَبَ سَالِمٌ إِلَى الْمَدْرَسَةِ. التعليمات: اضغط على الكلمة.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "1247b2f9d542f6c4fde715dac7abd6f8f64a25b2a7b71c9c56425a8797855c3d"
+    },
+    {
+      "canonical_id": "PRE-Q10",
+      "stable_key": "992b7092-8fd0-5c7f-b835-2b9822872e16",
+      "kind": "pretest_question",
+      "level_id": 1,
+      "order_index": 10,
+      "title": "السؤال 10: ترتيب الصور",
+      "skill_id": "c8bf1eaf-e9cd-55a0-bbe4-80608af3d69d",
+      "skill_name": "التسلسل المنطقي",
+      "source_skill_name": "التسلسل المنطقي",
+      "interaction_type": "sequence",
+      "source_method": "النقر على ثلاث صور بالترتيب.",
+      "criterion": "الزرع ثم السقي ثم نمو الزهرة",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q10-R01",
+          "order_index": 1,
+          "source_text": "طفلة تزرع بذرة، طفلة تسقي البذرة، زهرة نمت.",
+          "media": [
+            {
+              "asset_id": "SEQ-01",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "زرع البذرة"
+            },
+            {
+              "asset_id": "SEQ-02",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "سقي البذرة"
+            },
+            {
+              "asset_id": "SEQ-03",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "نمو الزهرة"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "2f08e07d89ef6f8703be1a14e85251822f4b94ab08217e16678b6acd9e582e6e"
+    },
+    {
+      "canonical_id": "PRE-Q11",
+      "stable_key": "210f5b3d-4df7-5e08-a45e-b6d52735232f",
+      "kind": "pretest_question",
+      "level_id": 2,
+      "order_index": 11,
+      "title": "السؤال 11: الحركة القصيرة",
+      "skill_id": "c319c896-8cc1-5843-8708-89fee10fc411",
+      "skill_name": "الحركات القصيرة",
+      "source_skill_name": "تمييز الحركات",
+      "interaction_type": "listen_choose_one",
+      "source_method": "سماع ثم اختيار.",
+      "criterion": "بُ",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q11-R01",
+          "order_index": 1,
+          "source_text": "يسمع «بُ». الخيارات: بَ، بِ، بُ.",
+          "media": [
+            {
+              "asset_id": "LET-02",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "بُ"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "662b7c753ac3ef40c7136175c4bf365ed89dc663e4846c451554f9b4ff40a54e"
+    },
+    {
+      "canonical_id": "PRE-Q12",
+      "stable_key": "8a01be89-220e-55f1-ae3f-787cff96149b",
+      "kind": "pretest_question",
+      "level_id": 2,
+      "order_index": 12,
+      "title": "السؤال 12: الصوت الطويل",
+      "skill_id": "b9c29c26-06e8-5c4c-b06c-91fb3441207b",
+      "skill_name": "المد",
+      "source_skill_name": "تمييز المد",
+      "interaction_type": "listen_choose_one",
+      "source_method": "سماع ثم اختيار.",
+      "criterion": "مَا",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q12-R01",
+          "order_index": 1,
+          "source_text": "يسمع «مَا». الخيارات: مَ، مَا، مُو.",
+          "media": [
+            {
+              "asset_id": "SYL-04",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "مَا"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "30dcfd9cfaf7152d1cea331adb4ae6c52821ee5d540b0b973d42cfa0c3691837"
+    },
+    {
+      "canonical_id": "PRE-Q13",
+      "stable_key": "85cf6a36-8ca6-5cc4-a863-9861ee9c076b",
+      "kind": "pretest_question",
+      "level_id": 2,
+      "order_index": 13,
+      "title": "السؤال 13: دمج مقطعين",
+      "skill_id": "5cd02c46-ee8e-5c86-867c-87ce8724dac4",
+      "skill_name": "الدمج المقطعي",
+      "source_skill_name": "الدمج المقطعي",
+      "interaction_type": "sequence",
+      "source_method": "النقر على مقطعين بالترتيب.",
+      "criterion": "كِ ثم تَاب",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q13-R01",
+          "order_index": 1,
+          "source_text": "المقاطع: كِ، تَاب، مَكْ. كوّن «كِتَاب».",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "e5910fa15d406d0d7a0fcb83b895ddb476431e7d7d1eb479cea17a75ae063358"
+    },
+    {
+      "canonical_id": "PRE-Q14",
+      "stable_key": "83da518b-74da-55c1-91d7-5483887e7a3a",
+      "kind": "pretest_question",
+      "level_id": 2,
+      "order_index": 14,
+      "title": "السؤال 14: بناء كلمة",
+      "skill_id": "74105bf0-10ac-5f54-9d79-a4eae8199116",
+      "skill_name": "بناء الكلمة",
+      "source_skill_name": "تكوين كلمة من الحروف",
+      "interaction_type": "build_word",
+      "source_method": "النقر على الحروف بالترتيب.",
+      "criterion": "ب، ا، ب",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q14-R01",
+          "order_index": 1,
+          "source_text": "صورة باب؛ الحروف: ب، ا، ب، ت.",
+          "media": [
+            {
+              "asset_id": "VOC-03",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "باب"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "6e29dc8f31a41920a3c8f689c85327dd06287a82e9c1b29cb05328b1761bb982"
+    },
+    {
+      "canonical_id": "PRE-Q15",
+      "stable_key": "43ed038f-806d-50ac-889f-e4ba75efa3d1",
+      "kind": "pretest_question",
+      "level_id": 2,
+      "order_index": 15,
+      "title": "السؤال 15: ترتيب حروف كلمة",
+      "skill_id": "95c68721-2776-5974-979e-5e741b45ddeb",
+      "skill_name": "ترتيب حروف الكلمة",
+      "source_skill_name": "ترتيب الحروف",
+      "interaction_type": "sequence",
+      "source_method": "النقر بالترتيب.",
+      "criterion": "ق، ل، م",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q15-R01",
+          "order_index": 1,
+          "source_text": "الحروف: م، ق، ل. كوّن «قَلَم».",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "5c5a134d950c8fa9cb4d5b7cba55756caaa62ed42bc616e604a7463490e259ca"
+    },
+    {
+      "canonical_id": "PRE-Q16",
+      "stable_key": "dd351d1a-5594-5023-9405-79ad082bd69b",
+      "kind": "pretest_question",
+      "level_id": 2,
+      "order_index": 16,
+      "title": "السؤال 16: الحرف الناقص",
+      "skill_id": "97b26115-7de5-55ee-a9ad-b0e5238a924e",
+      "skill_name": "إكمال الكلمة",
+      "source_skill_name": "الإكمال",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "م",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q16-R01",
+          "order_index": 1,
+          "source_text": "سَـ \\_ ـَك؛ الخيارات: م، ل، ن.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "f92eb21e7e9f453c7a940901f801b813dc4b2755e258c5191b435ac7bc8dff8f"
+    },
+    {
+      "canonical_id": "PRE-Q17",
+      "stable_key": "ca66f866-499e-55b3-91d4-b087251227c0",
+      "kind": "pretest_question",
+      "level_id": 2,
+      "order_index": 17,
+      "title": "السؤال 17: الكلمة والصورة",
+      "skill_id": "728e51b2-494a-5fd3-b177-8fc61d21c663",
+      "skill_name": "مطابقة الكلمة بالصورة",
+      "source_skill_name": "فهم الكلمة المكتوبة",
+      "interaction_type": "choose_image",
+      "source_method": "اختيار صورة.",
+      "criterion": "الشمس",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q17-R01",
+          "order_index": 1,
+          "source_text": "الكلمة «شَمْس». الصور: الشمس، القمر، الشجرة.",
+          "media": [
+            {
+              "asset_id": "VOC-06",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "الشمس"
+            },
+            {
+              "asset_id": "VOC-07",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "القمر"
+            },
+            {
+              "asset_id": "VOC-08",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "الشجرة"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "4b8f7cbf619cf429ad4f0e12002eb4f13347e2cea8d8ebc21a4a2dfe1cb94032"
+    },
+    {
+      "canonical_id": "PRE-Q18",
+      "stable_key": "8036d654-345d-5325-bc5c-e9c94f5670a7",
+      "kind": "pretest_question",
+      "level_id": 2,
+      "order_index": 18,
+      "title": "السؤال 18: الكلمة المسموعة",
+      "skill_id": "ef732112-3ddc-563a-95c6-f2b4b5dd76e0",
+      "skill_name": "تمييز الكلمة سمعيًا",
+      "source_skill_name": "تمييز الكلمة سمعيًا",
+      "interaction_type": "listen_choose_one",
+      "source_method": "سماع ثم اختيار كلمة.",
+      "criterion": "نُور",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q18-R01",
+          "order_index": 1,
+          "source_text": "يسمع «نُور». الخيارات: نُور، نَار، نَهْر.",
+          "media": [
+            {
+              "asset_id": "WRD-15",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "نُور"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "aa83ee4e11532a4a1eeb7533aa7350396a365ec24f6bfcf0338614146c545eda"
+    },
+    {
+      "canonical_id": "PRE-Q19",
+      "stable_key": "a8ef1a59-028c-5077-b370-4323f35ed0e0",
+      "kind": "pretest_question",
+      "level_id": 2,
+      "order_index": 19,
+      "title": "السؤال 19: قراءة كلمة",
+      "skill_id": "f75344e9-f8a0-51ec-a43c-24041a3dfc9b",
+      "skill_name": "قراءة كلمات الحركات القصيرة",
+      "source_skill_name": "قراءة كلمة بالفتحة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل صوت فقط.",
+      "criterion": "مطابقة القراءة بالكلمة",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q19-R01",
+          "order_index": 1,
+          "source_text": "اقرأ: كَتَبَ.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "5ea84222aba69260aa93a5208481c10555a6c4e2ef99b68039920e977bb0f114"
+    },
+    {
+      "canonical_id": "PRE-Q20",
+      "stable_key": "92c0230d-6dcd-5759-b8f3-0214c8c98001",
+      "kind": "pretest_question",
+      "level_id": 2,
+      "order_index": 20,
+      "title": "السؤال 20: قراءة كلمة",
+      "skill_id": "61415afc-e00c-53ee-8d3c-7e9c16a7f348",
+      "skill_name": "قراءة كلمات السكون",
+      "source_skill_name": "قراءة كلمة بالسكون",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل صوت فقط.",
+      "criterion": "مطابقة القراءة بالكلمة",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q20-R01",
+          "order_index": 1,
+          "source_text": "اقرأ: شَمْس.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "021e9b3de89292010a682defb08a61ccf873d5e8bc2378e2f8733c1f5484cc2c"
+    },
+    {
+      "canonical_id": "PRE-Q21",
+      "stable_key": "3c0672ab-8dc1-548a-9cea-b4acac83da43",
+      "kind": "pretest_question",
+      "level_id": 2,
+      "order_index": 21,
+      "title": "السؤال 21: قراءة كلمة",
+      "skill_id": "ed89b33e-c53f-5068-94be-44f4774d420c",
+      "skill_name": "قراءة كلمات المد",
+      "source_skill_name": "قراءة كلمة بالمد",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل صوت فقط.",
+      "criterion": "مطابقة القراءة بالكلمة",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q21-R01",
+          "order_index": 1,
+          "source_text": "اقرأ: بَاب.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "30a36074ee7202a0df23ff51945d09b91cb5dde9efd3d11648abee8320c49c02"
+    },
+    {
+      "canonical_id": "PRE-Q22",
+      "stable_key": "20e9a2cb-f85e-5d52-aa25-3dc4c5ce9975",
+      "kind": "pretest_question",
+      "level_id": 2,
+      "order_index": 22,
+      "title": "السؤال 22: قراءة كلمة",
+      "skill_id": "11a1116e-4682-5a2e-905f-910b8a582399",
+      "skill_name": "قراءة كلمات الشدة",
+      "source_skill_name": "قراءة كلمة بالشدة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل صوت فقط.",
+      "criterion": "مطابقة القراءة بالكلمة",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q22-R01",
+          "order_index": 1,
+          "source_text": "اقرأ: قِطَّة.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "469e0c49a928cd95636987d7ae06252194dd1dc2faf8850178428524d25565f6"
+    },
+    {
+      "canonical_id": "PRE-Q23",
+      "stable_key": "28c8548b-0ff2-5f9d-b160-5ea9be833fd3",
+      "kind": "pretest_question",
+      "level_id": 3,
+      "order_index": 23,
+      "title": "السؤال 23: قراءة جملة",
+      "skill_id": "326762db-18a2-5bfd-ad53-63af165488d3",
+      "skill_name": "طلاقة قراءة الجملة",
+      "source_skill_name": "قراءة جهرية قصيرة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل صوت فقط.",
+      "criterion": "الدقة والاسترسال",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "PRE-Q23-R01",
+          "order_index": 1,
+          "source_text": "اقرأ: يَقْرَأُ سَالِمٌ كِتَابًا.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "352f6ee9f0e78f5730e79bca99ca125895fb1391dfe4d0bce93007185555e630"
+    },
+    {
+      "canonical_id": "PRE-Q24",
+      "stable_key": "e2c76b02-c3ed-5100-a16a-53ee80f9502d",
+      "kind": "pretest_question",
+      "level_id": 3,
+      "order_index": 24,
+      "title": "السؤال 24: قراءة نص",
+      "skill_id": "bd43e35d-2fe7-5fd8-b110-47c5d11a273b",
+      "skill_name": "دقة وطلاقة قراءة النص",
+      "source_skill_name": "الطلاقة والدقة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل النص كاملًا.",
+      "criterion": "الكلمات الصحيحة والحذف والإضافة والاستبدال والوقت",
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-01",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "نص الاختبار القبلي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "PRE-Q24-R01",
+          "order_index": 1,
+          "source_text": "فِي صَبَاحِ يَوْمِ الْجُمُعَةِ، ذَهَبَ سَالِمٌ مَعَ أُسْرَتِهِ إِلَى الْحَدِيقَةِ. حَمَلَ كُرَتَهُ الزَّرْقَاءَ، وَحَمَلَتْ أُخْتُهُ سَلَّةَ الطَّعَامِ. لَعِبَ الطِّفْلَانِ قُرْبَ شَجَرَةٍ، ثُمَّ جَمَعَا الْأَوْرَاقَ وَوَضَعَاهَا فِي سَلَّةِ الْمُهْمَلَاتِ.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "c1404088cccf72d9dc5eda3585f18b8f98368000e8b612d92ee4d9d565427e9d"
+    },
+    {
+      "canonical_id": "PRE-Q25",
+      "stable_key": "f6a015b2-871f-5b08-94e7-a85bee304b07",
+      "kind": "pretest_question",
+      "level_id": 3,
+      "order_index": 25,
+      "title": "السؤال 25: فهم مباشر",
+      "skill_id": "e76fd684-39f7-5476-ad97-7c80c2229cf7",
+      "skill_name": "الفهم المباشر",
+      "source_skill_name": "الفهم المباشر",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "الحديقة",
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-01",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "نص الاختبار القبلي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "PRE-Q25-R01",
+          "order_index": 1,
+          "source_text": "إلى أين ذهبت الأسرة؟ الحديقة، المدرسة، السوق.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "43328eb58ae352d3217eb349018c7ee3828832f009b9715868d2c60a2060eff8"
+    },
+    {
+      "canonical_id": "PRE-Q26",
+      "stable_key": "3355349c-c61f-55d0-9fc8-5724d484106f",
+      "kind": "pretest_question",
+      "level_id": 3,
+      "order_index": 26,
+      "title": "السؤال 26: فهم مباشر",
+      "skill_id": "e76fd684-39f7-5476-ad97-7c80c2229cf7",
+      "skill_name": "الفهم المباشر",
+      "source_skill_name": "استرجاع معلومة",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "زرقاء",
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-01",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "نص الاختبار القبلي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "PRE-Q26-R01",
+          "order_index": 1,
+          "source_text": "ما لون كرة سالم؟ حمراء، زرقاء، خضراء.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "2768ffff2faf4147730c78fbf87ba8620b6ce781133c99e2c320ed303d50b822"
+    },
+    {
+      "canonical_id": "PRE-Q27",
+      "stable_key": "e8c055f0-5766-5cdd-b9f2-2359b64a9306",
+      "kind": "pretest_question",
+      "level_id": 3,
+      "order_index": 27,
+      "title": "السؤال 27: فهم مباشر",
+      "skill_id": "e76fd684-39f7-5476-ad97-7c80c2229cf7",
+      "skill_name": "الفهم المباشر",
+      "source_skill_name": "استرجاع شخصية وفعل",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "أخته",
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-01",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "نص الاختبار القبلي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "PRE-Q27-R01",
+          "order_index": 1,
+          "source_text": "من حمل سلة الطعام؟ سالم، أخته، والده.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "e22c272e9404756816e1881c0d5c2303a62d01803f5f409a75618a2aef8ee536"
+    },
+    {
+      "canonical_id": "PRE-Q28",
+      "stable_key": "8a705f31-56ac-5d10-ad23-76eaa4869943",
+      "kind": "pretest_question",
+      "level_id": 3,
+      "order_index": 28,
+      "title": "السؤال 28: فهم استنتاجي",
+      "skill_id": "a5df512a-9aea-531f-8fc1-d4de3ea97e98",
+      "skill_name": "الفهم الاستنتاجي",
+      "source_skill_name": "فهم السبب",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "للمحافظة على نظافة الحديقة",
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-01",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "نص الاختبار القبلي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "PRE-Q28-R01",
+          "order_index": 1,
+          "source_text": "لماذا وضع الطفلان الأوراق في سلة المهملات؟ للمحافظة على النظافة، للعب بالأوراق، لإخفاء السلة.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "472aaccbf96351a3bd4ebd7f34583a3b0c04f0dc630ef7c3dacc0847f234a1b7"
+    },
+    {
+      "canonical_id": "PRE-Q29",
+      "stable_key": "e5ddb2ef-e257-500f-a9bb-1b676ab06434",
+      "kind": "pretest_question",
+      "level_id": 3,
+      "order_index": 29,
+      "title": "السؤال 29: ترتيب الأحداث",
+      "skill_id": "72ccaada-556f-5660-a49b-99d836571289",
+      "skill_name": "تسلسل أحداث النص",
+      "source_skill_name": "فهم تسلسل النص",
+      "interaction_type": "sequence",
+      "source_method": "النقر على الأحداث بالترتيب.",
+      "criterion": "بالترتيب المذكور",
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-01",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "نص الاختبار القبلي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "PRE-Q29-R01",
+          "order_index": 1,
+          "source_text": "ذهبت الأسرة إلى الحديقة؛ لعب الطفلان قرب الشجرة؛ جمع الطفلان الأوراق.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "f21a2a9db947bb770e0ecd47de0210d08273914a75dcb15bd52370fa60306159"
+    },
+    {
+      "canonical_id": "PRE-Q30",
+      "stable_key": "f13d1211-3138-5acb-bda2-c0731c00af10",
+      "kind": "pretest_question",
+      "level_id": 3,
+      "order_index": 30,
+      "title": "السؤال 30: معنى كلمة",
+      "skill_id": "b38896f0-cce9-543c-948c-52c5d2bffea1",
+      "skill_name": "المفردات من السياق",
+      "source_skill_name": "المفردات من السياق",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "بجانب",
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-01",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "نص الاختبار القبلي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "PRE-Q30-R01",
+          "order_index": 1,
+          "source_text": "ما معنى «قُرْبَ»؟ بجانب، بعيدًا عن، فوق.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "e36573dd5437e2d918282c2ed09f58244ec18423270faed71d1d34b33846a867"
+    },
+    {
+      "canonical_id": "L1-CORE-01",
+      "stable_key": "271422ff-f68a-528f-8dda-c904a4cb80e2",
+      "kind": "core_activity",
+      "level_id": 1,
+      "order_index": 1,
+      "title": "النشاط الأساسي 1: ابحث عن الحرف",
+      "skill_id": "da186f2e-f39e-5d25-a703-74d7f138107a",
+      "skill_name": "تمييز الحروف بصريًا",
+      "source_skill_name": "الانتباه والتمييز البصري",
+      "interaction_type": "choose_one",
+      "source_method": "يظهر حرف مطلوب وأربعة خيارات؛ يختار الطالب الصحيح.",
+      "criterion": null,
+      "note": "لا توجد مهمة تسجيل أو كتابة بعد انتهاء الجولات.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-CORE-01-R01",
+          "order_index": 1,
+          "source_text": "ب: ت، ب، ث، ن",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-01-R02",
+          "order_index": 2,
+          "source_text": "ج: ح، خ، ج، ع",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-01-R03",
+          "order_index": 3,
+          "source_text": "س: ش، س، ص، ض",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-01-R04",
+          "order_index": 4,
+          "source_text": "ق: ف، ق، ك، غ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-01-R05",
+          "order_index": 5,
+          "source_text": "د: ذ، د، ر، ز",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "cac9d1bca0de6f0cb5b1887c271999c78ed9b950547eb8c5c91b1c8d1748359a"
+    },
+    {
+      "canonical_id": "L1-CORE-02",
+      "stable_key": "3aad46e3-bab6-50a9-be12-fe8e1ef6435b",
+      "kind": "core_activity",
+      "level_id": 1,
+      "order_index": 2,
+      "title": "النشاط الأساسي 2: اسمع واختر الحرف",
+      "skill_id": "31386543-f99c-50a7-b969-e0622aefe0ef",
+      "skill_name": "ربط الصوت بالحرف",
+      "source_skill_name": "ربط الصوت بالحرف",
+      "interaction_type": "listen_choose_one",
+      "source_method": "يسمع الطالب صوت حرف ثم يختاره من ثلاثة خيارات.",
+      "criterion": null,
+      "note": "لا توجد مهمة تسجيل أو كتابة بعد انتهاء الجولات.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-CORE-02-R01",
+          "order_index": 1,
+          "source_text": "م: م، ن، ب",
+          "media": [
+            {
+              "asset_id": "LET-01",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "م"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-02-R02",
+          "order_index": 2,
+          "source_text": "ب: ت، ب، ث",
+          "media": [
+            {
+              "asset_id": "LET-02",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "ب"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-02-R03",
+          "order_index": 3,
+          "source_text": "س: س، ش، ص",
+          "media": [
+            {
+              "asset_id": "LET-03",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "س"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-02-R04",
+          "order_index": 4,
+          "source_text": "ق: ف، ق، ك",
+          "media": [
+            {
+              "asset_id": "LET-04",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "ق"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-02-R05",
+          "order_index": 5,
+          "source_text": "ر: ز، ر، د",
+          "media": [
+            {
+              "asset_id": "LET-05",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "ر"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "3773f800eb6a8e00a2a6a8649450e57924720ebb9a9626cf903388e796d77c81"
+    },
+    {
+      "canonical_id": "L1-CORE-03",
+      "stable_key": "c558073a-edad-5fde-b12d-b6a4240c0dad",
+      "kind": "core_activity",
+      "level_id": 1,
+      "order_index": 3,
+      "title": "النشاط الأساسي 3: أشكال الحرف",
+      "skill_id": "44f41319-60ef-5fdc-a597-63fc00343108",
+      "skill_name": "التعرف إلى أشكال الحرف",
+      "source_skill_name": "التعرف إلى شكل الحرف في أول الكلمة",
+      "interaction_type": "choose_one",
+      "source_method": "يظهر حرف منفصل ويختار الطالب شكله الصحيح في بداية الكلمة.",
+      "criterion": null,
+      "note": "لا توجد مهمة تسجيل أو كتابة بعد انتهاء الجولات.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-CORE-03-R01",
+          "order_index": 1,
+          "source_text": "ب ← بـ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-03-R02",
+          "order_index": 2,
+          "source_text": "م ← مـ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-03-R03",
+          "order_index": 3,
+          "source_text": "س ← سـ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-03-R04",
+          "order_index": 4,
+          "source_text": "ك ← كـ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-03-R05",
+          "order_index": 5,
+          "source_text": "ل ← لـ",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "1deae654a18489b2e025608c3b1ff4dd38faa2d224da160ab2c51a03762b42a7"
+    },
+    {
+      "canonical_id": "L1-CORE-04",
+      "stable_key": "00551fd4-a002-53f1-98df-b1acb8c7bcc1",
+      "kind": "core_activity",
+      "level_id": 1,
+      "order_index": 4,
+      "title": "النشاط الأساسي 4: الصورة التي تبدأ بالصوت",
+      "skill_id": "2b6a09c0-072c-5860-b281-3b30ae345077",
+      "skill_name": "عزل الصوت الأول",
+      "source_skill_name": "تحديد الصوت الأول",
+      "interaction_type": "listen_choose_image",
+      "source_method": "يسمع الطالب صوتًا ويختار صورة واحدة من ثلاث.",
+      "criterion": null,
+      "note": "لا توجد مهمة تسجيل أو كتابة بعد انتهاء الجولات.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-CORE-04-R01",
+          "order_index": 1,
+          "source_text": "م: موزة، كتاب، باب",
+          "media": [
+            {
+              "asset_id": "LET-01",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "م"
+            },
+            {
+              "asset_id": "VOC-01",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "موزة"
+            },
+            {
+              "asset_id": "VOC-02",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "كتاب"
+            },
+            {
+              "asset_id": "VOC-03",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "باب"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-04-R02",
+          "order_index": 2,
+          "source_text": "ب: باب، قلم، سمكة",
+          "media": [
+            {
+              "asset_id": "LET-02",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "ب"
+            },
+            {
+              "asset_id": "VOC-03",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "باب"
+            },
+            {
+              "asset_id": "VOC-04",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "قلم"
+            },
+            {
+              "asset_id": "VOC-05",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "سمكة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-04-R03",
+          "order_index": 3,
+          "source_text": "س: سمكة، موزة، قلم",
+          "media": [
+            {
+              "asset_id": "LET-03",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "س"
+            },
+            {
+              "asset_id": "VOC-05",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "سمكة"
+            },
+            {
+              "asset_id": "VOC-01",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "موزة"
+            },
+            {
+              "asset_id": "VOC-04",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "قلم"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-04-R04",
+          "order_index": 4,
+          "source_text": "ق: قلم، نخلة، كتاب",
+          "media": [
+            {
+              "asset_id": "LET-04",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "ق"
+            },
+            {
+              "asset_id": "VOC-04",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "قلم"
+            },
+            {
+              "asset_id": "VOC-09",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "نخلة"
+            },
+            {
+              "asset_id": "VOC-02",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "كتاب"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-04-R05",
+          "order_index": 5,
+          "source_text": "ن: نخلة، كرة، باب",
+          "media": [
+            {
+              "asset_id": "LET-06",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "ن"
+            },
+            {
+              "asset_id": "VOC-09",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "نخلة"
+            },
+            {
+              "asset_id": "VOC-10",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "كرة"
+            },
+            {
+              "asset_id": "VOC-03",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "باب"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "7b9f8a2d28df4234e6c2e5733b485c9aa56ef88fff3ef1c41d58d3532540040a"
+    },
+    {
+      "canonical_id": "L1-CORE-05",
+      "stable_key": "ab41cf75-93ae-5511-bc20-f552901fabbf",
+      "kind": "core_activity",
+      "level_id": 1,
+      "order_index": 5,
+      "title": "النشاط الأساسي 5: ما الصوت الأخير؟",
+      "skill_id": "1276612f-127d-5585-b60d-9c51c3dff5d4",
+      "skill_name": "عزل الصوت الأخير",
+      "source_skill_name": "تحديد الصوت الأخير",
+      "interaction_type": "listen_choose_one",
+      "source_method": "يسمع كلمة ويختار الحرف الأخير.",
+      "criterion": null,
+      "note": "لا توجد مهمة تسجيل أو كتابة بعد انتهاء الجولات.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-CORE-05-R01",
+          "order_index": 1,
+          "source_text": "قَلَم: م، ق، ل",
+          "media": [
+            {
+              "asset_id": "WRD-04",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "قَلَم"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-05-R02",
+          "order_index": 2,
+          "source_text": "سَمَك: ك، س، م",
+          "media": [
+            {
+              "asset_id": "WRD-05",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "سَمَك"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-05-R03",
+          "order_index": 3,
+          "source_text": "نُور: ر، ن، و",
+          "media": [
+            {
+              "asset_id": "WRD-15",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "نُور"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-05-R04",
+          "order_index": 4,
+          "source_text": "بَاب: ب، ا، م",
+          "media": [
+            {
+              "asset_id": "WRD-03",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "بَاب"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-05-R05",
+          "order_index": 5,
+          "source_text": "شَمْس: س، ش، م",
+          "media": [
+            {
+              "asset_id": "WRD-07",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "شَمْس"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "da7985d31e7b6eb91280297238fcca955016cb48dc5c3a059f757e4db54093c9"
+    },
+    {
+      "canonical_id": "L1-CORE-06",
+      "stable_key": "1f303757-c6a9-5d2d-8a01-67eb9e199ebf",
+      "kind": "core_activity",
+      "level_id": 1,
+      "order_index": 6,
+      "title": "النشاط الأساسي 6: متشابهان أم مختلفان؟",
+      "skill_id": "2fc43a84-5ac0-53fd-84b5-a8dbd354e803",
+      "skill_name": "مقارنة بدايات الكلمات",
+      "source_skill_name": "تمييز بدايات الكلمات",
+      "interaction_type": "listen_choose_one",
+      "source_method": "يسمع كلمتين ويختار: تبدأان بالصوت نفسه أو بصوتين مختلفين.",
+      "criterion": null,
+      "note": "لا توجد مهمة تسجيل أو كتابة بعد انتهاء الجولات.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-CORE-06-R01",
+          "order_index": 1,
+          "source_text": "موز/ماء: نفسه",
+          "media": [
+            {
+              "asset_id": "WRD-11",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "ماء"
+            }
+          ],
+          "media_gaps": [
+            {
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "موز",
+              "status": "declared_missing",
+              "reason": "No semantically matching approved asset exists in the current V1 manifest.",
+              "impact": "The round must not be activated until an approved asset release supplies this target."
+            }
+          ]
+        },
+        {
+          "round_id": "L1-CORE-06-R02",
+          "order_index": 2,
+          "source_text": "باب/بطة: نفسه",
+          "media": [
+            {
+              "asset_id": "WRD-03",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "باب"
+            },
+            {
+              "asset_id": "WRD-12",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "بطة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-06-R03",
+          "order_index": 3,
+          "source_text": "قلم/كرة: مختلفان",
+          "media": [
+            {
+              "asset_id": "WRD-04",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "قلم"
+            },
+            {
+              "asset_id": "WRD-10",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "كرة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-06-R04",
+          "order_index": 4,
+          "source_text": "سمك/شمس: مختلفان",
+          "media": [
+            {
+              "asset_id": "WRD-05",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "سمك"
+            },
+            {
+              "asset_id": "WRD-07",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "شمس"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-06-R05",
+          "order_index": 5,
+          "source_text": "نور/نخلة: نفسه",
+          "media": [
+            {
+              "asset_id": "WRD-15",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "نور"
+            },
+            {
+              "asset_id": "WRD-09",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "نخلة"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "08654bcf983796b807f79d452ea19e8368312c4dd040d718e702bf1c2f8bbe70"
+    },
+    {
+      "canonical_id": "L1-CORE-07",
+      "stable_key": "0d79f1d4-c1d4-5bfa-b986-d48731c221da",
+      "kind": "core_activity",
+      "level_id": 1,
+      "order_index": 7,
+      "title": "النشاط الأساسي 7: حرف أم كلمة أم جملة؟",
+      "skill_id": "a1dec92c-8fa9-59c9-ac83-394f95d684d4",
+      "skill_name": "مفاهيم المادة المطبوعة",
+      "source_skill_name": "مفاهيم المادة المطبوعة",
+      "interaction_type": "choose_one",
+      "source_method": "يظهر عنصر واحد ويختار الطالب تصنيفه.",
+      "criterion": null,
+      "note": "لا توجد مهمة تسجيل أو كتابة بعد انتهاء الجولات.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-CORE-07-R01",
+          "order_index": 1,
+          "source_text": "ب: حرف",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-07-R02",
+          "order_index": 2,
+          "source_text": "كِتَاب: كلمة",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-07-R03",
+          "order_index": 3,
+          "source_text": "ذَهَبَ سَالِمٌ.: جملة",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-07-R04",
+          "order_index": 4,
+          "source_text": "م: حرف",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-07-R05",
+          "order_index": 5,
+          "source_text": "شَجَرَة: كلمة",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "be9a306ecdd0ad7b64c10791457c99351329f47c5590ae33c2070f636f990d6d"
+    },
+    {
+      "canonical_id": "L1-CORE-08",
+      "stable_key": "73b8d777-3448-550f-91cc-42d00a69161a",
+      "kind": "core_activity",
+      "level_id": 1,
+      "order_index": 8,
+      "title": "النشاط الأساسي 8: ذاكرة الصور",
+      "skill_id": "403d8043-24e5-5900-83c9-a41c7d474d15",
+      "skill_name": "الذاكرة البصرية",
+      "source_skill_name": "الذاكرة البصرية والتسلسل",
+      "interaction_type": "memory_sequence",
+      "source_method": "تظهر ثلاث صور، تختفي، ثم يعيد الطالب ترتيبها بالنقر.",
+      "criterion": null,
+      "note": "لا توجد مهمة تسجيل أو كتابة بعد انتهاء الجولات.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-CORE-08-R01",
+          "order_index": 1,
+          "source_text": "قلم، كرة، باب",
+          "media": [
+            {
+              "asset_id": "VOC-04",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "قلم"
+            },
+            {
+              "asset_id": "VOC-10",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "كرة"
+            },
+            {
+              "asset_id": "VOC-03",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "باب"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-08-R02",
+          "order_index": 2,
+          "source_text": "شمس، نخلة، سمكة",
+          "media": [
+            {
+              "asset_id": "VOC-06",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "شمس"
+            },
+            {
+              "asset_id": "VOC-09",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "نخلة"
+            },
+            {
+              "asset_id": "VOC-05",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "سمكة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-08-R03",
+          "order_index": 3,
+          "source_text": "كتاب، موزة، قمر",
+          "media": [
+            {
+              "asset_id": "VOC-02",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "كتاب"
+            },
+            {
+              "asset_id": "VOC-01",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "موزة"
+            },
+            {
+              "asset_id": "VOC-07",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "قمر"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "e0c697105e6ad2eb8d5d7190a2b3c0c09f80fbf96e3c229ca0124a1fb73e5d52"
+    },
+    {
+      "canonical_id": "L1-CORE-09",
+      "stable_key": "4b370153-a73c-585a-bd66-d1899511612a",
+      "kind": "core_activity",
+      "level_id": 1,
+      "order_index": 9,
+      "title": "النشاط الأساسي 9: اتبع المسار",
+      "skill_id": "b683911d-679d-50b5-afe7-d3e2dcc7f8c9",
+      "skill_name": "التآزر البصري واتجاه القراءة",
+      "source_skill_name": "التآزر البصري الحركي واتجاه القراءة",
+      "interaction_type": "path_sequence",
+      "source_method": "ينقر الطالب نقاطًا مرقمة من اليمين إلى اليسار؛ لا يوجد رسم حر.",
+      "criterion": null,
+      "note": "لا توجد مهمة تسجيل أو كتابة بعد انتهاء الجولات.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-CORE-09-R01",
+          "order_index": 1,
+          "source_text": "مسار مستقيم",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-09-R02",
+          "order_index": 2,
+          "source_text": "مسار منحني",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-09-R03",
+          "order_index": 3,
+          "source_text": "مسار متعرج بسيط",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-09-R04",
+          "order_index": 4,
+          "source_text": "مسار دائري قصير",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-09-R05",
+          "order_index": 5,
+          "source_text": "مسار من خمس نقاط",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "b2502ab54376871e636b38c90adf4768c829c105039eafa6b76faeeeeb4021ef"
+    },
+    {
+      "canonical_id": "L1-CORE-10",
+      "stable_key": "27dd86f5-e89e-54d5-858e-0d2e307df989",
+      "kind": "core_activity",
+      "level_id": 1,
+      "order_index": 10,
+      "title": "النشاط الأساسي 10: رتّب الصور",
+      "skill_id": "c8bf1eaf-e9cd-55a0-bbe4-80608af3d69d",
+      "skill_name": "التسلسل المنطقي",
+      "source_skill_name": "فهم التسلسل",
+      "interaction_type": "sequence",
+      "source_method": "ينقر الطالب ثلاث صور بحسب ترتيب الحدث.",
+      "criterion": null,
+      "note": "لا توجد مهمة تسجيل أو كتابة بعد انتهاء الجولات.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-CORE-10-R01",
+          "order_index": 1,
+          "source_text": "زرع البذرة، سقيها، نمو الزهرة",
+          "media": [
+            {
+              "asset_id": "SEQ-01",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "زرع البذرة"
+            },
+            {
+              "asset_id": "SEQ-02",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "سقي البذرة"
+            },
+            {
+              "asset_id": "SEQ-03",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "نمو الزهرة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-10-R02",
+          "order_index": 2,
+          "source_text": "غسل التفاحة، تقطيعها، أكلها",
+          "media": [
+            {
+              "asset_id": "SEQ-04",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "غسل التفاحة"
+            },
+            {
+              "asset_id": "SEQ-05",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "تقطيع التفاحة"
+            },
+            {
+              "asset_id": "SEQ-06",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "أكل التفاحة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-CORE-10-R03",
+          "order_index": 3,
+          "source_text": "أخذ الكتاب، قراءته، إعادته",
+          "media": [
+            {
+              "asset_id": "SEQ-07",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "إخراج الكتاب"
+            },
+            {
+              "asset_id": "SEQ-08",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "قراءة الكتاب"
+            },
+            {
+              "asset_id": "SEQ-09",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "إعادة الكتاب"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "12f0822f5cf4c5fa6c9187591d889037c09c023944d9e08a7a171468f07a9839"
+    },
+    {
+      "canonical_id": "L1-REIN-01",
+      "stable_key": "d0168cb2-821e-55d1-b974-19714078d8e7",
+      "kind": "reinforcement_activity",
+      "level_id": 1,
+      "order_index": 1,
+      "title": "تقوية 1: اختر بين حرفين",
+      "skill_id": "da186f2e-f39e-5d25-a703-74d7f138107a",
+      "skill_name": "تمييز الحروف بصريًا",
+      "source_skill_name": "تمييز بصري مبسط",
+      "interaction_type": "choose_one",
+      "source_method": "حرف مطلوب وخياران فقط.",
+      "criterion": null,
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-REIN-01-R01",
+          "order_index": 1,
+          "source_text": "ب: ب/ت",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-01-R02",
+          "order_index": 2,
+          "source_text": "ج: ج/ح",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-01-R03",
+          "order_index": 3,
+          "source_text": "س: س/ش",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-01-R04",
+          "order_index": 4,
+          "source_text": "ق: ق/ف",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-01-R05",
+          "order_index": 5,
+          "source_text": "د: د/ذ",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "ec4a28f439900a730c4b4b426e7852992307448737c026373b2290f6cf8cf2e7"
+    },
+    {
+      "canonical_id": "L1-REIN-02",
+      "stable_key": "396e1b2b-68c8-552e-bfc5-e669ae8e0326",
+      "kind": "reinforcement_activity",
+      "level_id": 1,
+      "order_index": 2,
+      "title": "تقوية 2: صورتان تبدأان بالصوت نفسه",
+      "skill_id": "2b6a09c0-072c-5860-b281-3b30ae345077",
+      "skill_name": "عزل الصوت الأول",
+      "source_skill_name": "عزل الصوت الأول",
+      "interaction_type": "listen_choose_many",
+      "source_method": "يسمع الصوت ويختار صورتين من ثلاث.",
+      "criterion": null,
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-REIN-02-R01",
+          "order_index": 1,
+          "source_text": "م: موز، ماء، كتاب",
+          "media": [
+            {
+              "asset_id": "LET-01",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "م"
+            },
+            {
+              "asset_id": "VOC-01",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "موز"
+            },
+            {
+              "asset_id": "VOC-11",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "ماء"
+            },
+            {
+              "asset_id": "VOC-02",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "كتاب"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-02-R02",
+          "order_index": 2,
+          "source_text": "ب: باب، بطة، قلم",
+          "media": [
+            {
+              "asset_id": "LET-02",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "ب"
+            },
+            {
+              "asset_id": "VOC-03",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "باب"
+            },
+            {
+              "asset_id": "VOC-12",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "بطة"
+            },
+            {
+              "asset_id": "VOC-04",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "قلم"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-02-R03",
+          "order_index": 3,
+          "source_text": "س: سمكة، سيارة، نخلة",
+          "media": [
+            {
+              "asset_id": "LET-03",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "س"
+            },
+            {
+              "asset_id": "VOC-05",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "سمكة"
+            },
+            {
+              "asset_id": "VOC-13",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "سيارة"
+            },
+            {
+              "asset_id": "VOC-09",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "نخلة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-02-R04",
+          "order_index": 4,
+          "source_text": "ق: قلم، قمر، موز",
+          "media": [
+            {
+              "asset_id": "LET-04",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "ق"
+            },
+            {
+              "asset_id": "VOC-04",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "قلم"
+            },
+            {
+              "asset_id": "VOC-07",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "قمر"
+            },
+            {
+              "asset_id": "VOC-01",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "موز"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-02-R05",
+          "order_index": 5,
+          "source_text": "ن: نخلة، نجم، باب",
+          "media": [
+            {
+              "asset_id": "LET-06",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "ن"
+            },
+            {
+              "asset_id": "VOC-09",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "نخلة"
+            },
+            {
+              "asset_id": "VOC-14",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "نجم"
+            },
+            {
+              "asset_id": "VOC-03",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "باب"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "8fdc25fc67380c80550eb72308e7ec2a3c6517609853fa506a36a9e9d0f1942e"
+    },
+    {
+      "canonical_id": "L1-REIN-03",
+      "stable_key": "eecd4fc9-1e47-562d-bcc3-ed65465db9c7",
+      "kind": "reinforcement_activity",
+      "level_id": 1,
+      "order_index": 3,
+      "title": "تقوية 3: اسمع واختر الصورة",
+      "skill_id": "c4633067-8b28-5a3f-beea-a52797b25160",
+      "skill_name": "المفردات السمعية",
+      "source_skill_name": "المفردات السمعية",
+      "interaction_type": "listen_choose_one",
+      "source_method": "يسمع كلمة ويختار صورتها.",
+      "criterion": null,
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-REIN-03-R01",
+          "order_index": 1,
+          "source_text": "باب",
+          "media": [
+            {
+              "asset_id": "WRD-03",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "باب"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-03-R02",
+          "order_index": 2,
+          "source_text": "قلم",
+          "media": [
+            {
+              "asset_id": "WRD-04",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "قلم"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-03-R03",
+          "order_index": 3,
+          "source_text": "شمس",
+          "media": [
+            {
+              "asset_id": "WRD-07",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "شمس"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-03-R04",
+          "order_index": 4,
+          "source_text": "سمكة",
+          "media": [
+            {
+              "asset_id": "WRD-06",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "سمكة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-03-R05",
+          "order_index": 5,
+          "source_text": "كرة",
+          "media": [
+            {
+              "asset_id": "WRD-10",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "كرة"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "a893d6f2f84e91f2c7c96f973342393c1e58c80447809628545c8fe6c8269ee9"
+    },
+    {
+      "canonical_id": "L1-REIN-04",
+      "stable_key": "f89cacd3-9dce-5dd7-bac8-59772404cbaa",
+      "kind": "reinforcement_activity",
+      "level_id": 1,
+      "order_index": 4,
+      "title": "تقوية 4: اقرأ الحرف",
+      "skill_id": "bb5c2939-c62b-5a7c-abbb-4334c52c637e",
+      "skill_name": "قراءة الحروف",
+      "source_skill_name": "قراءة الحروف",
+      "interaction_type": "read_aloud",
+      "source_method": "يظهر حرف واحد ويسجل الطالب قراءته.",
+      "criterion": null,
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-REIN-04-R01",
+          "order_index": 1,
+          "source_text": "م",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-04-R02",
+          "order_index": 2,
+          "source_text": "ب",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-04-R03",
+          "order_index": 3,
+          "source_text": "س",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-04-R04",
+          "order_index": 4,
+          "source_text": "ق",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-04-R05",
+          "order_index": 5,
+          "source_text": "ر",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "d64d2c1b0316b8465e97a0a2f4c74991c8de71f45e7ad320f8f12af5341cfbac"
+    },
+    {
+      "canonical_id": "L1-REIN-05",
+      "stable_key": "f9eb0faa-0aef-5cc4-b4c0-530a1a4051f3",
+      "kind": "reinforcement_activity",
+      "level_id": 1,
+      "order_index": 5,
+      "title": "تقوية 5: اقرأ المقطع",
+      "skill_id": "13b8fbee-ff74-5155-980b-5fc29bff59bc",
+      "skill_name": "قراءة المقاطع",
+      "source_skill_name": "قراءة المقاطع",
+      "interaction_type": "read_aloud",
+      "source_method": "يظهر مقطع واحد ويسجل الطالب قراءته.",
+      "criterion": null,
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L1-REIN-05-R01",
+          "order_index": 1,
+          "source_text": "مَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-05-R02",
+          "order_index": 2,
+          "source_text": "بُ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-05-R03",
+          "order_index": 3,
+          "source_text": "سِ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-05-R04",
+          "order_index": 4,
+          "source_text": "قَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L1-REIN-05-R05",
+          "order_index": 5,
+          "source_text": "رُ",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "34c3025b6d33b20953b64eb50d62b60d39ecfed29604d8522a8924f5b92d02c9"
+    },
+    {
+      "canonical_id": "L2-CORE-01",
+      "stable_key": "495920bc-66b4-518b-bbb7-220fccbf902d",
+      "kind": "core_activity",
+      "level_id": 2,
+      "order_index": 1,
+      "title": "النشاط الأساسي 1: اختر الحركة التي سمعتها",
+      "skill_id": "c319c896-8cc1-5843-8708-89fee10fc411",
+      "skill_name": "الحركات القصيرة",
+      "source_skill_name": "الحركات القصيرة",
+      "interaction_type": "listen_choose_one",
+      "source_method": "يسمع مقطعًا ويختار المطابق.",
+      "criterion": null,
+      "note": "التسجيل أو الاختيار هو المهمة الوحيدة؛ لا تضاف مهمة ثانية في نهاية الجولة.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-CORE-01-R01",
+          "order_index": 1,
+          "source_text": "بَ: بَ/بِ/بُ",
+          "media": [
+            {
+              "asset_id": "LET-02",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "بَ"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-01-R02",
+          "order_index": 2,
+          "source_text": "مِ: مَ/مِ/مُ",
+          "media": [
+            {
+              "asset_id": "LET-01",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "مِ"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-01-R03",
+          "order_index": 3,
+          "source_text": "سُ: سَ/سِ/سُ",
+          "media": [
+            {
+              "asset_id": "LET-03",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "سُ"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-01-R04",
+          "order_index": 4,
+          "source_text": "رَ: رَ/رِ/رُ",
+          "media": [
+            {
+              "asset_id": "LET-05",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "رَ"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-01-R05",
+          "order_index": 5,
+          "source_text": "قِ: قَ/قِ/قُ",
+          "media": [
+            {
+              "asset_id": "LET-04",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "قِ"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "0d536b18936eeda264df9f8566523647a4c797b020ff76b850c4a902c3c5cce6"
+    },
+    {
+      "canonical_id": "L2-CORE-02",
+      "stable_key": "e18b7caf-5303-59a9-ab95-e264add7a408",
+      "kind": "core_activity",
+      "level_id": 2,
+      "order_index": 2,
+      "title": "النشاط الأساسي 2: اقرأ المقاطع",
+      "skill_id": "5b2d5404-09ec-550f-9cca-6c9429eb7a59",
+      "skill_name": "قراءة المقاطع",
+      "source_skill_name": "قراءة المقاطع",
+      "interaction_type": "read_aloud",
+      "source_method": "يسجل الطالب قراءة مقطع واحد في كل جولة.",
+      "criterion": null,
+      "note": "التسجيل أو الاختيار هو المهمة الوحيدة؛ لا تضاف مهمة ثانية في نهاية الجولة.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-CORE-02-R01",
+          "order_index": 1,
+          "source_text": "مَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-02-R02",
+          "order_index": 2,
+          "source_text": "بِ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-02-R03",
+          "order_index": 3,
+          "source_text": "سُ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-02-R04",
+          "order_index": 4,
+          "source_text": "قِ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-02-R05",
+          "order_index": 5,
+          "source_text": "رَ",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "4079dee41394b8e911c7d1c47f965f48703c2edf814973937f7dd5e91e49871c"
+    },
+    {
+      "canonical_id": "L2-CORE-03",
+      "stable_key": "1f8e3dc4-644d-5806-937f-0f3728fb8d73",
+      "kind": "core_activity",
+      "level_id": 2,
+      "order_index": 3,
+      "title": "النشاط الأساسي 3: اقرأ كلمات الفتحة",
+      "skill_id": "f75344e9-f8a0-51ec-a43c-24041a3dfc9b",
+      "skill_name": "قراءة كلمات الحركات القصيرة",
+      "source_skill_name": "قراءة كلمات بسيطة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل كلمة واحدة في كل جولة.",
+      "criterion": null,
+      "note": "التسجيل أو الاختيار هو المهمة الوحيدة؛ لا تضاف مهمة ثانية في نهاية الجولة.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-CORE-03-R01",
+          "order_index": 1,
+          "source_text": "كَتَبَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-03-R02",
+          "order_index": 2,
+          "source_text": "جَلَسَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-03-R03",
+          "order_index": 3,
+          "source_text": "رَسَمَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-03-R04",
+          "order_index": 4,
+          "source_text": "فَتَحَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-03-R05",
+          "order_index": 5,
+          "source_text": "ذَهَبَ",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "cd47e292b8075b536181be251c3e56eb832a35bdf7336f94e02eb2bf8900cd20"
+    },
+    {
+      "canonical_id": "L2-CORE-04",
+      "stable_key": "87f92b31-d92c-583c-8836-e5e5f2c9dca7",
+      "kind": "core_activity",
+      "level_id": 2,
+      "order_index": 4,
+      "title": "النشاط الأساسي 4: اقرأ كلمات بحركات متنوعة",
+      "skill_id": "f75344e9-f8a0-51ec-a43c-24041a3dfc9b",
+      "skill_name": "قراءة كلمات الحركات القصيرة",
+      "source_skill_name": "قراءة الحركات القصيرة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل كلمة واحدة في كل جولة.",
+      "criterion": null,
+      "note": "التسجيل أو الاختيار هو المهمة الوحيدة؛ لا تضاف مهمة ثانية في نهاية الجولة.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-CORE-04-R01",
+          "order_index": 1,
+          "source_text": "شَرِبَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-04-R02",
+          "order_index": 2,
+          "source_text": "لَعِبَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-04-R03",
+          "order_index": 3,
+          "source_text": "سَمِعَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-04-R04",
+          "order_index": 4,
+          "source_text": "رَكِبَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-04-R05",
+          "order_index": 5,
+          "source_text": "فَهِمَ",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "8ec99528402b72ba38007dccbdbb552bc16f7398d5371b90c91675284b4c16ee"
+    },
+    {
+      "canonical_id": "L2-CORE-05",
+      "stable_key": "7f9d4ab6-7b15-5c67-9e83-19dcc89552d1",
+      "kind": "core_activity",
+      "level_id": 2,
+      "order_index": 5,
+      "title": "النشاط الأساسي 5: كلمات السكون",
+      "skill_id": "ef732112-3ddc-563a-95c6-f2b4b5dd76e0",
+      "skill_name": "تمييز الكلمة سمعيًا",
+      "source_skill_name": "تمييز كلمة مسموعة",
+      "interaction_type": "listen_choose_one",
+      "source_method": "يسمع كلمة ويختارها مكتوبة.",
+      "criterion": null,
+      "note": "التسجيل أو الاختيار هو المهمة الوحيدة؛ لا تضاف مهمة ثانية في نهاية الجولة.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-CORE-05-R01",
+          "order_index": 1,
+          "source_text": "مَكْتَب: مَكْتَب/مَكْتَبَة/كَتَبَ",
+          "media": [
+            {
+              "asset_id": "WRD-16",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "مَكْتَب"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-05-R02",
+          "order_index": 2,
+          "source_text": "شَمْس: شَمْس/سَمَك/شَجَر",
+          "media": [
+            {
+              "asset_id": "WRD-07",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "شَمْس"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-05-R03",
+          "order_index": 3,
+          "source_text": "نَجْم: نَجْم/نَهْر/نَخْل",
+          "media": [
+            {
+              "asset_id": "WRD-14",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "نَجْم"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-05-R04",
+          "order_index": 4,
+          "source_text": "بَحْر: بَحْر/بَدْر/بَقَر",
+          "media": [
+            {
+              "asset_id": "WRD-17",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "بَحْر"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-05-R05",
+          "order_index": 5,
+          "source_text": "أَرْنَب: أَرْنَب/أَسَد/أَرُزّ",
+          "media": [
+            {
+              "asset_id": "WRD-18",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "أَرْنَب"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "fb3184ce117e3595d4be105471e51f7ef92641f193d57667110258fe98c0f4fa"
+    },
+    {
+      "canonical_id": "L2-CORE-06",
+      "stable_key": "3b916ecd-d67f-52e4-a0a4-37bda6a4f82b",
+      "kind": "core_activity",
+      "level_id": 2,
+      "order_index": 6,
+      "title": "النشاط الأساسي 6: القصير والطويل",
+      "skill_id": "b9c29c26-06e8-5c4c-b06c-91fb3441207b",
+      "skill_name": "المد",
+      "source_skill_name": "تمييز المد",
+      "interaction_type": "listen_choose_one",
+      "source_method": "يسمع المقطع ويختاره.",
+      "criterion": null,
+      "note": "التسجيل أو الاختيار هو المهمة الوحيدة؛ لا تضاف مهمة ثانية في نهاية الجولة.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-CORE-06-R01",
+          "order_index": 1,
+          "source_text": "بَا: بَ/بَا/بُو",
+          "media": [
+            {
+              "asset_id": "SYL-09",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "بَا"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-06-R02",
+          "order_index": 2,
+          "source_text": "فِي: فِ/فِي/فُو",
+          "media": [
+            {
+              "asset_id": "SYL-10",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "فِي"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-06-R03",
+          "order_index": 3,
+          "source_text": "نُو: نُ/نُو/نَا",
+          "media": [
+            {
+              "asset_id": "SYL-11",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "نُو"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-06-R04",
+          "order_index": 4,
+          "source_text": "سَا: سَ/سَا/سِي",
+          "media": [],
+          "media_gaps": [
+            {
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "سَا",
+              "status": "declared_missing",
+              "reason": "No semantically matching approved asset exists in the current V1 manifest.",
+              "impact": "The round must not be activated until an approved asset release supplies this target."
+            }
+          ]
+        },
+        {
+          "round_id": "L2-CORE-06-R05",
+          "order_index": 5,
+          "source_text": "لِي: لِ/لِي/لُو",
+          "media": [
+            {
+              "asset_id": "SYL-12",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "لِي"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "f037a047b64bd113fa04bf70e42774cd495715411d624244dcf800d9afd322a3"
+    },
+    {
+      "canonical_id": "L2-CORE-07",
+      "stable_key": "ef57b35e-bbb0-5668-ab90-490e0bf0694a",
+      "kind": "core_activity",
+      "level_id": 2,
+      "order_index": 7,
+      "title": "النشاط الأساسي 7: اقرأ كلمات الشدة",
+      "skill_id": "11a1116e-4682-5a2e-905f-910b8a582399",
+      "skill_name": "قراءة كلمات الشدة",
+      "source_skill_name": "قراءة الشدة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل كلمة واحدة في كل جولة.",
+      "criterion": null,
+      "note": "التسجيل أو الاختيار هو المهمة الوحيدة؛ لا تضاف مهمة ثانية في نهاية الجولة.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-CORE-07-R01",
+          "order_index": 1,
+          "source_text": "قِطَّة",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-07-R02",
+          "order_index": 2,
+          "source_text": "سُلَّم",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-07-R03",
+          "order_index": 3,
+          "source_text": "تُفَّاح",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-07-R04",
+          "order_index": 4,
+          "source_text": "مُعَلِّم",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-07-R05",
+          "order_index": 5,
+          "source_text": "سَيَّارَة",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "55e56aa31b7fe6017ed6e0be0f3bf9d67d1b3d96f9d63c34478a2a4d23010b91"
+    },
+    {
+      "canonical_id": "L2-CORE-08",
+      "stable_key": "28f26675-d2f2-5f2f-b138-2a03094241f8",
+      "kind": "core_activity",
+      "level_id": 2,
+      "order_index": 8,
+      "title": "النشاط الأساسي 8: اختر التنوين المسموع",
+      "skill_id": "a6c4994b-d905-5857-b71d-b7b71ce0d73c",
+      "skill_name": "تمييز التنوين",
+      "source_skill_name": "تمييز التنوين",
+      "interaction_type": "listen_choose_one",
+      "source_method": "يسمع الكلمة ويختار صورتها الكتابية.",
+      "criterion": null,
+      "note": "التسجيل أو الاختيار هو المهمة الوحيدة؛ لا تضاف مهمة ثانية في نهاية الجولة.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-CORE-08-R01",
+          "order_index": 1,
+          "source_text": "قَلَمٌ: قَلَمٌ/قَلَمًا/قَلَمٍ",
+          "media": [
+            {
+              "asset_id": "WRD-04",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "قَلَمٌ"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-08-R02",
+          "order_index": 2,
+          "source_text": "كِتَابًا: كِتَابٌ/كِتَابًا/كِتَابٍ",
+          "media": [
+            {
+              "asset_id": "WRD-25",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "كِتَابًا"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-08-R03",
+          "order_index": 3,
+          "source_text": "بَيْتٍ: بَيْتٌ/بَيْتًا/بَيْتٍ",
+          "media": [
+            {
+              "asset_id": "WRD-19",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "بَيْتٍ"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-08-R04",
+          "order_index": 4,
+          "source_text": "طِفْلٌ: طِفْلٌ/طِفْلًا/طِفْلٍ",
+          "media": [
+            {
+              "asset_id": "WRD-20",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "طِفْلٌ"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-08-R05",
+          "order_index": 5,
+          "source_text": "وَرْدَةً: وَرْدَةٌ/وَرْدَةً/وَرْدَةٍ",
+          "media": [
+            {
+              "asset_id": "WRD-21",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "وَرْدَةً"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "939f3fea3fbb989dcbff5031958e5cbe2311dec2526af95930e250acd1cec101"
+    },
+    {
+      "canonical_id": "L2-CORE-09",
+      "stable_key": "44ae8f5c-3708-51b4-8a94-0a98182d3a69",
+      "kind": "core_activity",
+      "level_id": 2,
+      "order_index": 9,
+      "title": "النشاط الأساسي 9: ابنِ الكلمة",
+      "skill_id": "74105bf0-10ac-5f54-9d79-a4eae8199116",
+      "skill_name": "بناء الكلمة",
+      "source_skill_name": "تكوين الكلمات",
+      "interaction_type": "build_word",
+      "source_method": "صورة وحروف عشوائية؛ ينقر الطالب الحروف بالترتيب.",
+      "criterion": null,
+      "note": "التسجيل أو الاختيار هو المهمة الوحيدة؛ لا تضاف مهمة ثانية في نهاية الجولة.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-CORE-09-R01",
+          "order_index": 1,
+          "source_text": "بَاب: ب/ا/ب",
+          "media": [
+            {
+              "asset_id": "VOC-03",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "بَاب"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-09-R02",
+          "order_index": 2,
+          "source_text": "قَلَم: ق/ل/م",
+          "media": [
+            {
+              "asset_id": "VOC-04",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "قَلَم"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-09-R03",
+          "order_index": 3,
+          "source_text": "سَمَك: س/م/ك",
+          "media": [
+            {
+              "asset_id": "VOC-05",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "سَمَك"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-09-R04",
+          "order_index": 4,
+          "source_text": "كِتَاب: ك/ت/ا/ب",
+          "media": [
+            {
+              "asset_id": "VOC-02",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "كِتَاب"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-09-R05",
+          "order_index": 5,
+          "source_text": "نُور: ن/و/ر",
+          "media": [
+            {
+              "asset_id": "VOC-15",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "نُور"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "6a9a92ecf4722bf7e75e8c1394c89bb3e3dcf07c83d7320ab06b0cd580b6569a"
+    },
+    {
+      "canonical_id": "L2-CORE-10",
+      "stable_key": "3b45bd4a-659b-5ab8-b971-beb90080db22",
+      "kind": "core_activity",
+      "level_id": 2,
+      "order_index": 10,
+      "title": "النشاط الأساسي 10: اقرأ الجملة",
+      "skill_id": "6dec8f84-369b-531d-ae73-283816e0fd86",
+      "skill_name": "قراءة الجمل القصيرة",
+      "source_skill_name": "قراءة جمل قصيرة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل جملة واحدة في كل جولة.",
+      "criterion": null,
+      "note": "التسجيل أو الاختيار هو المهمة الوحيدة؛ لا تضاف مهمة ثانية في نهاية الجولة.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-CORE-10-R01",
+          "order_index": 1,
+          "source_text": "يَقْرَأُ سَالِمٌ كِتَابًا.",
+          "media": [
+            {
+              "asset_id": "SEN-01",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "سالم يقرأ كتابًا"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-10-R02",
+          "order_index": 2,
+          "source_text": "تَشْرَبُ مَرْيَمُ الْحَلِيبَ.",
+          "media": [
+            {
+              "asset_id": "SEN-02",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "مريم تشرب الحليب"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-10-R03",
+          "order_index": 3,
+          "source_text": "يَقِفُ الْعُصْفُورُ فَوْقَ النَّخْلَةِ.",
+          "media": [
+            {
+              "asset_id": "SEN-03",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "عصفور فوق نخلة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-10-R04",
+          "order_index": 4,
+          "source_text": "وَضَعَتْ هِنْدٌ الْقَلَمَ فِي الْحَقِيبَةِ.",
+          "media": [
+            {
+              "asset_id": "SEN-04",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "هند تضع القلم في الحقيبة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-CORE-10-R05",
+          "order_index": 5,
+          "source_text": "يَلْعَبُ مَاجِدٌ بِالْكُرَةِ.",
+          "media": [
+            {
+              "asset_id": "SEN-05",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "ماجد يلعب بالكرة"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "70fc54885137844c2c202c3f95a452a8074dc8f28ad20766744151b1679980de"
+    },
+    {
+      "canonical_id": "L2-REIN-01",
+      "stable_key": "c859486a-947c-5def-ae87-505d266b4346",
+      "kind": "reinforcement_activity",
+      "level_id": 2,
+      "order_index": 1,
+      "title": "تقوية 1: الحرف الناقص",
+      "skill_id": "97b26115-7de5-55ee-a9ad-b0e5238a924e",
+      "skill_name": "إكمال الكلمة",
+      "source_skill_name": "إكمال الكلمة",
+      "interaction_type": "choose_one",
+      "source_method": "يختار حرفًا واحدًا لإكمال الكلمة.",
+      "criterion": null,
+      "note": "لا يطلب من الطالب تسجيل الجملة بعد ترتيبها.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-REIN-01-R01",
+          "order_index": 1,
+          "source_text": "\\_اب = بَاب: ب/ت/ن",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-01-R02",
+          "order_index": 2,
+          "source_text": "ق_م = قَلَم: ل/م/ن",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-01-R03",
+          "order_index": 3,
+          "source_text": "س_ك = سَمَك: م/ل/ن",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-01-R04",
+          "order_index": 4,
+          "source_text": "كِتَا\\_ = كِتَاب: ب/ت/د",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-01-R05",
+          "order_index": 5,
+          "source_text": "نُ\\_ر = نُور: و/ا/ي",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "844cfa6f018ef13f162b00f1d432a4a43fc11b2a34d78de5c24d6f9971571cef"
+    },
+    {
+      "canonical_id": "L2-REIN-02",
+      "stable_key": "1d24e78d-e176-5ca7-99e4-5d30acf203e1",
+      "kind": "reinforcement_activity",
+      "level_id": 2,
+      "order_index": 2,
+      "title": "تقوية 2: ادمج المقاطع",
+      "skill_id": "5cd02c46-ee8e-5c86-867c-87ce8724dac4",
+      "skill_name": "الدمج المقطعي",
+      "source_skill_name": "الدمج",
+      "interaction_type": "sequence",
+      "source_method": "ينقر على المقاطع بالترتيب.",
+      "criterion": null,
+      "note": "لا يطلب من الطالب تسجيل الجملة بعد ترتيبها.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-REIN-02-R01",
+          "order_index": 1,
+          "source_text": "كَ + تَبَ = كَتَبَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-02-R02",
+          "order_index": 2,
+          "source_text": "لَ + عِبَ = لَعِبَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-02-R03",
+          "order_index": 3,
+          "source_text": "مَكْ + تَب = مَكْتَب",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-02-R04",
+          "order_index": 4,
+          "source_text": "كِ + تَاب = كِتَاب",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-02-R05",
+          "order_index": 5,
+          "source_text": "عُصْ + فُور = عُصْفُور",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "285e7f39c8f6d2fa08e899ca83dd179303cb64ad3dd86dd8ef0b21820b6ecbb4"
+    },
+    {
+      "canonical_id": "L2-REIN-03",
+      "stable_key": "c86147d5-6283-569a-8807-103717324a0a",
+      "kind": "reinforcement_activity",
+      "level_id": 2,
+      "order_index": 3,
+      "title": "تقوية 3: اسمع واختر الكلمة",
+      "skill_id": "ef732112-3ddc-563a-95c6-f2b4b5dd76e0",
+      "skill_name": "تمييز الكلمة سمعيًا",
+      "source_skill_name": "التمييز السمعي",
+      "interaction_type": "listen_choose_one",
+      "source_method": "يسمع كلمة ويختارها من كلمات متقاربة.",
+      "criterion": null,
+      "note": "لا يطلب من الطالب تسجيل الجملة بعد ترتيبها.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-REIN-03-R01",
+          "order_index": 1,
+          "source_text": "بَاب: بَاب/نَاب/تَاب",
+          "media": [
+            {
+              "asset_id": "WRD-03",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "بَاب"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-03-R02",
+          "order_index": 2,
+          "source_text": "قَلَم: قَلَم/قَدَم/قِسْم",
+          "media": [
+            {
+              "asset_id": "WRD-04",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "قَلَم"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-03-R03",
+          "order_index": 3,
+          "source_text": "شَمْس: شَمْس/سَمَك/شَجَر",
+          "media": [
+            {
+              "asset_id": "WRD-07",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "شَمْس"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-03-R04",
+          "order_index": 4,
+          "source_text": "نُور: نُور/نَار/نَهْر",
+          "media": [
+            {
+              "asset_id": "WRD-15",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "نُور"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-03-R05",
+          "order_index": 5,
+          "source_text": "كِتَاب: كِتَاب/كَتِف/كَلْب",
+          "media": [
+            {
+              "asset_id": "WRD-02",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "كِتَاب"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "4adf058dfa819c6a9bb350c38ed6c57cc6b1cf5dad4c1fa98bc232df2449941b"
+    },
+    {
+      "canonical_id": "L2-REIN-04",
+      "stable_key": "0fb13352-5c0d-53d7-bc7b-f37d711c9f9e",
+      "kind": "reinforcement_activity",
+      "level_id": 2,
+      "order_index": 4,
+      "title": "تقوية 4: الكلمة والصورة",
+      "skill_id": "728e51b2-494a-5fd3-b177-8fc61d21c663",
+      "skill_name": "مطابقة الكلمة بالصورة",
+      "source_skill_name": "فهم المفردة",
+      "interaction_type": "choose_image",
+      "source_method": "تظهر كلمة وثلاث صور ويختار المطابقة.",
+      "criterion": null,
+      "note": "لا يطلب من الطالب تسجيل الجملة بعد ترتيبها.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-REIN-04-R01",
+          "order_index": 1,
+          "source_text": "بَاب",
+          "media": [
+            {
+              "asset_id": "VOC-03",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "بَاب"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-04-R02",
+          "order_index": 2,
+          "source_text": "قَلَم",
+          "media": [
+            {
+              "asset_id": "VOC-04",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "قَلَم"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-04-R03",
+          "order_index": 3,
+          "source_text": "شَمْس",
+          "media": [
+            {
+              "asset_id": "VOC-06",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "شَمْس"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-04-R04",
+          "order_index": 4,
+          "source_text": "قِطَّة",
+          "media": [
+            {
+              "asset_id": "VOC-16",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "قِطَّة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-04-R05",
+          "order_index": 5,
+          "source_text": "كِتَاب",
+          "media": [
+            {
+              "asset_id": "VOC-02",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "كِتَاب"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "f9713425379d6e8759ac7016f607fd2c9e8f0837ed77a9145be22f66333e9aa3"
+    },
+    {
+      "canonical_id": "L2-REIN-05",
+      "stable_key": "dd45c2df-e960-52e5-bdd7-6ad9d44281d5",
+      "kind": "reinforcement_activity",
+      "level_id": 2,
+      "order_index": 5,
+      "title": "تقوية 5: رتّب كلمات الجملة",
+      "skill_id": "5cc83642-30ed-5a77-a86f-dd6fccb55ff4",
+      "skill_name": "بناء الجملة",
+      "source_skill_name": "بناء الجملة",
+      "interaction_type": "sequence",
+      "source_method": "ينقر الكلمات بالترتيب الصحيح.",
+      "criterion": null,
+      "note": "لا يطلب من الطالب تسجيل الجملة بعد ترتيبها.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L2-REIN-05-R01",
+          "order_index": 1,
+          "source_text": "يَقْرَأُ/سَالِمٌ/كِتَابًا",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-05-R02",
+          "order_index": 2,
+          "source_text": "تَشْرَبُ/مَرْيَمُ/الْحَلِيبَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-05-R03",
+          "order_index": 3,
+          "source_text": "يَقِفُ/الْعُصْفُورُ/فَوْقَ النَّخْلَةِ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-05-R04",
+          "order_index": 4,
+          "source_text": "وَضَعَتْ/هِنْدٌ/الْقَلَمَ/فِي الْحَقِيبَةِ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L2-REIN-05-R05",
+          "order_index": 5,
+          "source_text": "يَلْعَبُ/مَاجِدٌ/بِالْكُرَةِ",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "39a69ae240ba68a473a5eb10c57b6f045fe40b9bbdf034bdfd5c2c07565a66c1"
+    },
+    {
+      "canonical_id": "L3-CORE-01",
+      "stable_key": "12fec6e7-c652-5f46-afe9-ba870e7ad09b",
+      "kind": "core_activity",
+      "level_id": 3,
+      "order_index": 1,
+      "title": "النشاط الأساسي 1: قراءة الكلمات بدقة",
+      "skill_id": "f092cdea-44e6-5ee2-beb4-77390ab6d4b3",
+      "skill_name": "دقة قراءة الكلمات",
+      "source_skill_name": "الدقة",
+      "interaction_type": "read_aloud",
+      "source_method": "تظهر كلمة واحدة ويسجل الطالب قراءتها دون مؤقت ظاهر.",
+      "criterion": null,
+      "note": "لا يضاف تسجيل بعد أسئلة الفهم أو الترتيب.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L3-CORE-01-R01",
+          "order_index": 1,
+          "source_text": "مَدْرَسَة",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-01-R02",
+          "order_index": 2,
+          "source_text": "مَكْتَب",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-01-R03",
+          "order_index": 3,
+          "source_text": "كِتَاب",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-01-R04",
+          "order_index": 4,
+          "source_text": "نَخْلَة",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-01-R05",
+          "order_index": 5,
+          "source_text": "عُصْفُور",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-01-R06",
+          "order_index": 6,
+          "source_text": "قِطَّة",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-01-R07",
+          "order_index": 7,
+          "source_text": "مُعَلِّم",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-01-R08",
+          "order_index": 8,
+          "source_text": "سَحَاب",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-01-R09",
+          "order_index": 9,
+          "source_text": "شَمْس",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-01-R10",
+          "order_index": 10,
+          "source_text": "أَرْنَب",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "08d2032fded387d08ef71988f51197b5ba67845024c842201aeb8b452ae4ceae"
+    },
+    {
+      "canonical_id": "L3-CORE-02",
+      "stable_key": "776408d3-5950-5095-b30c-351f0225a55c",
+      "kind": "core_activity",
+      "level_id": 3,
+      "order_index": 2,
+      "title": "النشاط الأساسي 2: قراءة العبارات",
+      "skill_id": "fff99737-7a27-5bec-b29f-aa253e646d20",
+      "skill_name": "قراءة وحدات المعنى",
+      "source_skill_name": "قراءة وحدات المعنى",
+      "interaction_type": "read_aloud",
+      "source_method": "يسجل الطالب عبارة واحدة في كل جولة.",
+      "criterion": null,
+      "note": "لا يضاف تسجيل بعد أسئلة الفهم أو الترتيب.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L3-CORE-02-R01",
+          "order_index": 1,
+          "source_text": "فِي الصَّبَاحِ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-02-R02",
+          "order_index": 2,
+          "source_text": "تَحْتَ الشَّجَرَةِ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-02-R03",
+          "order_index": 3,
+          "source_text": "دَاخِلَ الْفَصْلِ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-02-R04",
+          "order_index": 4,
+          "source_text": "قُرْبَ الْبَحْرِ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-02-R05",
+          "order_index": 5,
+          "source_text": "فَوْقَ النَّخْلَةِ",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "3bef0037779b8ece35e900cea1294a544756dc10b4a8576256c51430189acfdb"
+    },
+    {
+      "canonical_id": "L3-CORE-03",
+      "stable_key": "f31d9326-a3ad-52ad-bad5-ce2a7f3eff1d",
+      "kind": "core_activity",
+      "level_id": 3,
+      "order_index": 3,
+      "title": "النشاط الأساسي 3: قراءة الجمل",
+      "skill_id": "326762db-18a2-5bfd-ad53-63af165488d3",
+      "skill_name": "طلاقة قراءة الجملة",
+      "source_skill_name": "الاسترسال",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل جملة مستقلة.",
+      "criterion": null,
+      "note": "لا يضاف تسجيل بعد أسئلة الفهم أو الترتيب.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L3-CORE-03-R01",
+          "order_index": 1,
+          "source_text": "ذَهَبَ سَالِمٌ إِلَى الْمَدْرَسَةِ.",
+          "media": [
+            {
+              "asset_id": "SEN-06",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "سالم ذاهب إلى المدرسة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-03-R02",
+          "order_index": 2,
+          "source_text": "جَلَسَتْ مَرْيَمُ تَحْتَ الشَّجَرَةِ.",
+          "media": [
+            {
+              "asset_id": "SEN-07",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "مريم تجلس تحت الشجرة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-03-R03",
+          "order_index": 3,
+          "source_text": "قَرَأَ خَالِدٌ كِتَابًا مُفِيدًا.",
+          "media": [
+            {
+              "asset_id": "SEN-08",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "خالد يقرأ كتابًا مفيدًا"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-03-R04",
+          "order_index": 4,
+          "source_text": "لَعِبَ الْأَطْفَالُ فِي السَّاحَةِ.",
+          "media": [
+            {
+              "asset_id": "SEN-09",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "أطفال يلعبون في الساحة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-03-R05",
+          "order_index": 5,
+          "source_text": "عَادَتِ الْأُسْرَةُ إِلَى الْبَيْتِ.",
+          "media": [
+            {
+              "asset_id": "SEN-10",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "أسرة تعود إلى البيت"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "4afdf5aee172a2b17b196f29651702d54896fa1a455fb4ac258318962feb620e"
+    },
+    {
+      "canonical_id": "L3-CORE-04",
+      "stable_key": "dbc3af40-4c59-5f96-8f47-7ce80e386488",
+      "kind": "core_activity",
+      "level_id": 3,
+      "order_index": 4,
+      "title": "النشاط الأساسي 4: قراءة فقرة قصيرة",
+      "skill_id": "bd43e35d-2fe7-5fd8-b110-47c5d11a273b",
+      "skill_name": "دقة وطلاقة قراءة النص",
+      "source_skill_name": "الدقة والطلاقة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل فقرة دون مؤقت ظاهر.",
+      "criterion": null,
+      "note": "لا يضاف تسجيل بعد أسئلة الفهم أو الترتيب.",
+      "item_assets": [
+        {
+          "asset_id": "STY-02",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "مريم والبذرة"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "L3-CORE-04-R01",
+          "order_index": 1,
+          "source_text": "زَرَعَتْ مَرْيَمُ بَذْرَةً صَغِيرَةً فِي حَدِيقَةِ الْمَدْرَسَةِ. كَانَتْ تَسْقِيهَا كُلَّ صَبَاحٍ. بَعْدَ أَيَّامٍ ظَهَرَتْ أَوْرَاقٌ خَضْرَاءُ، فَفَرِحَتْ مَرْيَمُ.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "86befd1870a14e16dca0863a36e8081fffc810307b92b57fe520dedf0ff080bd"
+    },
+    {
+      "canonical_id": "L3-CORE-05",
+      "stable_key": "41aeb8d0-2854-55ff-aa8c-89b0eca49af2",
+      "kind": "core_activity",
+      "level_id": 3,
+      "order_index": 5,
+      "title": "النشاط الأساسي 5: كلمات في وقت محدد",
+      "skill_id": "8fde2bd8-ba7b-5b1f-94b8-320b0b1d9ff8",
+      "skill_name": "سرعة قراءة الكلمات مع الدقة",
+      "source_skill_name": "سرعة القراءة مع الدقة",
+      "interaction_type": "timed_read_aloud",
+      "source_method": "يقرأ قائمة كلمات خلال 30 ثانية؛ المؤقت يحسب داخليًا.",
+      "criterion": null,
+      "note": "لا يضاف تسجيل بعد أسئلة الفهم أو الترتيب.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L3-CORE-05-R01",
+          "order_index": 1,
+          "source_text": "المدرسة، الحديقة، الشجرة، كتاب، معلم، تلميذ، نخلة، عصفور، بحر، شاطئ، سلة، قلم، حقيبة، يلعب، يقرأ، يكتب، جميل، صغير، نظيف، سعيد",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "341d73e78eeb259bd309ffebf7467395569ec1e2a6af539cc83d07bd144b284d"
+    },
+    {
+      "canonical_id": "L3-CORE-06",
+      "stable_key": "6b1effc2-575f-50de-9461-0eec0a662895",
+      "kind": "core_activity",
+      "level_id": 3,
+      "order_index": 6,
+      "title": "النشاط الأساسي 6: فقرة في وقت محدد",
+      "skill_id": "f45820be-96af-522c-bbe6-93e1d39d6115",
+      "skill_name": "طلاقة قراءة الفقرة الموقوتة",
+      "source_skill_name": "الطلاقة",
+      "interaction_type": "timed_read_aloud",
+      "source_method": "تسجيل فقرة مع حساب الوقت داخليًا.",
+      "criterion": null,
+      "note": "لا يضاف تسجيل بعد أسئلة الفهم أو الترتيب.",
+      "item_assets": [
+        {
+          "asset_id": "STY-03",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "خالد في المكتبة"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "L3-CORE-06-R01",
+          "order_index": 1,
+          "source_text": "دَخَلَ خَالِدٌ مَكْتَبَةَ الْمَدْرَسَةِ فِي وَقْتِ الْفُسْحَةِ. بَحَثَ عَنْ كِتَابٍ عَنِ الْحَيَوَانَاتِ، فَسَاعَدَهُ أَمِينُ الْمَكْتَبَةِ. جَلَسَ فِي مَكَانٍ هَادِئٍ وَقَرَأَ الْكِتَابَ، ثُمَّ أَعَادَهُ إِلَى مَكَانِهِ.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "f383e8a95d6ddcae4cb984100ffe07615de2b0b1a94dc09ee253f152ba5468a3"
+    },
+    {
+      "canonical_id": "L3-CORE-07",
+      "stable_key": "bba39563-df32-5088-b414-68f59bf2239d",
+      "kind": "core_activity",
+      "level_id": 3,
+      "order_index": 7,
+      "title": "النشاط الأساسي 7: الفهم المباشر",
+      "skill_id": "e76fd684-39f7-5476-ad97-7c80c2229cf7",
+      "skill_name": "الفهم المباشر",
+      "source_skill_name": "استرجاع معلومات النص",
+      "interaction_type": "choose_one",
+      "source_method": "يعرض نص المكتبة، ثم خمسة أسئلة اختيار من متعدد.",
+      "criterion": null,
+      "note": "لا يضاف تسجيل بعد أسئلة الفهم أو الترتيب.",
+      "item_assets": [
+        {
+          "asset_id": "STY-03",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "خالد في المكتبة"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "L3-CORE-07-R01",
+          "order_index": 1,
+          "source_text": "أين دخل خالد؟ المكتبة",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-07-R02",
+          "order_index": 2,
+          "source_text": "متى دخل؟ وقت الفسحة",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-07-R03",
+          "order_index": 3,
+          "source_text": "عن ماذا كان يبحث؟ الحيوانات",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-07-R04",
+          "order_index": 4,
+          "source_text": "من ساعده؟ أمين المكتبة",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-07-R05",
+          "order_index": 5,
+          "source_text": "ماذا فعل بالكتاب؟ أعاده إلى مكانه",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "e67f71424ca228f1a9fec0c231dfa07f0de44bcc4e421f5e07c10e52bdf21883"
+    },
+    {
+      "canonical_id": "L3-CORE-08",
+      "stable_key": "10865e8a-6edf-5ddf-98b2-115f53e29c04",
+      "kind": "core_activity",
+      "level_id": 3,
+      "order_index": 8,
+      "title": "النشاط الأساسي 8: الفهم الاستنتاجي",
+      "skill_id": "a5df512a-9aea-531f-8fc1-d4de3ea97e98",
+      "skill_name": "الفهم الاستنتاجي",
+      "source_skill_name": "فهم السبب والفكرة العامة",
+      "interaction_type": "choose_one",
+      "source_method": "يعرض نص رحلة الوادي، ثم خمسة أسئلة اختيار من متعدد.",
+      "criterion": null,
+      "note": "لا يضاف تسجيل بعد أسئلة الفهم أو الترتيب.",
+      "item_assets": [
+        {
+          "asset_id": "STY-04",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "رحلة الوادي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "L3-CORE-08-R01",
+          "order_index": 1,
+          "source_text": "لماذا أحضر الأب الماء؟ لأنهم سيقضون وقتًا في الرحلة",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-08-R02",
+          "order_index": 2,
+          "source_text": "لماذا حمل الأطفال حقائبهم؟ لوضع حاجاتهم",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-08-R03",
+          "order_index": 3,
+          "source_text": "ماذا يدل جمع المخلفات؟ المحافظة على النظافة",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-08-R04",
+          "order_index": 4,
+          "source_text": "ما السلوك الصحيح؟ تنظيف المكان قبل المغادرة",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-08-R05",
+          "order_index": 5,
+          "source_text": "الفكرة العامة: رحلة عائلية مع المحافظة على المكان",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "0c8aa9daa620499e79367d903d9a868c2b96bc30fb47e633b2f6d01ae6791d33"
+    },
+    {
+      "canonical_id": "L3-CORE-09",
+      "stable_key": "82805695-beea-5bb4-8170-eea050cbb327",
+      "kind": "core_activity",
+      "level_id": 3,
+      "order_index": 9,
+      "title": "النشاط الأساسي 9: معاني الكلمات",
+      "skill_id": "b38896f0-cce9-543c-948c-52c5d2bffea1",
+      "skill_name": "المفردات من السياق",
+      "source_skill_name": "المفردات",
+      "interaction_type": "choose_one",
+      "source_method": "يختار الطالب المعنى الصحيح.",
+      "criterion": null,
+      "note": "لا يضاف تسجيل بعد أسئلة الفهم أو الترتيب.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L3-CORE-09-R01",
+          "order_index": 1,
+          "source_text": "هَادِئ = قليل الضوضاء",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-09-R02",
+          "order_index": 2,
+          "source_text": "أَعَادَ = أرجع",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-09-R03",
+          "order_index": 3,
+          "source_text": "مُخَلَّفَات = أشياء متروكة بعد الاستخدام",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-09-R04",
+          "order_index": 4,
+          "source_text": "صَافِيَة = نظيفة وواضحة",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-09-R05",
+          "order_index": 5,
+          "source_text": "قُرْبَ = بجانب",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "45b81e2e4e6e0a0c6440fbf2195d5ae943d6ee5f523f3c868fd4e776d2157a90"
+    },
+    {
+      "canonical_id": "L3-CORE-10",
+      "stable_key": "5f728b34-72ee-53f5-8d7c-58bf6c517ae7",
+      "kind": "core_activity",
+      "level_id": 3,
+      "order_index": 10,
+      "title": "النشاط الأساسي 10: ترتيب الأحداث",
+      "skill_id": "72ccaada-556f-5660-a49b-99d836571289",
+      "skill_name": "تسلسل أحداث النص",
+      "source_skill_name": "تسلسل النص",
+      "interaction_type": "sequence",
+      "source_method": "ينقر الطالب الأحداث بترتيبها.",
+      "criterion": null,
+      "note": "لا يضاف تسجيل بعد أسئلة الفهم أو الترتيب.",
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L3-CORE-10-R01",
+          "order_index": 1,
+          "source_text": "المكتبة: دخل، قرأ، أعاد",
+          "media": [
+            {
+              "asset_id": "STY-03",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "خالد في المكتبة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-10-R02",
+          "order_index": 2,
+          "source_text": "النبتة: زرعت، سقت، ظهرت الأوراق",
+          "media": [
+            {
+              "asset_id": "STY-02",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "مريم والبذرة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-CORE-10-R03",
+          "order_index": 3,
+          "source_text": "الوادي: خرجت الأسرة، شاهدوا، جمعوا المخلفات",
+          "media": [
+            {
+              "asset_id": "STY-04",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "رحلة الوادي"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "da950a8d8ac7d8eb96f2159f8c6b8cf8e109b5a4d84b1fbafe3d737e598c4d97"
+    },
+    {
+      "canonical_id": "L3-REIN-01",
+      "stable_key": "a55cbd37-b8d2-55cf-9cb5-6fcf53afc43c",
+      "kind": "reinforcement_activity",
+      "level_id": 3,
+      "order_index": 1,
+      "title": "تقوية 1: اختر تقسيم الجملة",
+      "skill_id": "fff99737-7a27-5bec-b29f-aa253e646d20",
+      "skill_name": "قراءة وحدات المعنى",
+      "source_skill_name": "وحدات المعنى",
+      "interaction_type": "choose_one",
+      "source_method": "تظهر الجملة بثلاث تقسيمات ويختار الصحيح.",
+      "criterion": null,
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L3-REIN-01-R01",
+          "order_index": 1,
+          "source_text": "ذَهَبَ سَالِمٌ / إِلَى الْمَدْرَسَةِ / فِي الصَّبَاحِ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-REIN-01-R02",
+          "order_index": 2,
+          "source_text": "جَلَسَتْ مَرْيَمُ / تَحْتَ الشَّجَرَةِ / وَقَرَأَتْ كِتَابًا",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-REIN-01-R03",
+          "order_index": 3,
+          "source_text": "لَعِبَ الْأَطْفَالُ / فِي السَّاحَةِ / بَعْدَ الدَّرْسِ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-REIN-01-R04",
+          "order_index": 4,
+          "source_text": "وَقَفَ الْعُصْفُورُ / فَوْقَ النَّخْلَةِ / ثُمَّ طَارَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-REIN-01-R05",
+          "order_index": 5,
+          "source_text": "عَادَ مَاجِدٌ / إِلَى الْبَيْتِ / مَعَ وَالِدِهِ",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "882b76c609c5d64456f86531c07c4760e59bb5d021662d413782984d92aeea0a"
+    },
+    {
+      "canonical_id": "L3-REIN-02",
+      "stable_key": "53a7ef39-77ed-547a-b5a7-d6bddf231600",
+      "kind": "reinforcement_activity",
+      "level_id": 3,
+      "order_index": 2,
+      "title": "تقوية 2: ابحث عن الدليل",
+      "skill_id": "fd3b607b-0e75-5d65-b255-6e42548401d8",
+      "skill_name": "الاستدلال من النص",
+      "source_skill_name": "الاستدلال من النص",
+      "interaction_type": "choose_one",
+      "source_method": "سؤال وثلاث جمل؛ يختار جملة الدليل.",
+      "criterion": null,
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L3-REIN-02-R01",
+          "order_index": 1,
+          "source_text": "المطر: حمل سالم مظلته",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-REIN-02-R02",
+          "order_index": 2,
+          "source_text": "اهتمام مريم: كانت تسقي النبتة كل صباح",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-REIN-02-R03",
+          "order_index": 3,
+          "source_text": "حفاظ خالد على الكتب: أعاد الكتاب إلى مكانه",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "467dd2e9ff9c36b08b6d87803983fa1280f0a86b0e3b47c448401a5672089402"
+    },
+    {
+      "canonical_id": "L3-REIN-03",
+      "stable_key": "02153079-e1ff-5b46-83e1-78837fd0a9b4",
+      "kind": "reinforcement_activity",
+      "level_id": 3,
+      "order_index": 3,
+      "title": "تقوية 3: رتّب كلمات الجملة",
+      "skill_id": "10b38a81-e1c0-5cbd-9ce6-efa1b020cc45",
+      "skill_name": "بناء الجملة",
+      "source_skill_name": "بناء الجملة",
+      "interaction_type": "sequence",
+      "source_method": "ينقر الكلمات بالترتيب.",
+      "criterion": null,
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L3-REIN-03-R01",
+          "order_index": 1,
+          "source_text": "ذَهَبَ/سَالِمٌ/إِلَى الْمَدْرَسَةِ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-REIN-03-R02",
+          "order_index": 2,
+          "source_text": "قَرَأَ/خَالِدٌ/كِتَابًا",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-REIN-03-R03",
+          "order_index": 3,
+          "source_text": "سَقَتْ/مَرْيَمُ/النَّبْتَةَ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-REIN-03-R04",
+          "order_index": 4,
+          "source_text": "لَعِبَ/الْأَطْفَالُ/فِي السَّاحَةِ",
+          "media": [],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-REIN-03-R05",
+          "order_index": 5,
+          "source_text": "عَادَتِ/الْأُسْرَةُ/إِلَى الْبَيْتِ",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "279597251d3ffa8ae26bc8d0eaa23dfa85a2e79ae206e5525cbaaf65f5dc5b57"
+    },
+    {
+      "canonical_id": "L3-REIN-04",
+      "stable_key": "fc30f3d3-0459-5ca4-979b-6f2aa57501c0",
+      "kind": "reinforcement_activity",
+      "level_id": 3,
+      "order_index": 4,
+      "title": "تقوية 4: قراءة نص مبسط",
+      "skill_id": "bd43e35d-2fe7-5fd8-b110-47c5d11a273b",
+      "skill_name": "دقة وطلاقة قراءة النص",
+      "source_skill_name": "قراءة فقرة قصيرة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل النص فقط.",
+      "criterion": null,
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-06",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "هند والزهرة"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "L3-REIN-04-R01",
+          "order_index": 1,
+          "source_text": "ذَهَبَتْ هِنْدٌ إِلَى الْحَدِيقَةِ. شَاهَدَتْ زَهْرَةً جَمِيلَةً. سَقَتِ الزَّهْرَةَ بِالْمَاءِ، ثُمَّ عَادَتْ إِلَى الْبَيْتِ.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "c088a47441810b2a957b12284b9d7a97b177f98b61399b003c65df5fd629902c"
+    },
+    {
+      "canonical_id": "L3-REIN-05",
+      "stable_key": "5b3f33cd-73ea-5072-807a-4970e0e1d2b8",
+      "kind": "reinforcement_activity",
+      "level_id": 3,
+      "order_index": 5,
+      "title": "تقوية 5: اختر عنوان النص",
+      "skill_id": "d83b3a7d-6c58-5805-9359-2072d6018463",
+      "skill_name": "الفكرة العامة",
+      "source_skill_name": "الفكرة العامة",
+      "interaction_type": "choose_one",
+      "source_method": "نص قصير وثلاثة عناوين.",
+      "criterion": null,
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "L3-REIN-05-R01",
+          "order_index": 1,
+          "source_text": "المكتبة: في المكتبة",
+          "media": [
+            {
+              "asset_id": "STY-03",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "خالد في المكتبة"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-REIN-05-R02",
+          "order_index": 2,
+          "source_text": "الشاطئ: شاطئ نظيف",
+          "media": [
+            {
+              "asset_id": "STY-05",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "نص الاختبار البعدي"
+            }
+          ],
+          "media_gaps": []
+        },
+        {
+          "round_id": "L3-REIN-05-R03",
+          "order_index": 3,
+          "source_text": "البذرة: النبتة الصغيرة",
+          "media": [
+            {
+              "asset_id": "STY-02",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "مريم والبذرة"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "27ab0bea8d92e11b725e37763c67a6dcc1c36681aab031c87e4cf9dacce66a33"
+    },
+    {
+      "canonical_id": "POST-Q01",
+      "stable_key": "31342412-e5c1-5627-b076-56b08ae58c36",
+      "kind": "posttest_question",
+      "level_id": 1,
+      "order_index": 1,
+      "title": "السؤال 1",
+      "skill_id": "da186f2e-f39e-5d25-a703-74d7f138107a",
+      "skill_name": "تمييز الحروف بصريًا",
+      "source_skill_name": "تمييز حرف",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "ت",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q01-R01",
+          "order_index": 1,
+          "source_text": "اضغط على «ت». الخيارات: ب، ث، ت، ن.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "21b8e704396d2ca84825b3b3f9a950d64eafd51b4fc5cc33f13a14d3281b45fc"
+    },
+    {
+      "canonical_id": "POST-Q02",
+      "stable_key": "9da043c2-7d93-5852-b12a-1e1b1508da3b",
+      "kind": "posttest_question",
+      "level_id": 1,
+      "order_index": 2,
+      "title": "السؤال 2",
+      "skill_id": "baef38df-1b80-59a8-9804-a34cb4193e35",
+      "skill_name": "تمييز الحروف المتشابهة",
+      "source_skill_name": "تمييز حرف متشابه",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "خ",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q02-R01",
+          "order_index": 1,
+          "source_text": "اضغط على «خ». الخيارات: ح، ج، خ، ع.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "cd21402ce25bde2694e8d3402dbaede503e67c6aa45a98601db6de3bbe8ed085"
+    },
+    {
+      "canonical_id": "POST-Q03",
+      "stable_key": "22a552b7-4603-5bda-89a6-7b3586f70a64",
+      "kind": "posttest_question",
+      "level_id": 1,
+      "order_index": 3,
+      "title": "السؤال 3",
+      "skill_id": "44f41319-60ef-5fdc-a597-63fc00343108",
+      "skill_name": "التعرف إلى أشكال الحرف",
+      "source_skill_name": "شكل الحرف",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "سـ",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q03-R01",
+          "order_index": 1,
+          "source_text": "يظهر «س». اختر شكله الآخر: سـ، شـ، صـ، نـ.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "ec957d4f1a1757558876b10881c05345f9864de096602c6a6cb959baf8ba354d"
+    },
+    {
+      "canonical_id": "POST-Q04",
+      "stable_key": "c79dd321-c790-5b80-920d-6c2466274f34",
+      "kind": "posttest_question",
+      "level_id": 1,
+      "order_index": 4,
+      "title": "السؤال 4",
+      "skill_id": "31386543-f99c-50a7-b969-e0622aefe0ef",
+      "skill_name": "ربط الصوت بالحرف",
+      "source_skill_name": "الصوت والحرف",
+      "interaction_type": "listen_choose_one",
+      "source_method": "سماع ثم اختيار.",
+      "criterion": "ق",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q04-R01",
+          "order_index": 1,
+          "source_text": "يسمع «ق». الخيارات: ق، ف، ك، غ.",
+          "media": [
+            {
+              "asset_id": "LET-04",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "ق"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "fbd24086c07ef30f00371519e6a1a8cfec28f0acae75dcd29641234b65825b5d"
+    },
+    {
+      "canonical_id": "POST-Q05",
+      "stable_key": "0ae4dc19-c3d1-59ce-b88a-ad51fc3b9ff2",
+      "kind": "posttest_question",
+      "level_id": 1,
+      "order_index": 5,
+      "title": "السؤال 5",
+      "skill_id": "2b6a09c0-072c-5860-b281-3b30ae345077",
+      "skill_name": "عزل الصوت الأول",
+      "source_skill_name": "صورة تبدأ بالصوت",
+      "interaction_type": "listen_choose_image",
+      "source_method": "سماع ثم اختيار صورة.",
+      "criterion": "باب",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q05-R01",
+          "order_index": 1,
+          "source_text": "يسمع «ب». الصور: باب، قلم، موزة.",
+          "media": [
+            {
+              "asset_id": "LET-02",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "ب"
+            },
+            {
+              "asset_id": "VOC-03",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "باب"
+            },
+            {
+              "asset_id": "VOC-04",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "قلم"
+            },
+            {
+              "asset_id": "VOC-01",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "موزة"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "6a760c08765cf3d4188a2e92a1008d2244c2432a5c5bfc4b4b2bef342b683f81"
+    },
+    {
+      "canonical_id": "POST-Q06",
+      "stable_key": "23c4d50e-4e05-5dd8-9925-6ae64e2dd6d5",
+      "kind": "posttest_question",
+      "level_id": 1,
+      "order_index": 6,
+      "title": "السؤال 6",
+      "skill_id": "2b6a09c0-072c-5860-b281-3b30ae345077",
+      "skill_name": "عزل الصوت الأول",
+      "source_skill_name": "الصوت الأول",
+      "interaction_type": "listen_choose_one",
+      "source_method": "سماع ثم اختيار.",
+      "criterion": "ن",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q06-R01",
+          "order_index": 1,
+          "source_text": "يسمع «نَخْلَة». الخيارات: ن، م، ل.",
+          "media": [
+            {
+              "asset_id": "WRD-09",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "نَخْلَة"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "47a88c93f68af16b7262a701e12bb071fc2e512d8be6afb57b1c0bf246d32846"
+    },
+    {
+      "canonical_id": "POST-Q07",
+      "stable_key": "705981b0-6994-5110-ba0c-34642cc975bf",
+      "kind": "posttest_question",
+      "level_id": 1,
+      "order_index": 7,
+      "title": "السؤال 7",
+      "skill_id": "1276612f-127d-5585-b60d-9c51c3dff5d4",
+      "skill_name": "عزل الصوت الأخير",
+      "source_skill_name": "الصوت الأخير",
+      "interaction_type": "listen_choose_one",
+      "source_method": "سماع ثم اختيار.",
+      "criterion": "ر",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q07-R01",
+          "order_index": 1,
+          "source_text": "يسمع «قَمَر». الخيارات: ر، ق، م.",
+          "media": [
+            {
+              "asset_id": "WRD-08",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "قَمَر"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "5b9c9d48ae7af35109308b9600a08db90b009b002ad0e44b4bc4593e951bd578"
+    },
+    {
+      "canonical_id": "POST-Q08",
+      "stable_key": "69371da8-6467-5b07-8e48-fdabc2d9f65d",
+      "kind": "posttest_question",
+      "level_id": 1,
+      "order_index": 8,
+      "title": "السؤال 8",
+      "skill_id": "da186f2e-f39e-5d25-a703-74d7f138107a",
+      "skill_name": "تمييز الحروف بصريًا",
+      "source_skill_name": "تمييز الحرف",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "ل",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q08-R01",
+          "order_index": 1,
+          "source_text": "ل، كِتَاب، قَرَأَ خَالِدٌ الْكِتَابَ. اختر الحرف.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "056937d19ec28049487e5c947563d7bbfd1734cad1cb29ae16c98eb28bb8858a"
+    },
+    {
+      "canonical_id": "POST-Q09",
+      "stable_key": "037253f6-a302-538b-bdd0-247003c19b9b",
+      "kind": "posttest_question",
+      "level_id": 1,
+      "order_index": 9,
+      "title": "السؤال 9",
+      "skill_id": "a1dec92c-8fa9-59c9-ac83-394f95d684d4",
+      "skill_name": "مفاهيم المادة المطبوعة",
+      "source_skill_name": "تمييز الكلمة",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "نَخْلَة",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q09-R01",
+          "order_index": 1,
+          "source_text": "ك، نَخْلَة، ذَهَبَ مَاجِدٌ إِلَى الْبَحْرِ. اختر الكلمة.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "c20d1a38fd4b4a48ce3574008792ef132995f4e62018a0aa71b03196161ed173"
+    },
+    {
+      "canonical_id": "POST-Q10",
+      "stable_key": "66ac456f-cbe8-5e64-b2e7-c3b52fcac04d",
+      "kind": "posttest_question",
+      "level_id": 1,
+      "order_index": 10,
+      "title": "السؤال 10",
+      "skill_id": "c8bf1eaf-e9cd-55a0-bbe4-80608af3d69d",
+      "skill_name": "التسلسل المنطقي",
+      "source_skill_name": "ترتيب صور",
+      "interaction_type": "sequence",
+      "source_method": "النقر بالترتيب.",
+      "criterion": "بالترتيب المذكور",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q10-R01",
+          "order_index": 1,
+          "source_text": "إخراج الكتاب، قراءة الكتاب، إعادته إلى الحقيبة.",
+          "media": [
+            {
+              "asset_id": "SEQ-07",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "إخراج الكتاب"
+            },
+            {
+              "asset_id": "SEQ-08",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "قراءة الكتاب"
+            },
+            {
+              "asset_id": "SEQ-09",
+              "asset_type": "image",
+              "usage": "illustration",
+              "semantic_text": "إعادة الكتاب"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "d3df66cc7119206a48ba60ae534b82da56b431a170d68bf9d71cb681aa2b6489"
+    },
+    {
+      "canonical_id": "POST-Q11",
+      "stable_key": "2b33ed02-dc0e-5415-8070-c1f2c30b0417",
+      "kind": "posttest_question",
+      "level_id": 2,
+      "order_index": 11,
+      "title": "السؤال 11",
+      "skill_id": "c319c896-8cc1-5843-8708-89fee10fc411",
+      "skill_name": "الحركات القصيرة",
+      "source_skill_name": "الحركات",
+      "interaction_type": "listen_choose_one",
+      "source_method": "سماع ثم اختيار.",
+      "criterion": "مِ",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q11-R01",
+          "order_index": 1,
+          "source_text": "يسمع «مِ». مَ، مِ، مُ.",
+          "media": [
+            {
+              "asset_id": "LET-01",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "مِ"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "0fd5d4df49f2ec5db9557693dde31f45976963a3128805f20621edaaee82a22f"
+    },
+    {
+      "canonical_id": "POST-Q12",
+      "stable_key": "635caf16-8e05-516d-ac82-62ed6e763f82",
+      "kind": "posttest_question",
+      "level_id": 2,
+      "order_index": 12,
+      "title": "السؤال 12",
+      "skill_id": "b9c29c26-06e8-5c4c-b06c-91fb3441207b",
+      "skill_name": "المد",
+      "source_skill_name": "المد",
+      "interaction_type": "listen_choose_one",
+      "source_method": "سماع ثم اختيار.",
+      "criterion": "نُو",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q12-R01",
+          "order_index": 1,
+          "source_text": "يسمع «نُو». نُ، نُو، نَا.",
+          "media": [
+            {
+              "asset_id": "SYL-11",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "نُو"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "9060102cc4d43b25724aaa184cde9e652b56dff48d62bcaca3468acd4f0349bd"
+    },
+    {
+      "canonical_id": "POST-Q13",
+      "stable_key": "6ad0ddb6-994d-596b-b56e-27b10e0e0cc3",
+      "kind": "posttest_question",
+      "level_id": 2,
+      "order_index": 13,
+      "title": "السؤال 13",
+      "skill_id": "5cd02c46-ee8e-5c86-867c-87ce8724dac4",
+      "skill_name": "الدمج المقطعي",
+      "source_skill_name": "دمج مقطعين",
+      "interaction_type": "sequence",
+      "source_method": "النقر بالترتيب.",
+      "criterion": "مَكْ ثم تَب",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q13-R01",
+          "order_index": 1,
+          "source_text": "مَكْ، تَب، نُور. كوّن «مَكْتَب».",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "da59c2c24fadf55b175ada69f90733a731c4412648f08a4e7917f70eeb5b5d86"
+    },
+    {
+      "canonical_id": "POST-Q14",
+      "stable_key": "676d1acc-dcaa-579d-b5a3-7a94eb524f23",
+      "kind": "posttest_question",
+      "level_id": 2,
+      "order_index": 14,
+      "title": "السؤال 14",
+      "skill_id": "74105bf0-10ac-5f54-9d79-a4eae8199116",
+      "skill_name": "بناء الكلمة",
+      "source_skill_name": "بناء كلمة",
+      "interaction_type": "build_word",
+      "source_method": "النقر على الحروف.",
+      "criterion": "ن، خ، ل",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q14-R01",
+          "order_index": 1,
+          "source_text": "صورة نخلة؛ ن، خ، ل، م.",
+          "media": [
+            {
+              "asset_id": "VOC-09",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "نخلة"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "ca60eceb2a59e6bd266175a420f0415f08a7ae606110a919121a3d7eb5fdd399"
+    },
+    {
+      "canonical_id": "POST-Q15",
+      "stable_key": "e6b6eb1d-bea8-5373-95b9-46164e6de71c",
+      "kind": "posttest_question",
+      "level_id": 2,
+      "order_index": 15,
+      "title": "السؤال 15",
+      "skill_id": "95c68721-2776-5974-979e-5e741b45ddeb",
+      "skill_name": "ترتيب حروف الكلمة",
+      "source_skill_name": "ترتيب حروف",
+      "interaction_type": "sequence",
+      "source_method": "النقر بالترتيب.",
+      "criterion": "ف، ي، ل",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q15-R01",
+          "order_index": 1,
+          "source_text": "ل، ف، ي. كوّن «فِيل».",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "b743192861de823508ce34eb49ba4c528ba1b176ec657f44d6ac1de1905c8d0d"
+    },
+    {
+      "canonical_id": "POST-Q16",
+      "stable_key": "4d5d760e-7725-5014-8b7b-bf0ecbf280d8",
+      "kind": "posttest_question",
+      "level_id": 2,
+      "order_index": 16,
+      "title": "السؤال 16",
+      "skill_id": "97b26115-7de5-55ee-a9ad-b0e5238a924e",
+      "skill_name": "إكمال الكلمة",
+      "source_skill_name": "حرف ناقص",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "ح",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q16-R01",
+          "order_index": 1,
+          "source_text": "بَـ \\_ ـر؛ ح، خ، د.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "d0a2d4fbb625e2a9ad88e71fa6471d6cd2b7aceb0c91ffe6edec252f9628ea63"
+    },
+    {
+      "canonical_id": "POST-Q17",
+      "stable_key": "1d1691c8-d55b-5eb9-9e5e-9b198bd0e1a8",
+      "kind": "posttest_question",
+      "level_id": 2,
+      "order_index": 17,
+      "title": "السؤال 17",
+      "skill_id": "728e51b2-494a-5fd3-b177-8fc61d21c663",
+      "skill_name": "مطابقة الكلمة بالصورة",
+      "source_skill_name": "كلمة وصورة",
+      "interaction_type": "choose_image",
+      "source_method": "اختيار صورة.",
+      "criterion": "القمر",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q17-R01",
+          "order_index": 1,
+          "source_text": "قَمَر؛ القمر، الشمس، النخلة.",
+          "media": [
+            {
+              "asset_id": "VOC-07",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "القمر"
+            },
+            {
+              "asset_id": "VOC-06",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "الشمس"
+            },
+            {
+              "asset_id": "VOC-09",
+              "asset_type": "image",
+              "usage": "choice",
+              "semantic_text": "النخلة."
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "9beda97f9aeaf7d5fb4380abb08122a463fc09c6737292037fd5bacc969b95db"
+    },
+    {
+      "canonical_id": "POST-Q18",
+      "stable_key": "55b8ba28-65ab-5541-a33b-60accf8e551b",
+      "kind": "posttest_question",
+      "level_id": 2,
+      "order_index": 18,
+      "title": "السؤال 18",
+      "skill_id": "ef732112-3ddc-563a-95c6-f2b4b5dd76e0",
+      "skill_name": "تمييز الكلمة سمعيًا",
+      "source_skill_name": "كلمة مسموعة",
+      "interaction_type": "listen_choose_one",
+      "source_method": "سماع ثم اختيار.",
+      "criterion": "سُوق",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q18-R01",
+          "order_index": 1,
+          "source_text": "سُوق؛ سُوق، سَاق، سَمَك.",
+          "media": [
+            {
+              "asset_id": "WRD-22",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "سُوق"
+            }
+          ],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "8a33338a0d4ccc810ce7f6bb709594d98342a349bdfdbcc098681b7bd6c2ae24"
+    },
+    {
+      "canonical_id": "POST-Q19",
+      "stable_key": "5e6d8cd2-754c-5c4c-be89-ff4ad87c482b",
+      "kind": "posttest_question",
+      "level_id": 2,
+      "order_index": 19,
+      "title": "السؤال 19",
+      "skill_id": "60b02f6b-15d3-5337-b809-94cf52155916",
+      "skill_name": "قراءة الكلمات",
+      "source_skill_name": "قراءة كلمة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل.",
+      "criterion": "مطابقة",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q19-R01",
+          "order_index": 1,
+          "source_text": "رَسَمَ.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "afe8987322dd54b86023bd4f7e8ef2399077582fefadf00eab8b0c0a065757da"
+    },
+    {
+      "canonical_id": "POST-Q20",
+      "stable_key": "f46e66eb-46ee-55e8-aac5-1331ccac1c9a",
+      "kind": "posttest_question",
+      "level_id": 2,
+      "order_index": 20,
+      "title": "السؤال 20",
+      "skill_id": "60b02f6b-15d3-5337-b809-94cf52155916",
+      "skill_name": "قراءة الكلمات",
+      "source_skill_name": "قراءة كلمة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل.",
+      "criterion": "مطابقة",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q20-R01",
+          "order_index": 1,
+          "source_text": "نَجْم.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "b5e8a660913efacf76c18765d076dbc050de0e37975e59cd790f1bc0dd11b221"
+    },
+    {
+      "canonical_id": "POST-Q21",
+      "stable_key": "b20115e8-4b89-5607-a9da-04cec2fc7861",
+      "kind": "posttest_question",
+      "level_id": 2,
+      "order_index": 21,
+      "title": "السؤال 21",
+      "skill_id": "60b02f6b-15d3-5337-b809-94cf52155916",
+      "skill_name": "قراءة الكلمات",
+      "source_skill_name": "قراءة كلمة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل.",
+      "criterion": "مطابقة",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q21-R01",
+          "order_index": 1,
+          "source_text": "نُور.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "7b876697dfc056aa02d28df68d463406686cfd888996cfca7b6eafc0ed814e6b"
+    },
+    {
+      "canonical_id": "POST-Q22",
+      "stable_key": "de88e49e-3244-5030-ae9a-b5c48cda0515",
+      "kind": "posttest_question",
+      "level_id": 2,
+      "order_index": 22,
+      "title": "السؤال 22",
+      "skill_id": "60b02f6b-15d3-5337-b809-94cf52155916",
+      "skill_name": "قراءة الكلمات",
+      "source_skill_name": "قراءة كلمة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل.",
+      "criterion": "مطابقة",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q22-R01",
+          "order_index": 1,
+          "source_text": "سُلَّم.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "29b5a78997829ba37a0f8904d0fa667e5cb790fe52b55e9e7ba9854344de590c"
+    },
+    {
+      "canonical_id": "POST-Q23",
+      "stable_key": "c71d81e5-6abd-564d-b57f-7978d5efe454",
+      "kind": "posttest_question",
+      "level_id": 3,
+      "order_index": 23,
+      "title": "السؤال 23",
+      "skill_id": "326762db-18a2-5bfd-ad53-63af165488d3",
+      "skill_name": "طلاقة قراءة الجملة",
+      "source_skill_name": "قراءة جملة",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل.",
+      "criterion": "الدقة والاسترسال",
+      "note": null,
+      "item_assets": [],
+      "rounds": [
+        {
+          "round_id": "POST-Q23-R01",
+          "order_index": 1,
+          "source_text": "تَلْعَبُ مَرْيَمُ بِالْكُرَةِ.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "ab32ad19936bed923b145862efb8f8a05c94946191b73fe33a99ba5d64e8f169"
+    },
+    {
+      "canonical_id": "POST-Q24",
+      "stable_key": "9dff60c1-6644-5930-ac33-a985d24f3d49",
+      "kind": "posttest_question",
+      "level_id": 3,
+      "order_index": 24,
+      "title": "السؤال 24",
+      "skill_id": "bd43e35d-2fe7-5fd8-b110-47c5d11a273b",
+      "skill_name": "دقة وطلاقة قراءة النص",
+      "source_skill_name": "قراءة نص",
+      "interaction_type": "read_aloud",
+      "source_method": "تسجيل النص كاملًا.",
+      "criterion": "تحليل الكلمات والوقت",
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-05",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "نص الاختبار البعدي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "POST-Q24-R01",
+          "order_index": 1,
+          "source_text": "فِي صَبَاحٍ مُشْمِسٍ، ذَهَبَ مَاجِدٌ مَعَ وَالِدِهِ إِلَى الشَّاطِئِ. أَخَذَ دَلْوًا صَغِيرًا، وَحَمَلَ وَالِدُهُ مَاءً وَمِظَلَّةً. بَنَى مَاجِدٌ بَيْتًا مِنَ الرَّمْلِ، ثُمَّ جَمَعَ أَصْدَافًا مُلَوَّنَةً. قَبْلَ الْعَوْدَةِ، نَظَّفَا مَكَانَهُمَا.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "96c64871226ad5a963360cd2e8515afcc1b2989d940bd0bac3b413ab06d4eb15"
+    },
+    {
+      "canonical_id": "POST-Q25",
+      "stable_key": "7f0604f2-67eb-5b0e-872b-0a77107312ec",
+      "kind": "posttest_question",
+      "level_id": 3,
+      "order_index": 25,
+      "title": "السؤال 25",
+      "skill_id": "e76fd684-39f7-5476-ad97-7c80c2229cf7",
+      "skill_name": "الفهم المباشر",
+      "source_skill_name": "فهم مباشر",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "الشاطئ",
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-05",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "نص الاختبار البعدي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "POST-Q25-R01",
+          "order_index": 1,
+          "source_text": "إلى أين ذهب ماجد؟ الشاطئ، المدرسة، الحديقة.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "6b17eb869c773d59cb818cd06c045ecc3f5d6f6783bde3816530ef866133326c"
+    },
+    {
+      "canonical_id": "POST-Q26",
+      "stable_key": "9bf08283-0120-5b8e-bf8d-8f6e256eb9f2",
+      "kind": "posttest_question",
+      "level_id": 3,
+      "order_index": 26,
+      "title": "السؤال 26",
+      "skill_id": "e76fd684-39f7-5476-ad97-7c80c2229cf7",
+      "skill_name": "الفهم المباشر",
+      "source_skill_name": "فهم مباشر",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "والده",
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-05",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "نص الاختبار البعدي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "POST-Q26-R01",
+          "order_index": 1,
+          "source_text": "مع من ذهب؟ والده، معلمه، صديقه.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "1eb906bbc74c4501d889c5b58ff39fa9cf911b7b340ae06ebf6319bc9f93f0d0"
+    },
+    {
+      "canonical_id": "POST-Q27",
+      "stable_key": "f42a6875-24fe-520a-a520-f5881897fee7",
+      "kind": "posttest_question",
+      "level_id": 3,
+      "order_index": 27,
+      "title": "السؤال 27",
+      "skill_id": "e76fd684-39f7-5476-ad97-7c80c2229cf7",
+      "skill_name": "الفهم المباشر",
+      "source_skill_name": "فهم مباشر",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "بيتًا من الرمل",
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-05",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "نص الاختبار البعدي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "POST-Q27-R01",
+          "order_index": 1,
+          "source_text": "ماذا بنى؟ بيتًا من الرمل، قاربًا، سورًا.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "59e611dcad00f9b84e00f501807e1bbb8d6d2f96c45b7c04cdeeb9e5830fc95e"
+    },
+    {
+      "canonical_id": "POST-Q28",
+      "stable_key": "002b6844-264c-59f8-844e-f801fa2e0de5",
+      "kind": "posttest_question",
+      "level_id": 3,
+      "order_index": 28,
+      "title": "السؤال 28",
+      "skill_id": "a5df512a-9aea-531f-8fc1-d4de3ea97e98",
+      "skill_name": "الفهم الاستنتاجي",
+      "source_skill_name": "فهم استنتاجي",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "المحافظة على النظافة",
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-05",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "نص الاختبار البعدي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "POST-Q28-R01",
+          "order_index": 1,
+          "source_text": "لماذا نظفا المكان؟ للمحافظة على نظافة الشاطئ، للبحث عن الدلو، للعب.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "fccc257207819196b7e10f0b02745fee2d63e1b7aa58762e742d2ed0eb2c151f"
+    },
+    {
+      "canonical_id": "POST-Q29",
+      "stable_key": "f6d3329c-6100-5616-aebd-ae56ceca8c00",
+      "kind": "posttest_question",
+      "level_id": 3,
+      "order_index": 29,
+      "title": "السؤال 29",
+      "skill_id": "72ccaada-556f-5660-a49b-99d836571289",
+      "skill_name": "تسلسل أحداث النص",
+      "source_skill_name": "ترتيب أحداث",
+      "interaction_type": "sequence",
+      "source_method": "النقر بالترتيب.",
+      "criterion": "بالترتيب المذكور",
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-05",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "نص الاختبار البعدي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "POST-Q29-R01",
+          "order_index": 1,
+          "source_text": "ذهب إلى الشاطئ، بنى بيتًا من الرمل، نظفا المكان.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "edd7785965ccbb425fff93dfe1b75597d10bd1890d9f3419940f6fe15f832a61"
+    },
+    {
+      "canonical_id": "POST-Q30",
+      "stable_key": "2c9ef49c-34d1-5482-a773-5061c49e55a1",
+      "kind": "posttest_question",
+      "level_id": 3,
+      "order_index": 30,
+      "title": "السؤال 30",
+      "skill_id": "b38896f0-cce9-543c-948c-52c5d2bffea1",
+      "skill_name": "المفردات من السياق",
+      "source_skill_name": "معنى كلمة",
+      "interaction_type": "choose_one",
+      "source_method": "اختيار واحد.",
+      "criterion": "لها ألوان مختلفة",
+      "note": null,
+      "item_assets": [
+        {
+          "asset_id": "STY-05",
+          "asset_type": "image",
+          "usage": "passage_context",
+          "semantic_text": "نص الاختبار البعدي"
+        }
+      ],
+      "rounds": [
+        {
+          "round_id": "POST-Q30-R01",
+          "order_index": 1,
+          "source_text": "ما معنى «مُلَوَّنَة»؟ لها ألوان مختلفة، سوداء فقط، خالية من الألوان.",
+          "media": [],
+          "media_gaps": []
+        }
+      ],
+      "checksum": "adfe22c37d8bdae949531575f52db9b75c7b7b2f9848202db1aaac00be40cf12"
+    }
+  ],
+  "manifest_inventory": {
+    "audio_asset_ids": [
+      "FB-01",
+      "FB-02",
+      "FB-03",
+      "FB-04",
+      "LET-01",
+      "LET-02",
+      "LET-03",
+      "LET-04",
+      "LET-05",
+      "LET-06",
+      "SYL-01",
+      "SYL-02",
+      "SYL-03",
+      "SYL-04",
+      "SYL-05",
+      "SYL-06",
+      "SYL-07",
+      "SYL-08",
+      "SYL-09",
+      "SYL-10",
+      "SYL-11",
+      "SYL-12",
+      "WRD-01",
+      "WRD-02",
+      "WRD-03",
+      "WRD-04",
+      "WRD-05",
+      "WRD-06",
+      "WRD-07",
+      "WRD-08",
+      "WRD-09",
+      "WRD-10",
+      "WRD-11",
+      "WRD-12",
+      "WRD-13",
+      "WRD-14",
+      "WRD-15",
+      "WRD-16",
+      "WRD-17",
+      "WRD-18",
+      "WRD-19",
+      "WRD-20",
+      "WRD-21",
+      "WRD-22",
+      "WRD-23",
+      "WRD-24",
+      "WRD-25",
+      "WRD-26",
+      "WRD-27",
+      "WRD-28"
+    ],
+    "image_asset_ids": [
+      "SEN-01",
+      "SEN-02",
+      "SEN-03",
+      "SEN-04",
+      "SEN-05",
+      "SEN-06",
+      "SEN-07",
+      "SEN-08",
+      "SEN-09",
+      "SEN-10",
+      "SEQ-01",
+      "SEQ-02",
+      "SEQ-03",
+      "SEQ-04",
+      "SEQ-05",
+      "SEQ-06",
+      "SEQ-07",
+      "SEQ-08",
+      "SEQ-09",
+      "STY-01",
+      "STY-02",
+      "STY-03",
+      "STY-04",
+      "STY-05",
+      "STY-06",
+      "VOC-01",
+      "VOC-02",
+      "VOC-03",
+      "VOC-04",
+      "VOC-05",
+      "VOC-06",
+      "VOC-07",
+      "VOC-08",
+      "VOC-09",
+      "VOC-10",
+      "VOC-11",
+      "VOC-12",
+      "VOC-13",
+      "VOC-14",
+      "VOC-15",
+      "VOC-16",
+      "VOC-17",
+      "VOC-18",
+      "VOC-19",
+      "VOC-20",
+      "VOC-21",
+      "VOC-22",
+      "VOC-23",
+      "VOC-24",
+      "VOC-25",
+      "VOC-26",
+      "VOC-27",
+      "VOC-28",
+      "VOC-29",
+      "VOC-30",
+      "VOC-31",
+      "VOC-32",
+      "VOC-33",
+      "VOC-34",
+      "VOC-35"
+    ]
+  }
+}

@@ -1,0 +1,259 @@
+{
+  "brand": "هِمّة",
+  "package": "Himma Web Logo Kit",
+  "version": "1.0",
+  "date": "2026-07-28",
+  "tagline_included": false,
+  "approved_colors": {
+    "blue": "#347FD9",
+    "green": "#51B985",
+    "yellow": "#FFC857",
+    "navy": "#20364D",
+    "light": "#F7FBFF",
+    "border": "#DCE8F2",
+    "white": "#FFFFFF"
+  },
+  "asset_count_excluding_manifest": 48,
+  "files": [
+    {
+      "path": "README_AR.md",
+      "bytes": 2689,
+      "sha256": "6d6d01b4beb54bccd2ed17362af6f189e335bfc7c00863269b8d86cf4fb700bb"
+    },
+    {
+      "path": "assets/icons/app-icon-maskable.svg",
+      "bytes": 3235,
+      "sha256": "e3b7fed80e213c399632380c293adfb827f86dec958e30ef6c169092a6cbbce2"
+    },
+    {
+      "path": "assets/icons/app-icon.svg",
+      "bytes": 4042,
+      "sha256": "a31ef5bbc3dc98626aef5269470c278935847b3b9bbc48d949fa472e81d26e12"
+    },
+    {
+      "path": "assets/icons/apple-touch-icon.png",
+      "bytes": 5841,
+      "sha256": "3bb5b77e9469cb43bc0cb094a59a969a1cdd393491c473bc8510b7b8c1de8205"
+    },
+    {
+      "path": "assets/icons/favicon-16x16.png",
+      "bytes": 535,
+      "sha256": "0f86b2cd26253ae77a62ab97dc0568530d088661137e530288955a76494a37e4"
+    },
+    {
+      "path": "assets/icons/favicon-32x32.png",
+      "bytes": 1017,
+      "sha256": "88b6a7a29c06cd03ff79f506885bc15de311e235bd13903f5847ae254a01b12e"
+    },
+    {
+      "path": "assets/icons/favicon-48x48.png",
+      "bytes": 1592,
+      "sha256": "c6882a9f49a15bdb7df7abf4580f34498d0ea2a98194871f78bcc01df9fbe29b"
+    },
+    {
+      "path": "assets/icons/favicon.ico",
+      "bytes": 15086,
+      "sha256": "7830a0d31041ff84e33a4909225dd2078cd36a43ad596d8de407317960900949"
+    },
+    {
+      "path": "assets/icons/favicon.svg",
+      "bytes": 3199,
+      "sha256": "aadad54759177e9a004330d432b4c1c6cc33ad4c23c158e7b2a347dac2dbcc43"
+    },
+    {
+      "path": "assets/icons/pwa-192x192.png",
+      "bytes": 6251,
+      "sha256": "c964f4919b037bb0ab62b0342169a0228ab9fd00384f1498fbcf2397002ce713"
+    },
+    {
+      "path": "assets/icons/pwa-512x512.png",
+      "bytes": 17933,
+      "sha256": "ef42bd3ba636cfe51a6ce8b4c7133c1ee45237cc6c6361ac5c640493fcde7c61"
+    },
+    {
+      "path": "assets/icons/pwa-maskable-192x192.png",
+      "bytes": 4332,
+      "sha256": "af7a675fba1ce4798b49e3b78ef58936d2b099a311a204e62bca78d621bddced"
+    },
+    {
+      "path": "assets/icons/pwa-maskable-512x512.png",
+      "bytes": 12639,
+      "sha256": "7bf3f7251f2dbde4d948a7bbf9d98415044ea1bd21c83e89288a5ef60b4e3f18"
+    },
+    {
+      "path": "assets/icons/safari-pinned-tab.svg",
+      "bytes": 3158,
+      "sha256": "11d424959054c0d0f2021629653c85f1adb39a0f90aefceb54c543cc3b816f08"
+    },
+    {
+      "path": "assets/logo/png/himma-logo-flat-960.png",
+      "bytes": 38271,
+      "sha256": "82452b7de83fb4604d782130c87e1f1aec0e62de2e453b9ed4269413600649b9"
+    },
+    {
+      "path": "assets/logo/png/himma-logo-gradient-1440.png",
+      "bytes": 59924,
+      "sha256": "036716c15354b3f40004aa00e4cc9eff5b1d3a87035e495fb03d92e1f7f0f021"
+    },
+    {
+      "path": "assets/logo/png/himma-logo-gradient-240.png",
+      "bytes": 8974,
+      "sha256": "e873f81df0de066234f38936eaa3e28a709a8fe629a5a7fad1d8d0073a6b873d"
+    },
+    {
+      "path": "assets/logo/png/himma-logo-gradient-480.png",
+      "bytes": 18623,
+      "sha256": "2efaac0bc13fe4689a6ed9ec4f7c13ddfc203cd967cd3b00cef12f93855b987b"
+    },
+    {
+      "path": "assets/logo/png/himma-logo-gradient-960.png",
+      "bytes": 39010,
+      "sha256": "d84fd83a3ecc2da17b6bc00de9a2ec23b1b1eff35d48dfcfd033158fa2d20a27"
+    },
+    {
+      "path": "assets/logo/png/himma-logo-navy-960.png",
+      "bytes": 38194,
+      "sha256": "f146872c5705c30b6874154c268393a5e2ca2fa7f8cda73c7f3f3f669b831b92"
+    },
+    {
+      "path": "assets/logo/png/himma-logo-white-960.png",
+      "bytes": 26135,
+      "sha256": "6b512b5c4691dc9bacbe1075243624117c10f6b0a187c03b6e80513f0f7fb66f"
+    },
+    {
+      "path": "assets/logo/svg/himma-logo-flat.svg",
+      "bytes": 8727,
+      "sha256": "195e949040ed33cc95939ac00f8cd322d7cc2f8d3b2262bb4378a3ec84d83d50"
+    },
+    {
+      "path": "assets/logo/svg/himma-logo-gradient.svg",
+      "bytes": 9592,
+      "sha256": "f6261a23c620dcff189342616708f3eeeb375524d3d6df0644ccbb0f21a2ff2e"
+    },
+    {
+      "path": "assets/logo/svg/himma-logo-navy.svg",
+      "bytes": 8730,
+      "sha256": "d8c0f0aa57cac32d6cc48457f024caf51a5aa10088cf6634626e80ca523f728b"
+    },
+    {
+      "path": "assets/logo/svg/himma-logo-white.svg",
+      "bytes": 8735,
+      "sha256": "a1e004aed49eec382f45f6d327b377a83c3f332635a9ee8272df744b1374534d"
+    },
+    {
+      "path": "assets/logo/webp/himma-logo-gradient-480.webp",
+      "bytes": 9598,
+      "sha256": "e497477c772ea96fccbffe29cd549d1f4fe34116e261a5978c29fdbc28d6cc34"
+    },
+    {
+      "path": "assets/logo/webp/himma-logo-gradient-960.webp",
+      "bytes": 20208,
+      "sha256": "e706757209bf653c77b95dbcb9bdd72d4ffb947d0e021f9049b9c3945331e5d0"
+    },
+    {
+      "path": "assets/mark/png/himma-mark-flat-512.png",
+      "bytes": 19819,
+      "sha256": "ab3c03dc0259860b933d4a3f48b93d6e458549d94d9979972b975af611b05768"
+    },
+    {
+      "path": "assets/mark/png/himma-mark-gradient-1024.png",
+      "bytes": 43186,
+      "sha256": "f2b8b8643136b8642220b5b25fe4e5bca546a8ed14674d15cfaf906179f78247"
+    },
+    {
+      "path": "assets/mark/png/himma-mark-gradient-128.png",
+      "bytes": 4732,
+      "sha256": "b6aafbbf1536e15f51f58735483252f0ade90d352c054395a4e4ea391d5b7358"
+    },
+    {
+      "path": "assets/mark/png/himma-mark-gradient-256.png",
+      "bytes": 9624,
+      "sha256": "89ad34894372283ac3bf4c7cef4a148a43a909e1aed27deb1af6bf603a174b20"
+    },
+    {
+      "path": "assets/mark/png/himma-mark-gradient-512.png",
+      "bytes": 20460,
+      "sha256": "b981b21c3f43c5d27f1a8bff839eef0e88d9b860406908d7cb497ddb74361176"
+    },
+    {
+      "path": "assets/mark/png/himma-mark-gradient-64.png",
+      "bytes": 2318,
+      "sha256": "7ca441d16f7c04e904195d4649d72d21043e0c12cc5c7409244c34179eb970e6"
+    },
+    {
+      "path": "assets/mark/png/himma-mark-navy-512.png",
+      "bytes": 19860,
+      "sha256": "77af399bd387896b858fedf1199b8a48557af9197e35c2e8afa780b32b0374ef"
+    },
+    {
+      "path": "assets/mark/png/himma-mark-white-512.png",
+      "bytes": 14012,
+      "sha256": "0bde5687c829af9dd4620a1336bd8381e85efbc5895bd7d84eee7496b198d53d"
+    },
+    {
+      "path": "assets/mark/svg/himma-mark-flat.svg",
+      "bytes": 3108,
+      "sha256": "9017c9725819da7ea94a1f1e46565262a3531e53affb160520c1936b406bbca1"
+    },
+    {
+      "path": "assets/mark/svg/himma-mark-gradient.svg",
+      "bytes": 3973,
+      "sha256": "1b1ce723ba2ef574c1bba3a9979916721878801559d06fdb91b417ea75828086"
+    },
+    {
+      "path": "assets/mark/svg/himma-mark-navy.svg",
+      "bytes": 3111,
+      "sha256": "3fc17cecb747a96579191524649adb5d5d8b1786ca722bf448b300f260b01f7f"
+    },
+    {
+      "path": "assets/mark/svg/himma-mark-white.svg",
+      "bytes": 3116,
+      "sha256": "6f28f54b298af933318d2fe7bf09f2613de8169aab6dcde8a605b14c34d4d329"
+    },
+    {
+      "path": "assets/print/himma-logo-flat.eps",
+      "bytes": 10469,
+      "sha256": "1f4b37abbbb5d77ec611f52babb6d345257b544be7f48aa896100375775a3031"
+    },
+    {
+      "path": "assets/print/himma-logo-flat.pdf",
+      "bytes": 4604,
+      "sha256": "610a4425d3c5d4684538cc6e583ee66b11a24a66dfbdfb1cea1862373ea3001b"
+    },
+    {
+      "path": "assets/print/himma-mark-flat.eps",
+      "bytes": 4983,
+      "sha256": "71a0c848eb5801e2b930d270a810672171bbc0ae8056a6d32698a52e54f88017"
+    },
+    {
+      "path": "assets/print/himma-mark-flat.pdf",
+      "bytes": 2213,
+      "sha256": "8bd691aa392ea5dc95f41c776274b3f050710944e663f296a56dccc06c59dec0"
+    },
+    {
+      "path": "assets/site.webmanifest",
+      "bytes": 786,
+      "sha256": "6a10165e7cde1fdb5d1b5c7ea8fce4324fb6414d60f48b9c29eaa15ded2a9bc2"
+    },
+    {
+      "path": "developer/brand-tokens.css",
+      "bytes": 168,
+      "sha256": "ce8d2f802f7812f26f5123ed5e15d7a928844dfed1b8866a9cb04ca38dc0c9e6"
+    },
+    {
+      "path": "developer/head-snippet.html",
+      "bytes": 684,
+      "sha256": "6341f894f4116b025467bdadce1a104a119aa7ce7bd7bedcb100f6501fc0c133"
+    },
+    {
+      "path": "preview/himma-logo-kit-preview.png",
+      "bytes": 144572,
+      "sha256": "01256c0a0ae6b93452cef084601390d86ca89bb7e3b127df0b6467bd9456be1e"
+    },
+    {
+      "path": "preview/himma-logo-kit-preview.svg",
+      "bytes": 31086,
+      "sha256": "a5b25cd210e4d43a03dcc3a3d6ee9e81d0535f00f499511c67617c1594336733"
+    }
+  ]
+}

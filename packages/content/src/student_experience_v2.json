@@ -1,0 +1,131 @@
+{
+  "schema_version": 2,
+  "version": "HIMMA-STUDENT-EXPERIENCE-2.0",
+  "status": "user_approved_2026_08_30",
+  "authority": "approved revised student content supplied by project owner on 2026-08-30",
+  "scope": {
+    "runtime_total_items": 125,
+    "pretest": 30,
+    "posttest": 30,
+    "core": 30,
+    "reinforcement": 35
+  },
+  "policies": {
+    "student_facing_v2_is_authoritative": true,
+    "preserve_scoring_and_skill_mapping_unless_explicit_override": true,
+    "pre_post_neutral_measurement": true,
+    "pre_post_no_correctness_feedback": true,
+    "pre_post_no_answer_revealing_hint": true,
+    "activity_contextual_hint_after_error": true,
+    "full_screen_no_scroll_target": true,
+    "instruction_has_lightbulb_icon": true,
+    "mascot_top_side_default": true,
+    "mascot_moves_to_feedback_on_retry": true,
+    "memory_sequence_has_dedicated_preview_and_recall_ui": true,
+    "path_sequence_removed": true
+  },
+  "presentation_profiles": {
+    "visual_letter": {
+      "helper": "خذ وقتك، ركّز في شكل الحرف ونقاطه، ثم اختر الإجابة.",
+      "hint": "ركّز على شكل الحرف وعدد النقاط ومكانها."
+    },
+    "listen_letter": {
+      "helper": "يمكنك الاستماع مرة أخرى قبل اختيار الإجابة.",
+      "hint": "استمع مرة أخرى، وركّز في الصوت من بدايته."
+    },
+    "listen_initial_image": {
+      "helper": "قل اسم كل صورة في ذهنك، ثم ركّز في أول صوت.",
+      "hint": "قل أسماء الصور ببطء، وانتبه إلى بداية كل اسم."
+    },
+    "listen_final": {
+      "helper": "استمع إلى نهاية الكلمة جيدًا قبل اختيار الإجابة.",
+      "hint": "أعد الاستماع، وركّز على آخر صوت تسمعه."
+    },
+    "word_onset_compare": {
+      "helper": "استمع إلى الصوت أولًا، ثم انظر إلى بداية الكلمة وقارن بينهما.",
+      "hint": "ركّز على الصوت المسموع وأول حرف في الكلمة فقط."
+    },
+    "classification": {
+      "helper": "اسأل نفسك: هل هو حرف، أم كلمة، أم جملة كاملة؟",
+      "hint": "الحرف رمز واحد، والكلمة لفظ واحد، والجملة تعطي معنى كاملًا."
+    },
+    "sequence": {
+      "helper": "فكّر بهدوء: ماذا حدث أولًا؟ ثم ماذا حدث بعده؟",
+      "hint": "ابدأ بالحدث الأول، ثم أكمل التسلسل خطوة خطوة."
+    },
+    "memory": {
+      "helper": "شاهد الصور جيدًا وتذكّر ترتيبها قبل أن تختفي.",
+      "hint": "تذكّر الصورة الأولى أولًا، ثم أكمل باقي الصور."
+    },
+    "short_vowel": {
+      "helper": "يمكنك الاستماع مرة أخرى قبل اختيار الإجابة.",
+      "hint": "ركّز على الحركة المسموعة في المقطع."
+    },
+    "short_long": {
+      "helper": "قارن مدة الصوت، ثم اختر الإجابة.",
+      "hint": "الصوت الطويل يمتد أكثر من الصوت القصير."
+    },
+    "build_word": {
+      "helper": "ابدأ بالحرف الأول، ثم أكمل الكلمة بهدوء.",
+      "hint": "قل الكلمة في ذهنك، ثم رتّب الحروف حسب أصواتها."
+    },
+    "read_aloud": {
+      "helper": "خذ وقتك، واقرأ بهدوء ووضوح.",
+      "hint": "انتبه إلى الحروف والحركات، ثم جرّب القراءة مرة أخرى."
+    },
+    "comprehension": {
+      "helper": "اقرأ السؤال بهدوء، ثم ابحث عن الإجابة في النص.",
+      "hint": "ارجع إلى الجزء من النص الذي يساعدك على الإجابة."
+    }
+  },
+  "explicit_corrections": {
+    "L1-CORE-06": {
+      "title": "هل الصوت يطابق بداية الكلمة؟",
+      "interaction": "listen_choose_one",
+      "student_question": "استمع إلى صوت الحرف، ثم انظر إلى أول حرف في الكلمة. هل الصوت والحرف متشابهان أم مختلفان؟",
+      "instruction": "اضغط زر الاستماع، ثم قارن الصوت المسموع بأول حرف في الكلمة المعروضة.",
+      "options": ["متشابهان", "مختلفان"],
+      "note": "هذا التصحيح يلغي تفسير مقارنة كلمتين؛ المهمة المعتمدة هي صوت مسموع مقابل أول حرف في كلمة معروضة."
+    },
+    "L1-CORE-09": {
+      "replacement": true,
+      "title": "من أين نبدأ القراءة؟",
+      "skill_preserved": "اتجاه القراءة من اليمين إلى اليسار",
+      "interaction": "choose_one",
+      "student_question": "اختر الإجابة التي توضح اتجاه القراءة الصحيح في العربية.",
+      "instruction": "انظر إلى السطر أو السهم، ثم اختر من أين نبدأ وكيف نتابع القراءة.",
+      "note": "يستبدل نشاط اتبع المسار بالكامل؛ لا يوجد path_sequence في تجربة الطالب v2."
+    },
+    "L1-REIN-11": {
+      "replacement": true,
+      "title": "يمين أم يسار؟",
+      "skill_preserved": "اتجاه القراءة من اليمين إلى اليسار",
+      "interaction": "choose_one",
+      "student_question": "انظر إلى المثال، ثم اختر الاتجاه الصحيح للقراءة.",
+      "instruction": "ابدأ من جهة اليمين في السطر العربي، ثم تابع نحو اليسار.",
+      "note": "تقوية مبسطة بديلة عن اتبع الاتجاه/المسار."
+    },
+    "POST-Q14": {
+      "target_word": "نَخْلَة",
+      "image_semantic": "نخلة",
+      "answer_sequence": ["ن", "خ", "ل", "ة"],
+      "note": "تم توحيد الصورة والكلمة؛ لا تستخدم صورة نخلة مع هدف نَخْل."
+    }
+  },
+  "replacement_rounds": {
+    "L1-CORE-09": [
+      {"prompt": "أين نبدأ قراءة السطر العربي؟", "options": ["من اليمين", "من اليسار"], "answer": "من اليمين"},
+      {"prompt": "أي سهم يوضح اتجاه القراءة في العربية؟", "options": ["←", "→"], "answer": "←"},
+      {"prompt": "إذا كانت «كِتَاب» على يمين «قَلَم»، فأي كلمة نقرأ أولًا؟", "options": ["كِتَاب", "قَلَم"], "answer": "كِتَاب"},
+      {"prompt": "أين تكون بداية هذا السطر العربي؟", "options": ["الطرف الأيمن", "الطرف الأيسر"], "answer": "الطرف الأيمن"},
+      {"prompt": "بعد أن نبدأ من اليمين، إلى أين نتابع القراءة؟", "options": ["نحو اليسار", "نحو اليمين"], "answer": "نحو اليسار"}
+    ],
+    "L1-REIN-11": [
+      {"prompt": "اختر جهة بداية القراءة بالعربية.", "options": ["اليمين", "اليسار"], "answer": "اليمين"},
+      {"prompt": "اختر سهم اتجاه القراءة الصحيح.", "options": ["←", "→"], "answer": "←"},
+      {"prompt": "أين نضع نظرنا أولًا عند قراءة سطر عربي؟", "options": ["في اليمين", "في اليسار"], "answer": "في اليمين"},
+      {"prompt": "بعد الكلمة الأولى نتابع القراءة في أي اتجاه؟", "options": ["نحو اليسار", "نحو اليمين"], "answer": "نحو اليسار"},
+      {"prompt": "اختر الترتيب الصحيح: بداية السطر ثم المتابعة.", "options": ["يمين ثم يسار", "يسار ثم يمين"], "answer": "يمين ثم يسار"}
+    ]
+  }
+}

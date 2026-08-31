@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>مثال استخدام صور همة</title>
+    <link rel="stylesheet" href="./himma-images.css" />
+  </head>
+  <body>
+    <!-- مثال صورة مفردة شفافة -->
+    <picture>
+      <source
+        type="image/webp"
+        srcset="
+          ../assets/vocabulary/webp/hem-voc-01-banana-512.webp 512w,
+          ../assets/vocabulary/webp/hem-voc-01-banana-1024.webp 1024w
+        "
+        sizes="(max-width: 600px) 50vw, 18rem"
+      />
+      <img
+        class="himma-vocabulary-image"
+        src="../assets/vocabulary/png/hem-voc-01-banana-1024.png"
+        alt="موزة صفراء"
+        width="1024"
+        height="1024"
+        loading="lazy"
+        decoding="async"
+      />
+    </picture>
+
+    <!-- مثال مشهد جملة -->
+    <picture>
+      <source
+        type="image/webp"
+        srcset="
+          ../assets/sentences/webp/hem-sen-01-salem-reads-book-1280x720.webp 1280w,
+          ../assets/sentences/webp/hem-sen-01-salem-reads-book-1536x864.webp 1536w
+        "
+      />
+      <img
+        class="himma-sentence-image"
+        src="../assets/sentences/png/hem-sen-01-salem-reads-book-1536x864.png"
+        alt="سالم يقرأ كتابًا على مكتب"
+        width="1536"
+        height="864"
+        loading="lazy"
+        decoding="async"
+      />
+    </picture>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">الطلاقة والفهم</title>
+  
+<circle cx="128" cy="128" r="104" fill="#F7FBFF" stroke="#FFC857" stroke-width="8"/>
+<path d="M128 79c-28-22-56-24-83-11v87c29-12 57-7 83 14z" fill="#FFFFFF" stroke="#347FD9" stroke-width="9" stroke-linejoin="round"/>
+<path d="M128 79c28-22 56-24 83-11v87c-29-12-57-7-83 14z" fill="#FFFFFF" stroke="#347FD9" stroke-width="9" stroke-linejoin="round"/>
+<path d="M128 79v90" stroke="#20364D" stroke-width="8" stroke-linecap="round"/>
+<polygon points="194.00,19.00 201.64,37.48 221.58,39.04 206.36,52.02 211.05,71.46 194.00,61.00 176.95,71.46 181.64,52.02 166.42,39.04 186.36,37.48" fill="#FFC857" stroke="#D99A20" stroke-width="5" stroke-linejoin="round"/>
+
+</svg>

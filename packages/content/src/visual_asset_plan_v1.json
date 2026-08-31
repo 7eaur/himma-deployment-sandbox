@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "plan_version": "HIMMA-VISUAL-GAPS-2026-08-30-v4",
+  "source": {
+    "reinforcement_catalog": "packages/content/src/reinforcement_additions_v1.json",
+    "student_experience": "packages/content/src/student_experience_v2.json",
+    "image_kit": "Himma_Educational_Images_Kit_v1.0",
+    "rule": "Reuse approved image-kit assets first. Generated sequence scenes are approved by exact semantic label or a semantically locked shorthand. Never substitute a merely similar scene when sequence meaning changes."
+  },
+  "reuse": {
+    "L1-REIN-10": {"قلم":"VOC-04","كرة":"VOC-10","باب":"VOC-03","شمس":"VOC-06","كتاب":"VOC-02","موزة":"VOC-01","سمكة":"VOC-05","نخلة":"VOC-09","قمر":"VOC-07"},
+    "L1-REIN-12": {"غسل اليدين":"HIMMA-GEN-SEQ-001","الأكل":"HIMMA-GEN-SEQ-002","زرع البذرة":"SEQ-01","ظهور النبتة":"SEQ-03","فتح الكتاب":"HIMMA-GEN-SEQ-003","القراءة":"SEQ-08","سقي الزهرة":"HIMMA-GEN-SEQ-004","نمو الزهرة":"SEQ-03","لبس الحذاء":"HIMMA-GEN-SEQ-005","الخروج من المنزل":"HIMMA-GEN-SEQ-006"},
+    "L3-REIN-10": {"دخول المكتبة":"HIMMA-GEN-SEQ-007","أخذ الكتاب":"SEQ-07","قرأ الكتاب":"SEQ-08","زرعت البذرة":"SEQ-01","سقتها":"SEQ-02","القراءة":"SEQ-08","إعادة الكتاب":"SEQ-09","الذهاب إلى الشاطئ":"HIMMA-GEN-SEQ-008","ذهب ماجد إلى الشاطئ":"HIMMA-GEN-SEQ-008","ذهب":"HIMMA-GEN-SEQ-008","اللعب بالرمل":"HIMMA-GEN-SEQ-009","لعب بالرمل":"HIMMA-GEN-SEQ-009","لعب":"HIMMA-GEN-SEQ-009","تنظيف المكان":"HIMMA-GEN-SEQ-010","نظف مكانه":"HIMMA-GEN-SEQ-010","نظف":"HIMMA-GEN-SEQ-010","غسلت":"SEQ-04","قطعت":"SEQ-05","أكلت":"SEQ-06"}
+  },
+  "generate": [],
+  "generated_assets": [
+    {"id":"HIMMA-GEN-SEQ-001","activity":"L1-REIN-12","label_ar":"غسل اليدين","aspect_ratio":"4:3","status":"approved_generated"},
+    {"id":"HIMMA-GEN-SEQ-002","activity":"L1-REIN-12","label_ar":"الأكل","aspect_ratio":"4:3","status":"approved_generated"},
+    {"id":"HIMMA-GEN-SEQ-003","activity":"L1-REIN-12","label_ar":"فتح الكتاب","aspect_ratio":"4:3","status":"approved_generated"},
+    {"id":"HIMMA-GEN-SEQ-004","activity":"L1-REIN-12","label_ar":"سقي الزهرة","aspect_ratio":"4:3","status":"approved_generated"},
+    {"id":"HIMMA-GEN-SEQ-005","activity":"L1-REIN-12","label_ar":"لبس الحذاء","aspect_ratio":"4:3","status":"approved_generated"},
+    {"id":"HIMMA-GEN-SEQ-006","activity":"L1-REIN-12","label_ar":"الخروج من المنزل","aspect_ratio":"4:3","status":"approved_generated"},
+    {"id":"HIMMA-GEN-SEQ-007","activity":"L3-REIN-10","label_ar":"دخول المكتبة","aspect_ratio":"4:3","status":"approved_generated"},
+    {"id":"HIMMA-GEN-SEQ-008","activity":"L3-REIN-10","label_ar":"الذهاب إلى الشاطئ","aspect_ratio":"4:3","status":"approved_generated"},
+    {"id":"HIMMA-GEN-SEQ-009","activity":"L3-REIN-10","label_ar":"اللعب بالرمل","aspect_ratio":"4:3","status":"approved_generated"},
+    {"id":"HIMMA-GEN-SEQ-010","activity":"L3-REIN-10","label_ar":"تنظيف المكان","aspect_ratio":"4:3","status":"approved_generated"}
+  ],
+  "programmatic_visuals": {},
+  "retired_visuals": {
+    "L1-CORE-09": "path_sequence retired by Student Experience v2 and replaced with direct Arabic reading-direction choices",
+    "L1-REIN-11": "path_sequence retired by Student Experience v2 and replaced with simplified direction choices"
+  },
+  "acceptance": [
+    "Same visual style as the approved Himma Educational Images Kit.",
+    "No embedded Arabic text inside generated scenes.",
+    "Clear single action per sequence card.",
+    "Characters and environment remain consistent inside each sequence pair/group.",
+    "No visual ambiguity about event order.",
+    "Web-optimized derivative plus source/master retained.",
+    "Runtime manifest mapping and E2E screenshot verification required before closing visual-content work."
+  ]
+}

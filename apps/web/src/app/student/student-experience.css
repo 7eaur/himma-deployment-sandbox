@@ -1,0 +1,100 @@
+/* Student Experience v2 — shared route-scoped safety styles.
+
+   Activity and assessment layout live in their route CSS modules. This file
+   owns only cross-route safety invariants that must survive every viewport.
+
+   Important visual contract:
+   - no page-wide blur/frosted overlay during a normal question;
+   - no opacity fade that can make screenshots or fast devices look washed out;
+   - primary actions must never be clipped merely to satisfy a one-screen target;
+   - reduced-motion remains respected.
+*/
+
+[data-testid="activity-session"],
+[data-testid="assessment-session"]{
+  --qx-blue:#347fd9;
+  --qx-blue-dark:#2466b8;
+  --qx-green:#51b985;
+  --qx-yellow:#ffc857;
+  --qx-navy:#20364d;
+  --qx-muted:#667d91;
+  --qx-border:#dce8f2;
+  --qx-bg:#f7fbff;
+  opacity:1;
+  filter:none;
+  backdrop-filter:none;
+}
+
+[data-testid="activity-session"][data-phase="active"],
+[data-testid="assessment-session"][data-phase="question"],
+[data-testid="assessment-session"][data-phase="submitting"]{
+  animation:none!important;
+  opacity:1!important;
+  filter:none!important;
+}
+
+/* Full-screen is a target, never a clipping rule. On short desktop/tablet
+   viewports the page may scroll vertically so the primary CTA remains fully
+   reachable. Structural overflow inside the question card is released only in
+   active/question states; ordinary roomy viewports still render as one screen. */
+[data-testid="activity-session"][data-phase="active"],
+[data-testid="assessment-session"][data-phase="question"],
+[data-testid="assessment-session"][data-phase="submitting"]{
+  height:auto!important;
+  min-height:100dvh!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+}
+
+[data-testid="activity-session"][data-phase="active"] > main,
+[data-testid="assessment-session"][data-phase="question"] > main,
+[data-testid="assessment-session"][data-phase="submitting"] > main{
+  min-height:calc(100dvh - 72px);
+  height:auto!important;
+  overflow:visible!important;
+}
+
+[data-testid="activity-session"][data-phase="active"] > main > section,
+[data-testid="assessment-session"][data-phase="question"] > main > section,
+[data-testid="assessment-session"][data-phase="submitting"] > main > section{
+  height:auto!important;
+  min-height:calc(100dvh - 88px);
+  overflow:visible!important;
+}
+
+[data-testid="activity-session"] button,
+[data-testid="assessment-session"] button,
+[data-testid="activity-session"] img,
+[data-testid="assessment-session"] img{
+  transition:transform .16s ease,border-color .16s ease,background-color .16s ease,box-shadow .16s ease;
+}
+
+[data-testid="activity-session"] button,
+[data-testid="assessment-session"] button{
+  min-height:44px;
+  min-width:44px;
+  touch-action:manipulation;
+}
+
+[data-testid="activity-session"] [role="alert"],
+[data-testid="assessment-session"] [role="alert"]{
+  border-radius:16px;
+}
+
+@media(max-height:760px) and (min-width:641px){
+  [data-testid="activity-session"][data-phase="active"] > main,
+  [data-testid="assessment-session"][data-phase="question"] > main,
+  [data-testid="assessment-session"][data-phase="submitting"] > main{
+    padding-bottom:18px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  [data-testid="activity-session"] *,
+  [data-testid="assessment-session"] *{
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.001ms!important;
+    scroll-behavior:auto!important;
+  }
+}

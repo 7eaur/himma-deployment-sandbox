@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">شارة مستكشف الحروف</title>
+  
+<path d="M76 172 55 238l47-25 25 40 17-73z" fill="#2466B8"/>
+<path d="M180 172 201 238l-47-25-25 40-17-73z" fill="#51B985"/>
+<circle cx="128" cy="109" r="86" fill="#347FD9" stroke="#2466B8" stroke-width="8"/>
+<circle cx="128" cy="109" r="65" fill="#F7FBFF" stroke="#51B985" stroke-width="8"/>
+<path d="M88 105c0 24 18 39 44 39h18c18 0 30-10 30-27v-15"
+      fill="none" stroke="#20364D" stroke-width="11" stroke-linecap="round"/>
+<circle cx="133" cy="163" r="7" fill="#FFC857"/>
+<circle cx="92" cy="89" r="24" fill="none" stroke="#347FD9" stroke-width="9"/>
+<path d="m75 107-20 20" stroke="#347FD9" stroke-width="11" stroke-linecap="round"/>
+
+</svg>

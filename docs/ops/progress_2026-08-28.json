@@ -1,0 +1,134 @@
+{
+  "schema_version": 6,
+  "plan_version": "HIMMA-MAINTENANCE-2026-08-29-M07",
+  "repository": "7eaur/himma-",
+  "branch": "recovery/ui-media-admin-overhaul",
+  "accepted_content_visual_head": "654c9946b4b5b6e254817b2611fdf6494aa2a65e",
+  "current_program": "FULL_MAINTENANCE",
+  "current_slice": "M07_RESEARCH_REPORTS",
+  "status": "IN_PROGRESS_ONE_SUPPORTED_SKILL_SUMMARY_ITEM_REMAINS",
+  "latest_main_quality_gate": {
+    "run_number": 363,
+    "run_id": 33222592452,
+    "head_sha": "654c9946b4b5b6e254817b2611fdf6494aa2a65e",
+    "frontend": "SUCCESS",
+    "backend": "SUCCESS",
+    "integration": "SUCCESS",
+    "playwright": "SUCCESS",
+    "media_fidelity_in_main_gate": true
+  },
+  "latest_responsive_visual_gate": {
+    "run_number": 28,
+    "run_id": 33222592468,
+    "head_sha": "654c9946b4b5b6e254817b2611fdf6494aa2a65e",
+    "status": "SUCCESS",
+    "viewports": ["360x800", "390x844", "768x1024", "1024x768", "1440x900"]
+  },
+  "maintenance_stages": {
+    "M00": "CLOSED",
+    "M01": "CLOSED",
+    "M02": "CLOSED",
+    "M03": "CLOSED_KNOWN_CONTENT_GAPS",
+    "M04": "REBUILT_ACCEPTED_BASELINE",
+    "M05": "REBUILT_ACCEPTED_BASELINE",
+    "M06": "CLOSED",
+    "M07": "ACTIVE_ONE_ITEM_REMAINS",
+    "M08": "PENDING_EXTERNAL_GATES",
+    "M09": "PENDING"
+  },
+  "academic_contract": {
+    "placement_is_starting_level_only": true,
+    "journey": {
+      "start_L1": ["pretest", "L1", "L2", "L3", "posttest"],
+      "start_L2": ["pretest", "L2", "L3", "posttest"],
+      "start_L3": ["pretest", "L3", "posttest"]
+    },
+    "pretest_section_weights": [20, 40, 40],
+    "readiness_force_L1_below": 12,
+    "activity_bands": {
+      "pass": ">=80",
+      "guided_retry": "70..<80",
+      "reinforcement": "<70"
+    },
+    "skill_mastery_recent_attempt_weights": [50, 30, 20],
+    "level_completion_requires_10_core": true,
+    "posttest_before_L3_complete": false,
+    "automatic_demotion": "OPEN_DECISION_DO_NOT_CHANGE_SILENTLY"
+  },
+  "content": {
+    "original_items": 105,
+    "pretest_questions": 30,
+    "posttest_questions": 30,
+    "core_activities": 30,
+    "original_reinforcement": 15,
+    "m03_reinforcement_additions_v1": 18,
+    "approved_gap_closure_additions_v2": 2,
+    "reinforcement_total": 35,
+    "runtime_total_with_additions": 125,
+    "skills": 44,
+    "residual_reinforcement_gaps": [],
+    "gap_closure": {
+      "L2_sukoon_word_reading": "reuse L2-REIN-02",
+      "L3_literal_comprehension": "L3-REIN-11 five rounds",
+      "L3_sentence_building": "L3-REIN-12 five rounds"
+    }
+  },
+  "visual_content": {
+    "oi_15": "CLOSED",
+    "generated_sequence_assets": 10,
+    "generated_id_range": "HIMMA-GEN-SEQ-001..010",
+    "generated_manifest": "assets/education/developer/generated-sequence-map.json",
+    "visual_plan": "packages/content/src/visual_asset_plan_v1.json",
+    "remaining_generate_entries": 0,
+    "reuse_first": true,
+    "browser_fidelity_verified": true,
+    "screenshot": "playwright-report/screenshots/generated-sequence-assets.png",
+    "screenshot_visually_reviewed": true
+  },
+  "reinforcement_runtime": {
+    "mapping": "skill -> skill_family -> approved reinforcement candidates",
+    "random_fallback": false,
+    "cross_level_random_fallback": false,
+    "cycle": ["weakness", "reinforcement", "return_to_core", "verification", "continue"],
+    "bounded_retry_then_supervisor": true,
+    "safe_hold": "general safety path only; not a substitute for known missing mappings"
+  },
+  "audio": {
+    "existing_static_assets": 50,
+    "missing_confirmed": ["موز", "سَا"],
+    "target_static_assets": 52,
+    "temporary_skip_flag": "HIMMA_TEMP_AUDIO_SKIP",
+    "temporary_skip_is_academically_neutral": true
+  },
+  "speech_analysis": {
+    "target_architecture": "Reference-Guided Arabic Reading Analysis",
+    "infrastructure_present": ["queue", "worker", "retries", "dead-letter", "provider adapter abstraction", "reference alignment", "C/D/I/S", "confidence/manual review fallback"],
+    "real_provider_connected": false,
+    "calibration_complete": false,
+    "privacy_retention_decision_complete": false
+  },
+  "m07": {
+    "persisted_pre_post_summary": true,
+    "absolute_improvement": true,
+    "relative_improvement_when_defined": true,
+    "time_attempts_levels": true,
+    "reinforcement_summary": true,
+    "excel_multi_sheet_export": true,
+    "pdf_student_export": true,
+    "pdf_cohort_export": true,
+    "export_audit_log": true,
+    "supervisor_ui_connected": true,
+    "speech_metrics_without_calibration": false,
+    "supported_per_skill_evidence_summary": false
+  },
+  "external_blockers": [
+    "representative child-reading recordings",
+    "production ASR provider/privacy/cost/recording-transfer decision",
+    "confidence calibration",
+    "child-audio retention policy",
+    "approved recordings for موز and سَا",
+    "final study duration/session policy",
+    "deployment/domain details before release"
+  ],
+  "next_action": "Implement OI-M07-01 as a descriptive per-skill summary from persisted graded response evidence only, carry it consistently into reports/exports/UI, restore green Quality Gate, then close M07 and proceed to M09 preparation while M08 remains externally gated."
+}

@@ -1,0 +1,55 @@
+.soundToggle{
+  position:fixed;
+  inset-inline-start:14px;
+  top:14px;
+  z-index:70;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  border:1px solid #dce8f2;
+  background:rgba(255,255,255,.96);
+  color:#20364d;
+  display:grid;
+  place-items:center;
+  box-shadow:0 6px 18px rgba(32,54,77,.08);
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+.soundToggle:hover{transform:translateY(-1px);border-color:#9fc1df;background:#fff}
+.soundToggle:focus-visible{outline:3px solid rgba(52,127,217,.28);outline-offset:3px}
+
+.reward{
+  position:fixed;
+  z-index:80;
+  left:50%;
+  top:22%;
+  transform:translate(-50%,-50%);
+  min-width:210px;
+  max-width:min(86vw,360px);
+  padding:18px 22px;
+  border-radius:22px;
+  border:1px solid #e5d399;
+  background:#fffdf6;
+  color:#20364d;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  box-shadow:0 16px 40px rgba(32,54,77,.14);
+  pointer-events:none;
+  animation:rewardIn .24s ease-out both;
+  font-weight:900;
+  text-align:center;
+}
+.star{color:#d99a18;fill:#ffc857;flex:0 0 auto}
+.award{color:#347fd9;flex:0 0 auto}
+@keyframes rewardIn{
+  from{opacity:0;transform:translate(-50%,-42%) scale(.96)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1)}
+}
+@media(max-width:720px){
+  .soundToggle{top:auto;bottom:14px;inset-inline-start:12px}
+  .reward{top:18%;min-width:190px;padding:15px 18px;font-size:.92rem}
+}
+@media(prefers-reduced-motion:reduce){
+  .soundToggle,.reward{transition:none;animation:none}
+}

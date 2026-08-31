@@ -1,0 +1,48 @@
+/* Himma developer tokens — v1.0 */
+:root {
+  --himma-blue: #347FD9;
+  --himma-blue-dark: #2466B8;
+  --himma-green: #51B985;
+  --himma-yellow: #FFC857;
+  --himma-navy: #20364D;
+  --himma-bg: #F7FBFF;
+  --himma-border: #DCE8F2;
+  --himma-character-mobile: clamp(9rem, 34vw, 13rem);
+  --himma-character-desktop: clamp(13rem, 22vw, 20rem);
+}
+
+.himma-character {
+  display: block;
+  width: var(--himma-character-mobile);
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .himma-character { width: var(--himma-character-desktop); }
+}
+
+.himma-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+}
+
+.himma-icon-button {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  display: inline-grid;
+  place-items: center;
+}
+
+.himma-reward {
+  width: clamp(4.5rem, 14vw, 8rem);
+  height: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .himma-character,
+  .himma-reward { animation: none !important; transition: none !important; }
+}

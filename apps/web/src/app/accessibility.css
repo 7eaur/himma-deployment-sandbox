@@ -1,0 +1,45 @@
+/* M06 — Global accessibility safeguards */
+
+:root {
+  /* Accessible replacements for text/controls on light surfaces. */
+  --color-primary: #2466B8;
+  --color-primary-dark: #1B4F91;
+  --color-green: #217A55;
+}
+
+:where(a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 3px solid #2466B8;
+  outline-offset: 3px;
+}
+
+button,
+input,
+select,
+textarea,
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-ghost,
+.btn-danger {
+  min-block-size: 44px;
+}
+
+button {
+  min-inline-size: 44px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}

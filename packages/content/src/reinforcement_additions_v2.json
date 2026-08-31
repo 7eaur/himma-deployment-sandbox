@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "catalog_version": "HIMMA-REINFORCEMENT-ADD-2.0",
+  "status": "user_approved_2026_08_29",
+  "language": "ar",
+  "direction": "rtl",
+  "source": {
+    "authority": "explicit_user_approval_2026_08_29",
+    "note": "إضافة علاجين موجّهين لسد فجوتي الفهم المباشر وبناء الجملة في المستوى الثالث، مع بقاء الكتالوج الأصلي وإضافات v1 دون تعديل."
+  },
+  "constraints": {
+    "new_items": 2,
+    "level_3": 2,
+    "no_random_fallback": true,
+    "same_level_only": true,
+    "verification_after_reinforcement": true
+  },
+  "items": [
+    {
+      "canonical_id": "L3-REIN-11",
+      "level": 3,
+      "title": "أجب من النص",
+      "interaction": "choose_one",
+      "target_skill_family": "literal_comprehension",
+      "target_skills": ["الفهم المباشر", "استخراج معلومة صريحة من الجملة"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {
+          "prompt": "ذَهَبَ سَالِمٌ إِلَى الْمَدْرَسَةِ صَبَاحًا. أَيْنَ ذَهَبَ سَالِمٌ؟",
+          "options": ["إلى المدرسة", "إلى الحديقة", "إلى السوق"],
+          "answer": "إلى المدرسة"
+        },
+        {
+          "prompt": "حَمَلَ مَاجِدٌ حَقِيبَتَهُ وَخَرَجَ مِنَ الْبَيْتِ. مَاذَا حَمَلَ مَاجِدٌ؟",
+          "options": ["حقيبته", "كتابًا", "كرة"],
+          "answer": "حقيبته"
+        },
+        {
+          "prompt": "قَرَأَ خَالِدٌ كِتَابًا فِي الْمَكْتَبَةِ. مَنْ قَرَأَ الْكِتَابَ؟",
+          "options": ["خالد", "سالم", "ماجد"],
+          "answer": "خالد"
+        },
+        {
+          "prompt": "سَقَتْ هِنْدٌ الزَّهْرَةَ بِالْمَاءِ. مَاذَا سَقَتْ هِنْدٌ؟",
+          "options": ["الزهرة", "الشجرة", "العشب"],
+          "answer": "الزهرة"
+        },
+        {
+          "prompt": "لَعِبَ مَاجِدٌ بِالْكُرَةِ فِي الْحَدِيقَةِ. بِمَاذَا لَعِبَ مَاجِدٌ؟",
+          "options": ["بالكرة", "بالرمل", "بالكتاب"],
+          "answer": "بالكرة"
+        }
+      ]
+    },
+    {
+      "canonical_id": "L3-REIN-12",
+      "level": 3,
+      "title": "رتّب كلمات الجملة",
+      "interaction": "sequence",
+      "target_skill_family": "sentence_structure",
+      "target_skills": ["بناء الجملة", "ترتيب كلمات الجملة"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"sequence": ["يقرأ", "سالم", "الكتاب"]},
+        {"sequence": ["يلعب", "ماجد", "بالكرة"]},
+        {"sequence": ["تسقي", "هند", "الزهرة"]},
+        {"sequence": ["فتح", "خالد", "الباب"]},
+        {"sequence": ["ذهب", "سالم", "إلى المدرسة"]}
+      ]
+    }
+  ]
+}

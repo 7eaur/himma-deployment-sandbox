@@ -1,0 +1,34 @@
+{
+  "package": "Himma_Educational_Images_Kit_v1.0",
+  "validation_date": "2026-07-28",
+  "status": "passed",
+  "assets": 60,
+  "primary_image_variants": 180,
+  "preview_sheets": 5,
+  "category_counts": {
+    "vocabulary": 35,
+    "sentences": 10,
+    "sequences": 9,
+    "stories": 6
+  },
+  "checks": {
+    "all_images_opened": true,
+    "dimensions_and_aspect_ratios": true,
+    "asset_map_checksums": true,
+    "unique_and_contiguous_ids": true,
+    "vocabulary_transparent_corners": true,
+    "sequence_group_order": true,
+    "no_zero_byte_files": true,
+    "no_hidden_temp_files": true,
+    "visual_review_all_contact_sheets": true,
+    "no_embedded_instructional_text": true,
+    "directional_scene_review": true
+  },
+  "visual_review_notes_ar": [
+    "تمت مراجعة المفردات والجمل والتسلسل والقصص كأربع لوحات اتصال كاملة.",
+    "أعيد إنتاج السيارة والمعلم لتوحيد الأسلوب الكرتوني.",
+    "أعيد إنتاج مشهد العصفور فوق النخلة لإزالة شخصية إضافية مشتتة.",
+    "أعيد إنتاج مشهدي الذهاب إلى المدرسة والعودة إلى البيت لتوضيح اتجاه الحركة.",
+    "لا تحتوي الصور التعليمية على عناوين أو أرقام أو أسهم مدمجة."
+  ]
+}

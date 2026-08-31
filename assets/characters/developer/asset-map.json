@@ -1,0 +1,592 @@
+{
+  "kit": "Himma_Characters_Badges_UI_Kit_v1.0",
+  "version": "1.0.0",
+  "language": "ar",
+  "direction": "rtl",
+  "brand": "هِمّة",
+  "logical_asset_counts": {
+    "character": 10,
+    "reward": 6,
+    "level": 3,
+    "ui-icon": 23
+  },
+  "brand_colors": {
+    "primary_blue": "#347FD9",
+    "primary_blue_dark": "#2466B8",
+    "progress_green": "#51B985",
+    "motivation_yellow": "#FFC857",
+    "motivation_yellow_dark": "#D99A20",
+    "text_navy": "#20364D",
+    "light_background": "#F7FBFF",
+    "neutral_border": "#DCE8F2",
+    "white": "#FFFFFF"
+  },
+  "assets": [
+    {
+      "id": "CHR-B-01",
+      "kind": "character",
+      "character": "boy",
+      "pose": "welcome",
+      "title_ar": "ترحيب",
+      "recommended_web": "assets/characters/boy/webp/hem-chr-b-01-welcome-512.webp",
+      "fallback_png": "assets/characters/boy/png/hem-chr-b-01-welcome-1024.png",
+      "formats": [
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true,
+      "canvas": "1:1"
+    },
+    {
+      "id": "CHR-B-02",
+      "kind": "character",
+      "character": "boy",
+      "pose": "explain",
+      "title_ar": "شرح التعليمات",
+      "recommended_web": "assets/characters/boy/webp/hem-chr-b-02-explain-512.webp",
+      "fallback_png": "assets/characters/boy/png/hem-chr-b-02-explain-1024.png",
+      "formats": [
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true,
+      "canvas": "1:1"
+    },
+    {
+      "id": "CHR-B-03",
+      "kind": "character",
+      "character": "boy",
+      "pose": "encourage",
+      "title_ar": "تشجيع",
+      "recommended_web": "assets/characters/boy/webp/hem-chr-b-03-encourage-512.webp",
+      "fallback_png": "assets/characters/boy/png/hem-chr-b-03-encourage-1024.png",
+      "formats": [
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true,
+      "canvas": "1:1"
+    },
+    {
+      "id": "CHR-B-04",
+      "kind": "character",
+      "character": "boy",
+      "pose": "success",
+      "title_ar": "نجاح",
+      "recommended_web": "assets/characters/boy/webp/hem-chr-b-04-success-512.webp",
+      "fallback_png": "assets/characters/boy/png/hem-chr-b-04-success-1024.png",
+      "formats": [
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true,
+      "canvas": "1:1"
+    },
+    {
+      "id": "CHR-B-05",
+      "kind": "character",
+      "character": "boy",
+      "pose": "try-again",
+      "title_ar": "حاول مرة أخرى",
+      "recommended_web": "assets/characters/boy/webp/hem-chr-b-05-try-again-512.webp",
+      "fallback_png": "assets/characters/boy/png/hem-chr-b-05-try-again-1024.png",
+      "formats": [
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true,
+      "canvas": "1:1"
+    },
+    {
+      "id": "CHR-G-01",
+      "kind": "character",
+      "character": "girl",
+      "pose": "welcome",
+      "title_ar": "ترحيب",
+      "recommended_web": "assets/characters/girl/webp/hem-chr-g-01-welcome-512.webp",
+      "fallback_png": "assets/characters/girl/png/hem-chr-g-01-welcome-1024.png",
+      "formats": [
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true,
+      "canvas": "1:1"
+    },
+    {
+      "id": "CHR-G-02",
+      "kind": "character",
+      "character": "girl",
+      "pose": "explain",
+      "title_ar": "شرح التعليمات",
+      "recommended_web": "assets/characters/girl/webp/hem-chr-g-02-explain-512.webp",
+      "fallback_png": "assets/characters/girl/png/hem-chr-g-02-explain-1024.png",
+      "formats": [
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true,
+      "canvas": "1:1"
+    },
+    {
+      "id": "CHR-G-03",
+      "kind": "character",
+      "character": "girl",
+      "pose": "encourage",
+      "title_ar": "تشجيع",
+      "recommended_web": "assets/characters/girl/webp/hem-chr-g-03-encourage-512.webp",
+      "fallback_png": "assets/characters/girl/png/hem-chr-g-03-encourage-1024.png",
+      "formats": [
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true,
+      "canvas": "1:1"
+    },
+    {
+      "id": "CHR-G-04",
+      "kind": "character",
+      "character": "girl",
+      "pose": "success",
+      "title_ar": "نجاح",
+      "recommended_web": "assets/characters/girl/webp/hem-chr-g-04-success-512.webp",
+      "fallback_png": "assets/characters/girl/png/hem-chr-g-04-success-1024.png",
+      "formats": [
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true,
+      "canvas": "1:1"
+    },
+    {
+      "id": "CHR-G-05",
+      "kind": "character",
+      "character": "girl",
+      "pose": "try-again",
+      "title_ar": "حاول مرة أخرى",
+      "recommended_web": "assets/characters/girl/webp/hem-chr-g-05-try-again-512.webp",
+      "fallback_png": "assets/characters/girl/png/hem-chr-g-05-try-again-1024.png",
+      "formats": [
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true,
+      "canvas": "1:1"
+    },
+    {
+      "id": "BDG-01",
+      "kind": "reward",
+      "slug": "star-one",
+      "title_ar": "نجمة واحدة",
+      "recommended_web": "assets/rewards/svg/hem-bdg-01-star-one.svg",
+      "formats": [
+        "SVG",
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "BDG-02",
+      "kind": "reward",
+      "slug": "stars-two",
+      "title_ar": "نجمتان",
+      "recommended_web": "assets/rewards/svg/hem-bdg-02-stars-two.svg",
+      "formats": [
+        "SVG",
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "BDG-03",
+      "kind": "reward",
+      "slug": "stars-three",
+      "title_ar": "ثلاث نجوم",
+      "recommended_web": "assets/rewards/svg/hem-bdg-03-stars-three.svg",
+      "formats": [
+        "SVG",
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "BDG-04",
+      "kind": "reward",
+      "slug": "letter-explorer",
+      "title_ar": "شارة مستكشف الحروف",
+      "recommended_web": "assets/rewards/svg/hem-bdg-04-letter-explorer.svg",
+      "formats": [
+        "SVG",
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "BDG-05",
+      "kind": "reward",
+      "slug": "word-hero",
+      "title_ar": "شارة بطل الكلمات",
+      "recommended_web": "assets/rewards/svg/hem-bdg-05-word-hero.svg",
+      "formats": [
+        "SVG",
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "BDG-06",
+      "kind": "reward",
+      "slug": "comprehension-star",
+      "title_ar": "شارة نجم الفهم",
+      "recommended_web": "assets/rewards/svg/hem-bdg-06-comprehension-star.svg",
+      "formats": [
+        "SVG",
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "LVL-01",
+      "kind": "level",
+      "slug": "readiness",
+      "title_ar": "الاستعداد للقراءة",
+      "recommended_web": "assets/levels/svg/hem-lvl-01-readiness.svg",
+      "formats": [
+        "SVG",
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "LVL-02",
+      "kind": "level",
+      "slug": "word-building",
+      "title_ar": "بناء الكلمة",
+      "recommended_web": "assets/levels/svg/hem-lvl-02-word-building.svg",
+      "formats": [
+        "SVG",
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "LVL-03",
+      "kind": "level",
+      "slug": "fluency-comprehension",
+      "title_ar": "الطلاقة والفهم",
+      "recommended_web": "assets/levels/svg/hem-lvl-03-fluency-comprehension.svg",
+      "formats": [
+        "SVG",
+        "PNG",
+        "WebP"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-HOME",
+      "kind": "ui-icon",
+      "slug": "home",
+      "category": "navigation",
+      "title_ar": "التنقل: الرئيسية",
+      "recommended_web": "assets/icons/ui/svg/home.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-STUDENT",
+      "kind": "ui-icon",
+      "slug": "student",
+      "category": "navigation",
+      "title_ar": "التنقل: الطالب",
+      "recommended_web": "assets/icons/ui/svg/student.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-RESEARCHER",
+      "kind": "ui-icon",
+      "slug": "researcher",
+      "category": "navigation",
+      "title_ar": "التنقل: الباحثة",
+      "recommended_web": "assets/icons/ui/svg/researcher.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-ACTIVITY",
+      "kind": "ui-icon",
+      "slug": "activity",
+      "category": "navigation",
+      "title_ar": "التنقل: النشاط",
+      "recommended_web": "assets/icons/ui/svg/activity.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-WRITE",
+      "kind": "ui-icon",
+      "slug": "write",
+      "category": "learning",
+      "title_ar": "التعلم: كتابة",
+      "recommended_web": "assets/icons/ui/svg/write.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-READ",
+      "kind": "ui-icon",
+      "slug": "read",
+      "category": "learning",
+      "title_ar": "التعلم: قراءة",
+      "recommended_web": "assets/icons/ui/svg/read.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-LISTEN",
+      "kind": "ui-icon",
+      "slug": "listen",
+      "category": "learning",
+      "title_ar": "التعلم: استماع",
+      "recommended_web": "assets/icons/ui/svg/listen.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-PRETEST",
+      "kind": "ui-icon",
+      "slug": "pretest",
+      "category": "learning",
+      "title_ar": "التعلم: الاختبار القبلي",
+      "recommended_web": "assets/icons/ui/svg/pretest.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-POSTTEST",
+      "kind": "ui-icon",
+      "slug": "posttest",
+      "category": "learning",
+      "title_ar": "التعلم: الاختبار البعدي",
+      "recommended_web": "assets/icons/ui/svg/posttest.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-SORT",
+      "kind": "ui-icon",
+      "slug": "sort",
+      "category": "interaction",
+      "title_ar": "التفاعل: ترتيب",
+      "recommended_web": "assets/icons/ui/svg/sort.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-MATCH",
+      "kind": "ui-icon",
+      "slug": "match",
+      "category": "interaction",
+      "title_ar": "التفاعل: مطابقة",
+      "recommended_web": "assets/icons/ui/svg/match.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-RECORD",
+      "kind": "ui-icon",
+      "slug": "record",
+      "category": "interaction",
+      "title_ar": "التفاعل: تسجيل",
+      "recommended_web": "assets/icons/ui/svg/record.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-PLAY_AUDIO",
+      "kind": "ui-icon",
+      "slug": "play-audio",
+      "category": "interaction",
+      "title_ar": "التفاعل: تشغيل الصوت",
+      "recommended_web": "assets/icons/ui/svg/play-audio.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-NEXT_RTL",
+      "kind": "ui-icon",
+      "slug": "next-rtl",
+      "category": "interaction",
+      "title_ar": "التفاعل: التالي باتجاه RTL",
+      "recommended_web": "assets/icons/ui/svg/next-rtl.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-RETRY",
+      "kind": "ui-icon",
+      "slug": "retry",
+      "category": "interaction",
+      "title_ar": "التفاعل: إعادة المحاولة",
+      "recommended_web": "assets/icons/ui/svg/retry.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-SUCCESS",
+      "kind": "ui-icon",
+      "slug": "success",
+      "category": "status-success",
+      "title_ar": "الحالة: نجاح",
+      "recommended_web": "assets/icons/ui/svg/success.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-WARNING",
+      "kind": "ui-icon",
+      "slug": "warning",
+      "category": "status-warning",
+      "title_ar": "الحالة: تنبيه",
+      "recommended_web": "assets/icons/ui/svg/warning.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-REPORTS",
+      "kind": "ui-icon",
+      "slug": "reports",
+      "category": "reports",
+      "title_ar": "التقارير",
+      "recommended_web": "assets/icons/ui/svg/reports.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-EXPORT_PDF",
+      "kind": "ui-icon",
+      "slug": "export-pdf",
+      "category": "reports",
+      "title_ar": "تصدير PDF",
+      "recommended_web": "assets/icons/ui/svg/export-pdf.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-EXPORT_SPREADSHEET",
+      "kind": "ui-icon",
+      "slug": "export-spreadsheet",
+      "category": "reports",
+      "title_ar": "تصدير جدول بيانات",
+      "recommended_web": "assets/icons/ui/svg/export-spreadsheet.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-SETTINGS",
+      "kind": "ui-icon",
+      "slug": "settings",
+      "category": "reports",
+      "title_ar": "الإعدادات",
+      "recommended_web": "assets/icons/ui/svg/settings.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-PROGRESS",
+      "kind": "ui-icon",
+      "slug": "progress",
+      "category": "reports",
+      "title_ar": "التقدم",
+      "recommended_web": "assets/icons/ui/svg/progress.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    },
+    {
+      "id": "UI-STAR",
+      "kind": "ui-icon",
+      "slug": "star",
+      "category": "reward",
+      "title_ar": "نجمة",
+      "recommended_web": "assets/icons/ui/svg/star.svg",
+      "formats": [
+        "SVG",
+        "PNG"
+      ],
+      "transparent": true
+    }
+  ]
+}

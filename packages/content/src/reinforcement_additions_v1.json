@@ -1,0 +1,333 @@
+{
+  "schema_version": 1,
+  "catalog_version": "HIMMA-REINFORCEMENT-ADD-1.0",
+  "status": "maintenance_approved_addition",
+  "language": "ar",
+  "direction": "rtl",
+  "source": {
+    "authority": "maintenance_review_2026_08_28",
+    "spec": "docs/specs/REINFORCEMENT_CONTENT_ADDITIONS_2026-08-28_AR.md",
+    "note": "امتداد منفصل يحافظ على الكتالوج الأصلي 105 عنصرًا دون إعادة كتابة مصدر العميل الأصلي."
+  },
+  "constraints": {
+    "new_items": 18,
+    "level_1": 7,
+    "level_2": 6,
+    "level_3": 5,
+    "original_reinforcement_items_preserved": 15,
+    "target_reinforcement_total": 33,
+    "no_random_fallback": true,
+    "verification_after_reinforcement": true
+  },
+  "items": [
+    {
+      "canonical_id": "L1-REIN-06",
+      "level": 1,
+      "title": "اسمع واختر الحرف",
+      "interaction": "listen_choose_one",
+      "target_skill_family": "sound_letter_mapping",
+      "target_skills": ["ربط الصوت بالحرف"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"audio_text": "م", "options": ["م", "ن"], "answer": "م"},
+        {"audio_text": "ب", "options": ["ب", "ت"], "answer": "ب"},
+        {"audio_text": "س", "options": ["س", "ش"], "answer": "س"},
+        {"audio_text": "ق", "options": ["ق", "ف"], "answer": "ق"},
+        {"audio_text": "ر", "options": ["ر", "ز"], "answer": "ر"}
+      ],
+      "media": {"audio_reuse": ["م", "ب", "س", "ق", "ر"], "new_audio_required": []}
+    },
+    {
+      "canonical_id": "L1-REIN-07",
+      "level": 1,
+      "title": "اختر شكل الحرف",
+      "interaction": "choose_one",
+      "target_skill_family": "letter_forms",
+      "target_skills": ["التعرف إلى أشكال الحرف"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"prompt": "ب", "options": ["بـ", "تـ"], "answer": "بـ"},
+        {"prompt": "م", "options": ["مـ", "سـ"], "answer": "مـ"},
+        {"prompt": "س", "options": ["سـ", "شـ"], "answer": "سـ"},
+        {"prompt": "ك", "options": ["كـ", "لـ"], "answer": "كـ"},
+        {"prompt": "ل", "options": ["لـ", "مـ"], "answer": "لـ"}
+      ]
+    },
+    {
+      "canonical_id": "L1-REIN-08",
+      "level": 1,
+      "title": "ما الصوت الأخير؟",
+      "interaction": "listen_choose_one",
+      "target_skill_family": "phonemic_awareness_final_sound",
+      "target_skills": ["عزل الصوت الأخير"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"audio_text": "قَلَم", "options": ["م", "ق"], "answer": "م"},
+        {"audio_text": "سَمَك", "options": ["ك", "م"], "answer": "ك"},
+        {"audio_text": "نُور", "options": ["ر", "ن"], "answer": "ر"},
+        {"audio_text": "بَاب", "options": ["ب", "م"], "answer": "ب"},
+        {"audio_text": "شَمْس", "options": ["س", "ش"], "answer": "س"}
+      ],
+      "media": {"audio_reuse": ["قَلَم", "سَمَك", "نُور", "بَاب", "شَمْس"], "new_audio_required": []}
+    },
+    {
+      "canonical_id": "L1-REIN-09",
+      "level": 1,
+      "title": "ما هذا؟",
+      "interaction": "choose_one",
+      "target_skill_family": "print_concepts",
+      "target_skills": ["تمييز حرف/كلمة/جملة"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"prompt": "م", "options": ["حرف", "كلمة"], "answer": "حرف"},
+        {"prompt": "كِتَاب", "options": ["حرف", "كلمة"], "answer": "كلمة"},
+        {"prompt": "بَاب", "options": ["كلمة", "جملة"], "answer": "كلمة"},
+        {"prompt": "ذَهَبَ سَالِمٌ.", "options": ["كلمة", "جملة"], "answer": "جملة"},
+        {"prompt": "شَجَرَة", "options": ["كلمة", "جملة"], "answer": "كلمة"}
+      ]
+    },
+    {
+      "canonical_id": "L1-REIN-10",
+      "level": 1,
+      "title": "تذكّر الصور",
+      "interaction": "memory_sequence",
+      "target_skill_family": "visual_memory",
+      "target_skills": ["الذاكرة البصرية"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"sequence": ["قلم", "كرة"]},
+        {"sequence": ["باب", "شمس"]},
+        {"sequence": ["كتاب", "موزة"]},
+        {"sequence": ["سمكة", "نخلة"]},
+        {"sequence": ["قمر", "كرة"]}
+      ],
+      "media": {"images_reuse_first": true, "generate_if_missing": ["قلم", "كرة", "باب", "شمس", "كتاب", "موزة", "سمكة", "نخلة", "قمر"]}
+    },
+    {
+      "canonical_id": "L1-REIN-11",
+      "level": 1,
+      "title": "اتبع الاتجاه",
+      "interaction": "path_sequence",
+      "target_skill_family": "reading_direction_visual_motor",
+      "target_skills": ["اتجاه القراءة", "التآزر البصري الحركي"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"path": "3_points_horizontal_rtl"},
+        {"path": "4_points_horizontal_rtl"},
+        {"path": "3_points_simple_curve_rtl"},
+        {"path": "4_points_simple_path_rtl"},
+        {"path": "5_points_short_zigzag_rtl"}
+      ]
+    },
+    {
+      "canonical_id": "L1-REIN-12",
+      "level": 1,
+      "title": "ماذا حدث أولًا؟",
+      "interaction": "sequence",
+      "target_skill_family": "logical_sequence",
+      "target_skills": ["التسلسل المنطقي"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"sequence": ["غسل اليدين", "الأكل"]},
+        {"sequence": ["زرع البذرة", "ظهور النبتة"]},
+        {"sequence": ["فتح الكتاب", "القراءة"]},
+        {"sequence": ["سقي الزهرة", "نمو الزهرة"]},
+        {"sequence": ["لبس الحذاء", "الخروج من المنزل"]}
+      ],
+      "media": {"generate_images_later": true}
+    },
+    {
+      "canonical_id": "L2-REIN-06",
+      "level": 2,
+      "title": "اسمع الحركة",
+      "interaction": "listen_choose_one",
+      "target_skill_family": "short_vowels",
+      "target_skills": ["الحركات القصيرة"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"audio_text": "بَ", "options": ["بَ", "بِ"], "answer": "بَ"},
+        {"audio_text": "مِ", "options": ["مَ", "مِ"], "answer": "مِ"},
+        {"audio_text": "سُ", "options": ["سُ", "سِ"], "answer": "سُ"},
+        {"audio_text": "رَ", "options": ["رُ", "رَ"], "answer": "رَ"},
+        {"audio_text": "قِ", "options": ["قِ", "قَ"], "answer": "قِ"}
+      ],
+      "media": {"audio_reuse": ["بَ", "مِ", "سُ", "رَ", "قِ"], "new_audio_required": []}
+    },
+    {
+      "canonical_id": "L2-REIN-07",
+      "level": 2,
+      "title": "اقرأ المقطع ثم الكلمة",
+      "interaction": "read_aloud",
+      "target_skill_family": "syllable_to_word_decoding",
+      "target_skills": ["قراءة المقاطع", "بناء الكلمة"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"expected_reading": ["كَ", "كَتَبَ"]},
+        {"expected_reading": ["لَ", "لَعِبَ"]},
+        {"expected_reading": ["رَ", "رَسَمَ"]},
+        {"expected_reading": ["فَ", "فَتَحَ"]},
+        {"expected_reading": ["جَ", "جَلَسَ"]}
+      ]
+    },
+    {
+      "canonical_id": "L2-REIN-08",
+      "level": 2,
+      "title": "قصير أم طويل؟",
+      "interaction": "listen_choose_one",
+      "target_skill_family": "short_long_vowel_contrast",
+      "target_skills": ["التمييز بين الحركة القصيرة والمد"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"audio_text": "بَا", "options": ["بَ", "بَا"], "answer": "بَا"},
+        {"audio_text": "فِي", "options": ["فِ", "فِي"], "answer": "فِي"},
+        {"audio_text": "نُو", "options": ["نُ", "نُو"], "answer": "نُو"},
+        {"audio_text": "سَا", "options": ["سَ", "سَا"], "answer": "سَا"},
+        {"audio_text": "لِي", "options": ["لِ", "لِي"], "answer": "لِي"}
+      ],
+      "media": {"audio_reuse": ["بَا", "فِي", "نُو", "لِي"], "new_audio_required": ["سَا"]}
+    },
+    {
+      "canonical_id": "L2-REIN-09",
+      "level": 2,
+      "title": "بطل الشدة",
+      "interaction": "choose_one",
+      "target_skill_family": "shadda",
+      "target_skills": ["قراءة كلمات الشدة", "تمييز الشدة"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"options": ["قِطَّة", "قِطَة"], "answer": "قِطَّة"},
+        {"options": ["سُلَّم", "سُلَم"], "answer": "سُلَّم"},
+        {"options": ["تُفَّاح", "تُفَاح"], "answer": "تُفَّاح"},
+        {"options": ["مُعَلِّم", "مُعَلِم"], "answer": "مُعَلِّم"},
+        {"options": ["سَيَّارَة", "سَيَارَة"], "answer": "سَيَّارَة"}
+      ]
+    },
+    {
+      "canonical_id": "L2-REIN-10",
+      "level": 2,
+      "title": "ميّز التنوين",
+      "interaction": "listen_choose_one",
+      "target_skill_family": "tanween",
+      "target_skills": ["تمييز التنوين"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"audio_text": "قَلَمٌ", "options": ["قَلَمٌ", "قَلَمًا"], "answer": "قَلَمٌ"},
+        {"audio_text": "كِتَابًا", "options": ["كِتَابٌ", "كِتَابًا"], "answer": "كِتَابًا"},
+        {"audio_text": "بَيْتٍ", "options": ["بَيْتٌ", "بَيْتٍ"], "answer": "بَيْتٍ"},
+        {"audio_text": "طِفْلٌ", "options": ["طِفْلٌ", "طِفْلًا"], "answer": "طِفْلٌ"},
+        {"audio_text": "وَرْدَةً", "options": ["وَرْدَةٌ", "وَرْدَةً"], "answer": "وَرْدَةً"}
+      ],
+      "media": {"audio_reuse": ["قَلَمٌ", "كِتَابًا", "بَيْتٍ", "طِفْلٌ", "وَرْدَةً"], "new_audio_required": []}
+    },
+    {
+      "canonical_id": "L2-REIN-11",
+      "level": 2,
+      "title": "اقرأ جملة قصيرة",
+      "interaction": "read_aloud",
+      "target_skill_family": "sentence_reading",
+      "target_skills": ["قراءة الجملة"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"expected_reading": "قَرَأَ سَالِمٌ."},
+        {"expected_reading": "لَعِبَ مَاجِدٌ."},
+        {"expected_reading": "شَرِبَتْ مَرْيَمُ."},
+        {"expected_reading": "طَارَ الْعُصْفُورُ."},
+        {"expected_reading": "فَتَحَ خَالِدٌ الْبَابَ."}
+      ]
+    },
+    {
+      "canonical_id": "L3-REIN-06",
+      "level": 3,
+      "title": "اقرأ الكلمات بهدوء",
+      "interaction": "read_aloud",
+      "target_skill_family": "word_reading_accuracy",
+      "target_skills": ["دقة قراءة الكلمات"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"expected_reading": "كِتَاب"},
+        {"expected_reading": "مَدْرَسَة"},
+        {"expected_reading": "نَخْلَة"},
+        {"expected_reading": "عُصْفُور"},
+        {"expected_reading": "مُعَلِّم"}
+      ]
+    },
+    {
+      "canonical_id": "L3-REIN-07",
+      "level": 3,
+      "title": "سباق الكلمات الهادئ",
+      "interaction": "timed_read_aloud",
+      "target_skill_family": "word_fluency",
+      "target_skills": ["سرعة قراءة الكلمات مع الدقة"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"expected_reading": ["باب", "قلم", "شمس", "كتاب", "نخلة"]},
+        {"expected_reading": ["مدرسة", "حديقة", "عصفور", "معلم", "حقيبة"]},
+        {"expected_reading": ["يلعب", "يقرأ", "يكتب", "يجلس", "يذهب"]}
+      ],
+      "ui": {"timer_visible_to_child": false}
+    },
+    {
+      "canonical_id": "L3-REIN-08",
+      "level": 3,
+      "title": "فقرة أقصر للطلاقة",
+      "interaction": "timed_read_aloud",
+      "target_skill_family": "text_fluency",
+      "target_skills": ["طلاقة قراءة النص"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"expected_reading": "ذَهَبَ سَالِمٌ إِلَى الْحَدِيقَةِ. رَأَى عُصْفُورًا فَوْقَ شَجَرَةٍ. جَلَسَ قَلِيلًا، ثُمَّ عَادَ إِلَى الْبَيْتِ."}
+      ],
+      "ui": {"timer_visible_to_child": false}
+    },
+    {
+      "canonical_id": "L3-REIN-09",
+      "level": 3,
+      "title": "معنى الكلمة من الجملة",
+      "interaction": "choose_one",
+      "target_skill_family": "vocabulary_in_context",
+      "target_skills": ["المفردات من السياق"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"prompt": "جَلَسَ خَالِدٌ قُرْبَ الْبَابِ. ما معنى «قُرْبَ»؟", "options": ["بجانب", "بعيدًا", "خلف"], "answer": "بجانب"},
+        {"prompt": "كَانَ الْمَكَانُ هَادِئًا. ما معنى «هادئًا»؟", "options": ["قليل الضوضاء", "مزدحمًا", "سريعًا"], "answer": "قليل الضوضاء"},
+        {"prompt": "أَعَادَ سَالِمٌ الْكِتَابَ. ما معنى «أعاد»؟", "options": ["أرجع", "أخذ", "كسر"], "answer": "أرجع"},
+        {"prompt": "الْمَاءُ صَافٍ. ما معنى «صافٍ»؟", "options": ["نظيف وواضح", "مظلم", "ساخن"], "answer": "نظيف وواضح"},
+        {"prompt": "جَمَعَ الْأَطْفَالُ الْمُخَلَّفَاتِ. ما المقصود بـ«المخلفات»؟", "options": ["الأشياء المتروكة بعد الاستخدام", "الألعاب", "النباتات"], "answer": "الأشياء المتروكة بعد الاستخدام"}
+      ]
+    },
+    {
+      "canonical_id": "L3-REIN-10",
+      "level": 3,
+      "title": "ماذا حدث أولًا؟",
+      "interaction": "sequence",
+      "target_skill_family": "text_event_sequence",
+      "target_skills": ["ترتيب أحداث النص"],
+      "success_threshold": 80,
+      "verification_required": true,
+      "rounds": [
+        {"text": "أَخَذَ سَالِمٌ الْكِتَابَ، ثُمَّ قَرَأَهُ.", "sequence": ["أخذ الكتاب", "قرأ الكتاب"]},
+        {"text": "زَرَعَتْ مَرْيَمُ بَذْرَةً، ثُمَّ سَقَتْهَا.", "sequence": ["زرعت البذرة", "سقتها"]},
+        {"text": "دَخَلَ خَالِدٌ الْمَكْتَبَةَ، وَقَرَأَ كِتَابًا، ثُمَّ أَعَادَهُ.", "sequence": ["دخول المكتبة", "القراءة", "إعادة الكتاب"]},
+        {"text": "ذَهَبَ مَاجِدٌ إِلَى الشَّاطِئِ، وَلَعِبَ بِالرَّمْلِ، ثُمَّ نَظَّفَ مَكَانَهُ.", "sequence": ["ذهب", "لعب", "نظف"]},
+        {"text": "غَسَلَتْ هِنْدٌ التُّفَّاحَةَ، ثُمَّ قَطَّعَتْهَا، وَبَعْدَ ذَلِكَ أَكَلَتْهَا.", "sequence": ["غسلت", "قطعت", "أكلت"]}
+      ]
+    }
+  ]
+}

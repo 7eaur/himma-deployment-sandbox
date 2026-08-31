@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">شارة بطل الكلمات</title>
+  
+<path d="M128 20 213 52v61c0 61-34 102-85 126-51-24-85-65-85-126V52z"
+      fill="#347FD9" stroke="#2466B8" stroke-width="8" stroke-linejoin="round"/>
+<path d="M128 78c-22-17-45-19-68-9v74c25-9 47-5 68 13z" fill="#FFFFFF" stroke="#20364D" stroke-width="6" stroke-linejoin="round"/>
+<path d="M128 78c22-17 45-19 68-9v74c-25-9-47-5-68 13z" fill="#FFFFFF" stroke="#20364D" stroke-width="6" stroke-linejoin="round"/>
+<path d="M128 78v78" stroke="#20364D" stroke-width="6" stroke-linecap="round"/>
+<polygon points="128.00,20.00 134.47,36.10 151.78,37.27 138.46,48.40 142.69,65.23 128.00,56.00 113.31,65.23 117.54,48.40 104.22,37.27 121.53,36.10" fill="#FFC857" stroke="#D99A20" stroke-width="5" stroke-linejoin="round"/>
+
+</svg>

@@ -1,0 +1,39 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "jest --runInBand",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "idb": "^8.0.3",
+    "lucide-react": "^1.33.0",
+    "next": "16.3.0",
+    "postcss": "^8.5.26",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.0",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1",
+    "jsdom": "^27.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
+  }
+}

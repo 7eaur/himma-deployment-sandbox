@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">بناء الكلمة</title>
+  
+<circle cx="128" cy="128" r="104" fill="#F7FBFF" stroke="#51B985" stroke-width="8"/>
+<rect x="45" y="89" width="52" height="52" rx="14" fill="#347FD9"/>
+<rect x="102" y="66" width="52" height="75" rx="14" fill="#51B985"/>
+<rect x="159" y="43" width="52" height="98" rx="14" fill="#FFC857"/>
+<path d="M53 177h149" stroke="#20364D" stroke-width="12" stroke-linecap="round"/>
+<path d="m157 177 23-20m-23 20 23 20" fill="none" stroke="#20364D" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+</svg>

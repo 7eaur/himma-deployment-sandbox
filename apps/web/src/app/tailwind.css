@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+/*
+ * Himma uses Tailwind utilities for responsive composition while globals.css
+ * keeps the product design tokens and legacy component primitives. Keeping this
+ * layer separate prevents the previous half-Tailwind state where classes such
+ * as md:hidden and xl:grid-cols-4 were present in JSX but never emitted.
+ */

@@ -1,0 +1,42 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependencies and generated builds
+node_modules/
+.next/
+dist/
+coverage/
+.turbo/
+.cache/
+.wrangler/
+
+# Python caches and virtual environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Runtime data: never commit real child data or recordings
+storage/child-recordings/
+uploads/child-recordings/
+data/children/
+*.sqlite
+*.sqlite3
+*.db
+
+# Logs, editor files, and operating-system residue
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# QA intermediates
+qa-output/
+test-results/
+playwright-report/

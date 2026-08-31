@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "policy_version": "HIMMA_ADAPTIVE_V4_PILOT",
+  "status": "pilot_configuration",
+  "note": "This is an operational pilot configuration derived from the approved Himma level objectives and the 2026-08-31 trial-readiness decision. It is not represented as an external diagnostic standard and must be calibrated after pilot evidence.",
+  "activity_thresholds": {
+    "pass_min": 80,
+    "guided_retry_min": 70,
+    "reinforcement_below": 70
+  },
+  "mastery": {
+    "window": 3,
+    "weights_newest_to_oldest": [0.5, 0.3, 0.2]
+  },
+  "early_promotion": {
+    "levels": [1, 2],
+    "minimum_valid_core_activities": 6,
+    "minimum_mastery": 85,
+    "critical_skill_floor": 70,
+    "requires_no_unresolved_reinforcement": true,
+    "requires_no_supervisor_review": true
+  },
+  "critical_skill_codes_by_level": {
+    "1": [
+      "visual_letter_discrimination",
+      "letter_form_recognition",
+      "sound_symbol_mapping",
+      "initial_sound_isolation",
+      "final_sound_isolation"
+    ],
+    "2": [
+      "short_vowels",
+      "syllable_reading",
+      "short_vowel_word_reading",
+      "long_vowels",
+      "word_building",
+      "sentence_reading"
+    ],
+    "3": [
+      "word_accuracy",
+      "passage_fluency",
+      "literal_comprehension",
+      "inferential_comprehension"
+    ]
+  },
+  "level_three": {
+    "early_promotion": false,
+    "core_completion_required": 10,
+    "pretest_gate": {
+      "total_min": 80,
+      "word_reading_accuracy_min_when_trustworthy": 80,
+      "connected_text_accuracy_min_when_trustworthy": 85,
+      "comprehension_min": 70,
+      "critical_reading_skill_floor": 70,
+      "untrusted_audio_state": "L3_GATE_UNVERIFIED"
+    }
+  },
+  "automatic_demotion": false,
+  "reinforcement": {
+    "random_fallback": false,
+    "maximum_intervention_verification_rounds_before_supervisor_review": 2
+  }
+}

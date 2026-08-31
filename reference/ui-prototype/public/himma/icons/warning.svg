@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-labelledby="title"
+     fill="none" stroke="#D99A20" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+  <title id="title">الحالة: تنبيه</title>
+  <path d="M12 3 2.5 20h19z"/><path d="M12 9v5M12 17.5h.01"/>
+</svg>
