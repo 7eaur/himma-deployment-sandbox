@@ -1,7 +1,6 @@
 """Safe sandbox authentication diagnostics. Never prints credentials or hashes."""
 
 import os
-import sys
 import bcrypt
 
 from db.database import SessionLocal
@@ -33,7 +32,7 @@ def main() -> None:
             and password_raw[-1] == password_raw[0]
         )
 
-        print(
+        message = (
             "ADMIN_DIAG "
             f"env={env_name!r} "
             f"username_raw={username_raw!r} "
@@ -49,10 +48,9 @@ def main() -> None:
             f"literal_admin_found={bool(literal_admin)} "
             f"literal_admin_active={getattr(literal_admin, 'is_active', None)!r} "
             f"literal_admin_role={getattr(literal_admin, 'role', None)!r} "
-            f"literal_admin_match={check(literal_admin)}",
-            file=sys.stderr,
-            flush=True,
+            f"literal_admin_match={check(literal_admin)}"
         )
+        raise RuntimeError(message)
     finally:
         db.close()
 
