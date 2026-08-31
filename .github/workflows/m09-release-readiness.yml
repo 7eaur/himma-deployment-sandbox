@@ -1,0 +1,147 @@
+name: Himma M09 — Release Readiness Gate
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: ['recovery/*']
+    paths:
+      - 'services/api/**'
+      - 'scripts/ops/**'
+      - 'docs/ops/M09_RELEASE_UAT_RUNBOOK.md'
+      - '.github/workflows/m09-release-readiness.yml'
+  workflow_dispatch:
+
+jobs:
+  release-readiness:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: himma_test
+          POSTGRES_PASSWORD: himma_test_pass
+          POSTGRES_DB: himma_test_db
+        ports: [5432:5432]
+        options: >-
+          --health-cmd="pg_isready -U himma_test -d himma_test_db"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+      redis:
+        image: redis:7-alpine
+        ports: [6379:6379]
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      DATABASE_URL: postgresql://himma_test:himma_test_pass@localhost:5432/himma_test_db
+      RESTORE_DATABASE_URL: postgresql://himma_test:himma_test_pass@localhost:5432/himma_restore_db
+      API_SECRET_KEY: m09-ci-test-secret-at-least-32-characters
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: m09-ci-only-researcher-password
+      SEED_DEMO_STUDENTS: 'false'
+      S3_ENDPOINT: http://localhost:9000
+      S3_ACCESS_KEY: m09-minio-access-key
+      S3_SECRET_KEY: m09-minio-secret-key
+      S3_BUCKET_NAME: himma-audio-m09
+      RESTORE_S3_BUCKET_NAME: himma-audio-m09-restore
+      REDIS_URL: redis://localhost:6379/0
+      ENV: trial
+      HIMMA_TEMP_AUDIO_SKIP: 'false'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PostgreSQL client and backend dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          pip install -r services/api/requirements.txt
+
+      - name: Validate catalog and build seeded database
+        working-directory: services/api
+        run: |
+          python ../../packages/content/scripts/validate_catalog.py
+          alembic upgrade head
+          python seed_all.py
+          python -m db.seed
+
+      - name: Start pinned MinIO and initialize private test bucket
+        env:
+          MINIO_ROOT_USER: m09-minio-access-key
+          MINIO_ROOT_PASSWORD: m09-minio-secret-key
+        run: |
+          curl -fsSLo /tmp/minio \
+            https://dl.min.io/server/minio/release/linux-amd64/archive/minio.RELEASE.2025-09-07T16-13-09Z
+          echo "7c5bd8512c6e966455b1d198209358b2d191c77a83ab377c4073281065fb855f  /tmp/minio" | sha256sum --check -
+          chmod +x /tmp/minio
+          mkdir -p /tmp/minio-data
+          nohup /tmp/minio server /tmp/minio-data --address :9000 >/tmp/minio.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://localhost:9000/minio/health/live && break; sleep 2; done
+          curl -sf http://localhost:9000/minio/health/live || (cat /tmp/minio.log && exit 1)
+          python - <<'PY'
+          import boto3
+          from botocore.exceptions import ClientError
+          s3 = boto3.client('s3', endpoint_url='http://localhost:9000', aws_access_key_id='m09-minio-access-key', aws_secret_access_key='m09-minio-secret-key', region_name='us-east-1')
+          bucket = 'himma-audio-m09'
+          try:
+              s3.head_bucket(Bucket=bucket)
+          except ClientError:
+              s3.create_bucket(Bucket=bucket)
+          payload = (b'HIMMA-M09-SYNTHETIC-AUDIO-' * 80)
+          s3.put_object(Bucket=bucket, Key='audio/release-readiness/synthetic.webm', Body=payload, ContentType='audio/webm')
+          print('MinIO test bucket ready')
+          PY
+
+      - name: Verify trial startup fails closed with temporary audio bypass
+        working-directory: services/api
+        run: |
+          if HIMMA_TEMP_AUDIO_SKIP=true ENV=trial python -c "import main"; then
+            echo "Unsafe trial startup unexpectedly succeeded" >&2
+            exit 1
+          fi
+          echo "Unsafe trial startup correctly rejected"
+
+      - name: Verify live readiness against PostgreSQL, Redis and MinIO
+        working-directory: services/api
+        run: |
+          uvicorn main:app --host 127.0.0.1 --port 8000 >/tmp/himma-m09-api.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8000/health && break; sleep 1; done
+          curl -fsS http://127.0.0.1:8000/health
+          curl -fsS http://127.0.0.1:8000/ready | tee /tmp/himma-ready.json
+          python - <<'PY'
+          import json
+          payload = json.load(open('/tmp/himma-ready.json', encoding='utf-8'))
+          assert payload['status'] == 'ready', payload
+          assert all(value == 'ok' for value in payload['checks'].values()), payload
+          print('Readiness probe verified')
+          PY
+
+      - name: Backup and restore PostgreSQL into an isolated database
+        run: |
+          bash scripts/ops/backup_postgres.sh /tmp/himma-postgres.dump
+          PGPASSWORD=himma_test_pass psql -h localhost -U himma_test -d postgres -v ON_ERROR_STOP=1 <<'SQL'
+          DROP DATABASE IF EXISTS himma_restore_db;
+          CREATE DATABASE himma_restore_db;
+          SQL
+          bash scripts/ops/restore_postgres.sh /tmp/himma-postgres.dump
+          python scripts/ops/verify_backup_restore.py
+
+      - name: Backup and restore private object storage into an isolated bucket
+        run: |
+          python scripts/ops/backup_object_store.py /tmp/himma-object-backup
+          python scripts/ops/restore_object_store.py /tmp/himma-object-backup
+
+      - name: Confirm backup artifacts stay ephemeral in CI
+        run: |
+          test -s /tmp/himma-postgres.dump
+          test -s /tmp/himma-postgres.dump.sha256
+          test -s /tmp/himma-object-backup/manifest.json
+          echo "Backup/restore evidence verified; no data backup artifact will be uploaded from CI."
