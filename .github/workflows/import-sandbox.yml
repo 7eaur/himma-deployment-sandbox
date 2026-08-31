@@ -1,0 +1,37 @@
+name: Import Himma Sandbox Snapshot
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  import:
+    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'chore: initialize sandbox deployment repository'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Clone pinned sandbox source
+        run: |
+          git clone --depth 1 --branch deployment/platform-sandbox https://github.com/7eaur/himma-.git /tmp/himma-source
+          cd /tmp/himma-source
+          test "$(git rev-parse HEAD)" = "4468575465d8108bc2fb5c15d3d8faccb4c7a370"
+
+      - name: Replace target with sandbox snapshot
+        run: |
+          rsync -a --delete --exclude='.git' /tmp/himma-source/ ./
+
+      - name: Commit imported snapshot
+        run: |
+          git config user.name "Himma Sandbox Import"
+          git config user.email "himma-sandbox-import@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: import sandbox snapshot 4468575" || exit 0
+          git push origin HEAD:main
