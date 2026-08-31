@@ -4,7 +4,7 @@ import os
 import bcrypt
 
 from db.database import SessionLocal
-from db.models import User
+from db.models import ContentItem, Skill, Student, User
 
 
 def _matches(password: str, user: User | None) -> bool:
@@ -57,6 +57,9 @@ def collect_admin_diag() -> dict[str, object]:
             "literal_admin_role": getattr(literal_admin, "role", None),
             "literal_admin_matches_env_password": _matches(password, literal_admin),
             "user_count": db.query(User).count(),
+            "student_count": db.query(Student).count(),
+            "skill_count": db.query(Skill).count(),
+            "content_item_count": db.query(ContentItem).count(),
         }
     finally:
         db.close()
