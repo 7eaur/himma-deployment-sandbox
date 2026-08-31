@@ -1,18 +1,59 @@
-"""Sandbox-only runtime bootstrap for the supervisor account.
+"""Sandbox-only runtime bootstrap.
 
-This module never contains or logs credentials. It only reads them from the
-service environment and is a no-op outside ENV=sandbox.
+Keeps the supervisor account synchronized and seeds the approved runtime catalog
+only when the sandbox database is incomplete. A PostgreSQL advisory lock prevents
+parallel Railway rollout containers from running the catalog seed concurrently.
+No credentials are stored or logged here.
 """
 
 import os
+
 import bcrypt
+from sqlalchemy import text
 
 from db.database import SessionLocal
-from db.models import User
+from db.models import ContentItem, Skill, User
+from seed_all import _base_stable_keys, run_seed_all
+
+
+_SANDBOX_SEED_LOCK_KEY = 481_663_202_608_31
+
+
+def _is_sandbox() -> bool:
+    return os.getenv("ENV", "").strip().lower() == "sandbox"
+
+
+def _catalog_is_complete(db) -> bool:
+    base_keys = _base_stable_keys()
+    total_items = db.query(ContentItem).count()
+    base_items = (
+        db.query(ContentItem)
+        .filter(ContentItem.stable_key.in_(base_keys))
+        .count()
+    )
+    reinforcement_items = (
+        db.query(ContentItem)
+        .filter(ContentItem.kind == "reinforcement_activity")
+        .count()
+    )
+    skills = db.query(Skill).count()
+    v2_items = sum(
+        1
+        for item in db.query(ContentItem).all()
+        if (item.template_data or {}).get("student_experience_version")
+        == "HIMMA-STUDENT-EXPERIENCE-2.0"
+    )
+    return (
+        total_items == 125
+        and base_items == 105
+        and reinforcement_items == 35
+        and skills >= 44
+        and v2_items == 125
+    )
 
 
 def ensure_sandbox_admin() -> None:
-    if os.getenv("ENV", "").strip().lower() != "sandbox":
+    if not _is_sandbox():
         return
 
     username = os.getenv("ADMIN_USERNAME", "admin").strip()
@@ -54,3 +95,40 @@ def ensure_sandbox_admin() -> None:
         raise
     finally:
         db.close()
+
+
+def ensure_sandbox_runtime() -> None:
+    """Guarantee sandbox catalog/admin state without reseeding healthy databases."""
+    if not _is_sandbox():
+        return
+
+    lock_db = SessionLocal()
+    lock_acquired = False
+    try:
+        is_postgres = lock_db.get_bind().dialect.name == "postgresql"
+        if is_postgres:
+            lock_db.execute(
+                text("SELECT pg_advisory_lock(:lock_key)"),
+                {"lock_key": _SANDBOX_SEED_LOCK_KEY},
+            )
+            lock_acquired = True
+
+        if not _catalog_is_complete(lock_db):
+            run_seed_all()
+            lock_db.expire_all()
+            if not _catalog_is_complete(lock_db):
+                raise RuntimeError(
+                    "Sandbox runtime catalog is still incomplete after approved seed"
+                )
+
+        ensure_sandbox_admin()
+    finally:
+        if lock_acquired:
+            try:
+                lock_db.execute(
+                    text("SELECT pg_advisory_unlock(:lock_key)"),
+                    {"lock_key": _SANDBOX_SEED_LOCK_KEY},
+                )
+            except Exception:
+                pass
+        lock_db.close()

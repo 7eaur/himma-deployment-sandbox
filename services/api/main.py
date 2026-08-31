@@ -1,6 +1,8 @@
 import os
+
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
+
 from auth import router as auth_router
 from protected import router as protected_router
 from assessment import router as assessment_router
@@ -19,9 +21,7 @@ from reports import router as reports_router
 from skill_reports import router as skill_reports_router
 from readiness import readiness_report
 from runtime_flags import validate_runtime_safety
-from db.diag_admin import collect_admin_diag
-from db.sandbox_bootstrap import ensure_sandbox_admin
-from seed_all import run_seed_all
+from db.sandbox_bootstrap import ensure_sandbox_runtime
 
 
 # Trial/production must fail closed while the temporary audio bypass is enabled.
@@ -38,9 +38,7 @@ app = FastAPI(
 
 @app.on_event("startup")
 def bootstrap_sandbox_runtime() -> None:
-    if os.getenv("ENV", "").strip().lower() == "sandbox":
-        run_seed_all()
-        ensure_sandbox_admin()
+    ensure_sandbox_runtime()
 
 
 # CORS — allows the Next.js dev server and production URL
@@ -86,8 +84,3 @@ def readiness_check(response: Response):
     if report["status"] != "ready":
         response.status_code = 503
     return report
-
-
-@app.get("/debug/admin-diag")
-def debug_admin_diag():
-    return collect_admin_diag()
