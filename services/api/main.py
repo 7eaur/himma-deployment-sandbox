@@ -20,6 +20,7 @@ from skill_reports import router as skill_reports_router
 from readiness import readiness_report
 from runtime_flags import validate_runtime_safety
 from db.diag_admin import collect_admin_diag
+from db.sandbox_bootstrap import ensure_sandbox_admin
 
 
 # Trial/production must fail closed while the temporary audio bypass is enabled.
@@ -32,6 +33,12 @@ app = FastAPI(
     description="API service for Himma Educational Platform",
     version="0.1.0",
 )
+
+
+@app.on_event("startup")
+def bootstrap_sandbox_runtime() -> None:
+    ensure_sandbox_admin()
+
 
 # CORS — allows the Next.js dev server and production URL
 _origins = os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(",")
