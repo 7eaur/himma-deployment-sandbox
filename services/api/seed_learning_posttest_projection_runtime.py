@@ -49,8 +49,9 @@ def _single_visible_stimulus(text: str) -> str:
     if quoted:
         return quoted.group(1).strip()
 
-    # Source rounds use forms such as `ب: ب/ت`, `ب ← حرف`, or `ب = حرف`.
-    for separator in ("←", "=", ":"):
+    # Source rounds use forms such as `ب: ب/ت`, `ب ← حرف`, `ب → بـ / تـ`,
+    # or `ب = حرف`.
+    for separator in ("←", "→", "=", ":"):
         if separator in value:
             value = value.split(separator, 1)[0].strip()
             break
