@@ -1,8 +1,8 @@
 """Runtime adapter for the 2026-09-01 learning/posttest projection.
 
-The immutable content model stores display instructions in template_data rather
-than ContentStep columns. Patch the projection helper to read the canonical
-runtime instruction API without altering the database schema.
+The immutable academic catalog stays untouched. This adapter stores a clean,
+student-facing presentation contract in template_data so the UI never has to
+show legacy prompt strings that also contain serialized choices.
 """
 from __future__ import annotations
 
@@ -11,6 +11,31 @@ from typing import Any
 import seed_learning_posttest_experience_2026_09_01 as base
 from content_runtime import instruction_text as runtime_instruction_text
 from db.models import ContentItem
+
+LEARNING_VERSION = "HIMMA-LEARNING-2026-09-01-R2"
+POSTTEST_VERSION = base.POSTTEST_VERSION
+LISTEN = {"listen_choose_one", "listen_choose_image", "listen_choose_many"}
+NO_TEXT = {"read_aloud", "timed_read_aloud", "memory_sequence", "sequence", "build_word", "choose_image", "choose_many", "listen_choose_image", "listen_choose_many"}
+LISTEN_WITH_VISIBLE_STIMULUS = {"L1-CORE-06"}
+
+
+def _clean_stimulus(item: ContentItem, step, interaction: str) -> str:
+    key = base.canonical(item)
+    if interaction in NO_TEXT:
+        return ""
+    if interaction in LISTEN and key not in LISTEN_WITH_VISIBLE_STIMULUS:
+        return ""
+    text = str(step.prompt_text or "").strip().replace("التعليمات:", "").strip()
+    if not text:
+        return ""
+    for marker in ("الخيارات:", "الصور:"):
+        if marker in text:
+            text = text.split(marker, 1)[0].strip()
+    # Legacy rounds sometimes serialize display value and choices in one prompt:
+    # `بَ؛ بَ/بِ/بُ`. Only the first segment is a stimulus.
+    if "؛" in text:
+        text = text.split("؛", 1)[0].strip()
+    return text
 
 
 def _learning_round(item: ContentItem, step, total: int) -> dict[str, Any]:
@@ -30,10 +55,33 @@ def _learning_round(item: ContentItem, step, total: int) -> dict[str, Any]:
         "hint": override.get("hint") or base.generic_hint(interaction, question),
         "question_text": question,
         "instruction_text": instruction,
+        "stimulus_text": _clean_stimulus(item, step, interaction),
     }
 
 
+def _apply_learning_r2(db) -> int:
+    items = db.query(ContentItem).filter(ContentItem.kind.in_(["core_activity", "reinforcement_activity"])).all()
+    if len(items) != 65:
+        raise RuntimeError(f"Expected 65 learning items, got {len(items)}")
+    changed = 0
+    for item in items:
+        steps = sorted(item.steps, key=lambda step: step.order_index)
+        if not steps:
+            raise RuntimeError(f"{base.canonical(item)} has no rounds")
+        data = dict(item.template_data or {})
+        projected = dict(data)
+        projected["learning_experience_version"] = LEARNING_VERSION
+        projected["learning_experience"] = {
+            "version": LEARNING_VERSION,
+            "rounds": [_learning_round(item, step, len(steps)) for step in steps],
+        }
+        if projected != data:
+            item.template_data = projected
+            changed += 1
+    return changed
+
+
 base.learning_round = _learning_round
-LEARNING_VERSION = base.LEARNING_VERSION
-POSTTEST_VERSION = base.POSTTEST_VERSION
+base.apply_learning = _apply_learning_r2
+base.LEARNING_VERSION = LEARNING_VERSION
 run_seed = base.run_seed
