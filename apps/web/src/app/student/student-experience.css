@@ -81,6 +81,111 @@
   border-radius:16px;
 }
 
+/* Shared compact learning/assessment tuning.
+   Both routes consume the same session.module.css classes, so these rules keep
+   the visual rhythm aligned without introducing a second page-specific theme. */
+[data-testid="activity-session"] [class*="progressPanel"],
+[data-testid="assessment-session"] [class*="progressPanel"]{
+  padding:10px 30px 12px!important;
+  border-radius:24px!important;
+  margin-bottom:10px!important;
+}
+
+[data-testid="activity-session"] [class*="progressTop"],
+[data-testid="assessment-session"] [class*="progressTop"]{
+  margin-bottom:8px;
+}
+
+[data-testid="activity-session"] [class*="progressPanel"] [class*="assessmentBadge"],
+[data-testid="assessment-session"] [class*="progressPanel"] [class*="assessmentBadge"]{
+  min-height:36px!important;
+  padding-inline:14px!important;
+  font-size:.9rem!important;
+}
+
+[data-testid="activity-session"] [class*="progressPanel"] [class*="progressTrack"],
+[data-testid="assessment-session"] [class*="progressPanel"] [class*="progressTrack"]{
+  height:10px!important;
+}
+
+/* The top utility sound control is intentionally removed. Audio questions keep
+   their in-question “استمع” control, which is the only audio action the learner
+   needs while answering. */
+[data-testid="assessment-session"] button[aria-label="تشغيل صوت السؤال"]{
+  display:none!important;
+}
+
+/* Responsive single-line typography. The viewport-based clamp lowers the base
+   size compared with the previous design and continues shrinking on narrower
+   screens so long Arabic labels stay on one line whenever practical. */
+[data-testid="activity-session"][data-phase="active"] [class*="questionTitle"],
+[data-testid="assessment-session"][data-phase="question"] [class*="questionTitle"],
+[data-testid="assessment-session"][data-phase="submitting"] [class*="questionTitle"]{
+  width:100%!important;
+  max-width:100%!important;
+  margin-top:8px!important;
+  margin-bottom:12px!important;
+  font-size:clamp(.92rem,2.4vw,2.55rem)!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+  text-wrap:nowrap!important;
+}
+
+[data-testid="activity-session"][data-phase="active"] [class*="stimulusBox"],
+[data-testid="assessment-session"][data-phase="question"] [class*="stimulusBox"],
+[data-testid="assessment-session"][data-phase="submitting"] [class*="stimulusBox"]{
+  min-height:104px!important;
+  padding:14px 20px!important;
+  font-size:clamp(1.15rem,3vw,3rem)!important;
+  line-height:1.15!important;
+  white-space:nowrap!important;
+  text-wrap:nowrap!important;
+  overflow:visible!important;
+}
+
+[data-testid="activity-session"][data-phase="active"] [class*="letterStimulus"],
+[data-testid="assessment-session"][data-phase="question"] [class*="letterStimulus"],
+[data-testid="assessment-session"][data-phase="submitting"] [class*="letterStimulus"]{
+  font-size:clamp(3rem,7vw,5.8rem)!important;
+}
+
+[data-testid="activity-session"][data-phase="active"] button[class*="option"],
+[data-testid="assessment-session"][data-phase="question"] button[class*="option"],
+[data-testid="assessment-session"][data-phase="submitting"] button[class*="option"]{
+  font-size:clamp(.86rem,1.65vw,1.6rem)!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+  text-wrap:nowrap!important;
+  padding-inline:14px!important;
+}
+
+@media(max-width:640px){
+  [data-testid="activity-session"] [class*="progressPanel"],
+  [data-testid="assessment-session"] [class*="progressPanel"]{
+    padding:8px 14px 10px!important;
+    border-radius:20px!important;
+  }
+
+  [data-testid="activity-session"][data-phase="active"] [class*="questionTitle"],
+  [data-testid="assessment-session"][data-phase="question"] [class*="questionTitle"],
+  [data-testid="assessment-session"][data-phase="submitting"] [class*="questionTitle"]{
+    font-size:clamp(.78rem,4.2vw,1.45rem)!important;
+  }
+
+  [data-testid="activity-session"][data-phase="active"] [class*="stimulusBox"],
+  [data-testid="assessment-session"][data-phase="question"] [class*="stimulusBox"],
+  [data-testid="assessment-session"][data-phase="submitting"] [class*="stimulusBox"]{
+    min-height:86px!important;
+    font-size:clamp(1rem,6vw,2rem)!important;
+  }
+
+  [data-testid="activity-session"][data-phase="active"] button[class*="option"],
+  [data-testid="assessment-session"][data-phase="question"] button[class*="option"],
+  [data-testid="assessment-session"][data-phase="submitting"] button[class*="option"]{
+    font-size:clamp(.74rem,3.8vw,1.15rem)!important;
+  }
+}
+
 @media(max-height:760px) and (min-width:641px){
   [data-testid="activity-session"][data-phase="active"] > main,
   [data-testid="assessment-session"][data-phase="question"] > main,
