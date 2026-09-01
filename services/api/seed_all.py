@@ -10,6 +10,7 @@ import seed_reinforcement_additions_v2
 import seed_student_choice_corrections
 import seed_student_experience_v2
 import seed_pretest_experience_2026_09_01
+import seed_db_runtime_contract
 import seed_learning_posttest_projection_runtime
 from db.database import SessionLocal
 from db.models import ContentItem
@@ -19,6 +20,7 @@ BASE_CATALOG = ROOT / "packages" / "content" / "src" / "catalog.json"
 PRETEST_VERSION = "HIMMA-PRETEST-2026-09-01"
 LEARNING_VERSION = seed_learning_posttest_projection_runtime.LEARNING_VERSION
 POSTTEST_VERSION = seed_learning_posttest_projection_runtime.POSTTEST_VERSION
+DB_RUNTIME_VERSION = seed_db_runtime_contract.VERSION
 
 
 def _base_stable_keys() -> set[str]:
@@ -44,6 +46,10 @@ def run_seed_all() -> dict[str, int]:
     choice_corrections_created = seed_student_choice_corrections.run_seed()
     student_experience_changes = seed_student_experience_v2.run_seed()
     pretest_experience_changes = seed_pretest_experience_2026_09_01.run_seed()
+
+    # Source files are allowed only in the import pipeline. Snapshot all source,
+    # media semantics and media gaps into PostgreSQL before runtime projection.
+    db_runtime_changes = seed_db_runtime_contract.run_seed()
     projection_result = seed_learning_posttest_projection_runtime.run_seed()
 
     db = SessionLocal()
@@ -56,6 +62,7 @@ def run_seed_all() -> dict[str, int]:
         pretest_marked = sum(1 for item in all_items if item.kind == "pretest_question" and (item.template_data or {}).get("pretest_experience_version") == PRETEST_VERSION)
         learning_marked = sum(1 for item in all_items if item.kind in {"core_activity", "reinforcement_activity"} and (item.template_data or {}).get("learning_experience_version") == LEARNING_VERSION)
         posttest_marked = sum(1 for item in all_items if item.kind == "posttest_question" and (item.template_data or {}).get("posttest_experience_version") == POSTTEST_VERSION)
+        db_runtime_marked = sum(1 for item in all_items if ((item.template_data or {}).get("db_runtime") or {}).get("version") == DB_RUNTIME_VERSION)
     finally:
         db.close()
 
@@ -66,6 +73,7 @@ def run_seed_all() -> dict[str, int]:
     if pretest_marked != 30: raise RuntimeError(f"Expected {PRETEST_VERSION} on 30 pretest items, got {pretest_marked}")
     if learning_marked != 65: raise RuntimeError(f"Expected {LEARNING_VERSION} on 65 learning items, got {learning_marked}")
     if posttest_marked != 30: raise RuntimeError(f"Expected {POSTTEST_VERSION} on 30 posttest items, got {posttest_marked}")
+    if db_runtime_marked != 125: raise RuntimeError(f"Expected {DB_RUNTIME_VERSION} on 125 items, got {db_runtime_marked}")
 
     result = {
         "baseline_items": base_count, "reinforcement_items": reinforcement_count, "total_items": total,
@@ -73,6 +81,7 @@ def run_seed_all() -> dict[str, int]:
         "choice_corrections_created": choice_corrections_created,
         "student_experience_v2_changes": student_experience_changes, "student_experience_v2_items": v2_marked,
         "pretest_experience_changes": pretest_experience_changes, "pretest_experience_items": pretest_marked,
+        "db_runtime_changes": db_runtime_changes, "db_runtime_items": db_runtime_marked,
         "learning_experience_changes": projection_result["learning_changed"], "learning_experience_items": learning_marked,
         "posttest_experience_changes": projection_result["posttest_changed"], "posttest_experience_items": posttest_marked,
         "additions_created": v1_created + v2_created,
