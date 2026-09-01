@@ -1,0 +1,440 @@
+/* Assessment-only responsive refinement.
+   Scoped to the stable assessment root so learning activities remain unchanged. */
+
+[data-testid="assessment-session"][data-phase="question"],
+[data-testid="assessment-session"][data-phase="submitting"] {
+  position: relative;
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding-bottom: 0 !important;
+  display: grid;
+  grid-template-rows: clamp(64px, 9dvh, 82px) minmax(0, 1fr);
+}
+
+/* Header: logo — progress — exit. */
+[data-testid="assessment-session"][data-phase="question"] > header,
+[data-testid="assessment-session"][data-phase="submitting"] > header {
+  min-height: 0;
+  height: 100%;
+}
+
+[data-testid="assessment-session"][data-phase="question"] > header > div,
+[data-testid="assessment-session"][data-phase="submitting"] > header > div {
+  width: min(calc(100% - clamp(16px, 3vw, 40px)), 1450px) !important;
+  min-height: 100% !important;
+  height: 100%;
+  gap: clamp(8px, 1.4vw, 18px) !important;
+}
+
+/* The question-specific audio prompt remains available inside listening questions.
+   The redundant circular header sound control is removed from assessment screens. */
+[data-testid="assessment-session"][data-phase="question"] > header > div > div > button,
+[data-testid="assessment-session"][data-phase="submitting"] > header > div > div > button {
+  display: none !important;
+}
+
+[data-testid="assessment-session"][data-phase="question"] > header > div > div > img,
+[data-testid="assessment-session"][data-phase="submitting"] > header > div > div > img {
+  width: clamp(82px, 8.5vw, 118px) !important;
+  height: auto !important;
+}
+
+[data-testid="assessment-session"][data-phase="question"] > header > div > button,
+[data-testid="assessment-session"][data-phase="submitting"] > header > div > button {
+  min-height: clamp(40px, 5.7dvh, 50px) !important;
+  padding-inline: clamp(10px, 1.4vw, 16px) !important;
+  border-radius: clamp(12px, 1.1vw, 15px) !important;
+  gap: 7px !important;
+  font-size: clamp(.78rem, 1vw, .95rem) !important;
+  flex: 0 0 auto;
+}
+
+/* Progress panel is visually centered in the header between logo and exit. */
+[data-testid="assessment-session"][data-phase="question"] > header + div,
+[data-testid="assessment-session"][data-phase="submitting"] > header + div {
+  position: absolute !important;
+  z-index: 30;
+  top: clamp(8px, 1.45dvh, 13px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(170px, 48vw, 620px) !important;
+  margin: 0 !important;
+  padding: clamp(7px, 1dvh, 10px) clamp(10px, 1.5vw, 18px) !important;
+  border-radius: clamp(15px, 1.7vw, 22px) !important;
+  box-shadow: 0 8px 26px rgba(23, 72, 130, .055) !important;
+}
+
+[data-testid="assessment-session"][data-phase="question"] > header + div > div:first-child,
+[data-testid="assessment-session"][data-phase="submitting"] > header + div > div:first-child {
+  margin-bottom: clamp(5px, .65dvh, 7px) !important;
+  gap: 10px !important;
+}
+
+[data-testid="assessment-session"][data-phase="question"] > header + div > div:first-child > span,
+[data-testid="assessment-session"][data-phase="submitting"] > header + div > div:first-child > span {
+  min-height: 0 !important;
+  font-size: clamp(.72rem, .92vw, .88rem) !important;
+}
+
+[data-testid="assessment-session"][data-phase="question"] > header + div > div:last-child,
+[data-testid="assessment-session"][data-phase="submitting"] > header + div > div:last-child {
+  height: clamp(6px, .82dvh, 9px) !important;
+}
+
+/* Main assessment card always uses the remaining viewport. */
+[data-testid="assessment-session"][data-phase="question"] > main,
+[data-testid="assessment-session"][data-phase="submitting"] > main {
+  width: min(calc(100% - clamp(14px, 2.5vw, 36px)), 1450px) !important;
+  height: 100%;
+  min-height: 0;
+  margin: 0 auto !important;
+  padding-bottom: clamp(7px, 1dvh, 12px);
+  overflow: hidden;
+}
+
+[data-testid="assessment-session"][data-phase="question"] > main > section,
+[data-testid="assessment-session"][data-phase="submitting"] > main > section {
+  height: 100%;
+  min-height: 0 !important;
+  border-radius: clamp(20px, 2.5vw, 30px) !important;
+  padding: clamp(12px, 1.8dvh, 20px) clamp(12px, 3vw, 42px) clamp(10px, 1.7dvh, 18px) !important;
+  overflow: hidden !important;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+/* Skill chip: compact, fluid. */
+[data-testid="assessment-session"][data-phase="question"] > main > section > div:first-child,
+[data-testid="assessment-session"][data-phase="submitting"] > main > section > div:first-child {
+  min-height: clamp(32px, 4.6dvh, 40px) !important;
+  padding-inline: clamp(10px, 1.3vw, 14px) !important;
+  border-radius: 12px !important;
+  gap: 7px !important;
+  font-size: clamp(.72rem, .9vw, .88rem) !important;
+}
+
+/* Main question content is flexible instead of reserving fixed empty space. */
+[data-testid="assessment-session"][data-phase="question"] > main > section > div:nth-of-type(2),
+[data-testid="assessment-session"][data-phase="submitting"] > main > section > div:nth-of-type(2) {
+  width: min(100%, 1080px) !important;
+  min-height: 0;
+  height: 100%;
+  margin: 0 auto !important;
+  justify-content: center;
+  gap: clamp(5px, .85dvh, 10px);
+}
+
+[data-testid="question-title"] {
+  width: 100% !important;
+  max-width: 1100px !important;
+  margin: clamp(2px, .55dvh, 6px) auto clamp(3px, .7dvh, 8px) !important;
+  font-size: clamp(1.45rem, min(3vw, 4.2dvh), 2.8rem) !important;
+  line-height: 1.18 !important;
+  letter-spacing: 0 !important;
+  text-wrap: pretty !important;
+  overflow-wrap: normal;
+}
+
+[data-testid="question-stimulus"] {
+  width: clamp(150px, min(32vw, 29dvh), 300px) !important;
+  min-height: 0 !important;
+  height: clamp(105px, 20dvh, 188px) !important;
+  aspect-ratio: auto !important;
+  margin: 0 auto clamp(3px, .7dvh, 8px) !important;
+  padding: clamp(8px, 1.2dvh, 14px) clamp(12px, 1.8vw, 20px) !important;
+  border-radius: clamp(18px, 2vw, 25px) !important;
+  font-size: clamp(3.5rem, min(10vw, 13dvh), 7rem) !important;
+  line-height: 1 !important;
+}
+
+[data-testid="question-image"] {
+  width: min(100%, clamp(240px, 35vw, 410px)) !important;
+  min-height: 0 !important;
+  max-height: 26dvh;
+  margin: 0 auto clamp(3px, .7dvh, 8px) !important;
+  padding: clamp(7px, 1dvh, 12px) !important;
+  border-radius: clamp(18px, 2vw, 24px) !important;
+}
+
+[data-testid="question-image"] img {
+  max-height: 22dvh !important;
+}
+
+[data-testid="listen-prompt"] {
+  width: clamp(78px, 10dvh, 102px) !important;
+  height: clamp(78px, 10dvh, 102px) !important;
+  margin: 0 auto clamp(3px, .7dvh, 8px) !important;
+  font-size: clamp(.78rem, 1vw, .95rem) !important;
+}
+
+/* Instructions and supporting text remain readable but never dominate the viewport. */
+[data-testid="question-title"] ~ div p,
+[data-testid="question-title"] ~ p {
+  font-size: clamp(.78rem, min(1.15vw, 1.75dvh), 1rem) !important;
+}
+
+/* Text choices scale with viewport and use available width efficiently. */
+[data-testid="text-options"] {
+  width: min(100%, 960px) !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: clamp(7px, 1vw, 12px) !important;
+  margin: 0 auto !important;
+}
+
+[data-testid="text-options"] > button {
+  min-width: 0;
+  min-height: clamp(54px, 8.6dvh, 82px) !important;
+  padding: clamp(7px, 1.25dvh, 13px) clamp(7px, 1vw, 12px) !important;
+  border-radius: clamp(15px, 1.7vw, 21px) !important;
+  font-size: clamp(1.05rem, min(2vw, 3.2dvh), 1.75rem) !important;
+  line-height: 1.15 !important;
+}
+
+[data-testid="image-options"],
+[data-testid="sequence-image-options"] {
+  width: min(100%, 920px) !important;
+  gap: clamp(7px, 1vw, 12px) !important;
+}
+
+[data-testid="image-options"] > button,
+[data-testid="sequence-image-options"] > button {
+  min-height: clamp(120px, 19dvh, 170px) !important;
+  padding: clamp(7px, 1dvh, 11px) !important;
+  border-radius: clamp(16px, 1.8vw, 22px) !important;
+  font-size: clamp(.75rem, 1vw, .95rem) !important;
+}
+
+[data-testid="image-options"] img,
+[data-testid="sequence-image-options"] img {
+  height: clamp(70px, 12dvh, 108px) !important;
+}
+
+[data-testid="sequence-board"] {
+  min-height: clamp(48px, 7dvh, 64px) !important;
+  margin: 0 auto clamp(5px, .75dvh, 9px) !important;
+  padding: clamp(6px, .8dvh, 9px) 12px !important;
+  border-radius: 17px !important;
+  font-size: clamp(.76rem, 1vw, .95rem) !important;
+}
+
+[data-testid="reading-text"] {
+  max-height: min(35dvh, 285px) !important;
+  padding: clamp(10px, 1.6dvh, 18px) clamp(12px, 2vw, 22px) !important;
+  margin: 0 auto clamp(4px, .7dvh, 8px) !important;
+  border-radius: clamp(17px, 2vw, 22px) !important;
+  font-size: clamp(1.3rem, min(3vw, 4.2dvh), 2.7rem) !important;
+  line-height: 1.55 !important;
+}
+
+/* Coach stays useful but stops consuming a separate tall mobile row. */
+[data-testid="assessment-session"][data-phase="question"] > main > section > aside,
+[data-testid="assessment-session"][data-phase="submitting"] > main > section > aside {
+  inset-inline-end: clamp(8px, 2vw, 22px) !important;
+  bottom: clamp(58px, 8dvh, 72px) !important;
+  width: clamp(125px, 16vw, 205px) !important;
+}
+
+[data-testid="assessment-session"][data-phase="question"] > main > section > aside > div,
+[data-testid="assessment-session"][data-phase="submitting"] > main > section > aside > div {
+  min-height: 0 !important;
+  padding: clamp(8px, 1dvh, 12px) !important;
+  border-radius: 16px 16px 8px 16px !important;
+  font-size: clamp(.66rem, min(.82vw, 1.45dvh), .8rem) !important;
+  line-height: 1.4 !important;
+}
+
+[data-testid="assessment-session"][data-phase="question"] > main > section > aside > img,
+[data-testid="assessment-session"][data-phase="submitting"] > main > section > aside > img {
+  width: clamp(76px, 8vw, 118px) !important;
+  max-height: clamp(92px, 14dvh, 150px) !important;
+  margin-top: 4px !important;
+}
+
+/* Bottom action is centered, compact and independent of viewport width. */
+[data-testid="assessment-session"][data-phase="question"] > main > section > div:last-child,
+[data-testid="assessment-session"][data-phase="submitting"] > main > section > div:last-child {
+  position: relative !important;
+  inset: auto !important;
+  align-self: end;
+  width: 100%;
+  padding: clamp(4px, .7dvh, 8px) 0 0 !important;
+  background: transparent !important;
+  gap: 9px !important;
+}
+
+[data-testid="assessment-session"][data-phase="question"] > main > section > div:last-child > button:last-child,
+[data-testid="assessment-session"][data-phase="submitting"] > main > section > div:last-child > button:last-child {
+  width: clamp(176px, 22vw, 250px) !important;
+  min-height: clamp(46px, 6.6dvh, 56px) !important;
+  padding: 0 8px 0 clamp(15px, 2vw, 22px) !important;
+  border-radius: clamp(17px, 1.6vw, 21px) !important;
+  gap: 10px !important;
+  font-size: clamp(.92rem, 1.2vw, 1.08rem) !important;
+}
+
+[data-testid="assessment-session"][data-phase="question"] > main > section > div:last-child > button:last-child > span:last-child,
+[data-testid="assessment-session"][data-phase="submitting"] > main > section > div:last-child > button:last-child > span:last-child {
+  width: clamp(34px, 4.8dvh, 42px) !important;
+  height: clamp(34px, 4.8dvh, 42px) !important;
+}
+
+@media (max-width: 760px) {
+  [data-testid="assessment-session"][data-phase="question"],
+  [data-testid="assessment-session"][data-phase="submitting"] {
+    grid-template-rows: clamp(58px, 8dvh, 68px) minmax(0, 1fr);
+  }
+
+  [data-testid="assessment-session"][data-phase="question"] > header + div,
+  [data-testid="assessment-session"][data-phase="submitting"] > header + div {
+    width: clamp(145px, 46vw, 220px) !important;
+    padding: 6px 9px !important;
+    border-radius: 15px !important;
+  }
+
+  [data-testid="assessment-session"][data-phase="question"] > header + div > div:first-child > span:first-child,
+  [data-testid="assessment-session"][data-phase="submitting"] > header + div > div:first-child > span:first-child {
+    display: none !important;
+  }
+
+  [data-testid="assessment-session"][data-phase="question"] > header + div > div:first-child,
+  [data-testid="assessment-session"][data-phase="submitting"] > header + div > div:first-child {
+    justify-content: center !important;
+    margin-bottom: 5px !important;
+  }
+
+  [data-testid="assessment-session"][data-phase="question"] > header > div > button span,
+  [data-testid="assessment-session"][data-phase="submitting"] > header > div > button span {
+    display: none;
+  }
+
+  [data-testid="assessment-session"][data-phase="question"] > header > div > button,
+  [data-testid="assessment-session"][data-phase="submitting"] > header > div > button {
+    width: 42px;
+    min-height: 42px !important;
+    padding: 0 !important;
+    justify-content: center;
+  }
+
+  [data-testid="assessment-session"][data-phase="question"] > main > section,
+  [data-testid="assessment-session"][data-phase="submitting"] > main > section {
+    padding: clamp(9px, 1.3dvh, 12px) 9px clamp(7px, 1dvh, 10px) !important;
+    border-radius: 20px !important;
+  }
+
+  [data-testid="assessment-session"][data-phase="question"] > main > section > div:nth-of-type(2),
+  [data-testid="assessment-session"][data-phase="submitting"] > main > section > div:nth-of-type(2) {
+    gap: clamp(3px, .55dvh, 6px);
+  }
+
+  [data-testid="question-title"] {
+    font-size: clamp(1.28rem, min(6.1vw, 3.4dvh), 1.72rem) !important;
+    line-height: 1.15 !important;
+  }
+
+  [data-testid="question-stimulus"] {
+    width: clamp(128px, 43vw, 180px) !important;
+    height: clamp(92px, 17dvh, 132px) !important;
+    font-size: clamp(3.3rem, min(18vw, 10dvh), 5.25rem) !important;
+    border-radius: 17px !important;
+  }
+
+  [data-testid="text-options"] {
+    width: min(100%, 360px) !important;
+    gap: clamp(6px, 1.8vw, 9px) !important;
+  }
+
+  [data-testid="text-options"] > button {
+    min-height: clamp(48px, 7.1dvh, 62px) !important;
+    padding: 6px 4px !important;
+    border-radius: 14px !important;
+    font-size: clamp(.95rem, min(5.1vw, 2.8dvh), 1.35rem) !important;
+  }
+
+  [data-testid="image-options"],
+  [data-testid="sequence-image-options"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+  }
+
+  [data-testid="image-options"] > button,
+  [data-testid="sequence-image-options"] > button {
+    min-height: clamp(96px, 15dvh, 125px) !important;
+    padding: 5px !important;
+    border-radius: 14px !important;
+  }
+
+  [data-testid="image-options"] img,
+  [data-testid="sequence-image-options"] img {
+    height: clamp(58px, 9dvh, 82px) !important;
+  }
+
+  [data-testid="reading-text"] {
+    max-height: 29dvh !important;
+    font-size: clamp(1.08rem, min(5vw, 2.7dvh), 1.45rem) !important;
+    line-height: 1.5 !important;
+  }
+
+  [data-testid="assessment-session"][data-phase="question"] > main > section > aside,
+  [data-testid="assessment-session"][data-phase="submitting"] > main > section > aside {
+    width: clamp(92px, 25vw, 120px) !important;
+    bottom: clamp(50px, 7dvh, 58px) !important;
+    inset-inline-end: 5px !important;
+  }
+
+  [data-testid="assessment-session"][data-phase="question"] > main > section > aside > div,
+  [data-testid="assessment-session"][data-phase="submitting"] > main > section > aside > div {
+    display: none !important;
+  }
+
+  [data-testid="assessment-session"][data-phase="question"] > main > section > aside > img,
+  [data-testid="assessment-session"][data-phase="submitting"] > main > section > aside > img {
+    width: clamp(68px, 20vw, 92px) !important;
+    max-height: 12dvh !important;
+  }
+
+  [data-testid="assessment-session"][data-phase="question"] > main > section > div:last-child,
+  [data-testid="assessment-session"][data-phase="submitting"] > main > section > div:last-child {
+    padding-top: 3px !important;
+  }
+
+  [data-testid="assessment-session"][data-phase="question"] > main > section > div:last-child > button:last-child,
+  [data-testid="assessment-session"][data-phase="submitting"] > main > section > div:last-child > button:last-child {
+    width: clamp(162px, 52vw, 205px) !important;
+    min-height: clamp(43px, 5.8dvh, 49px) !important;
+    border-radius: 16px !important;
+    font-size: clamp(.82rem, 3.6vw, .96rem) !important;
+  }
+}
+
+@media (max-height: 720px) {
+  [data-testid="assessment-session"][data-phase="question"],
+  [data-testid="assessment-session"][data-phase="submitting"] {
+    grid-template-rows: 56px minmax(0, 1fr);
+  }
+
+  [data-testid="assessment-session"][data-phase="question"] > header + div,
+  [data-testid="assessment-session"][data-phase="submitting"] > header + div {
+    top: 6px;
+    padding-block: 5px !important;
+  }
+
+  [data-testid="question-stimulus"] {
+    height: clamp(82px, 16dvh, 108px) !important;
+  }
+
+  [data-testid="text-options"] > button {
+    min-height: 46px !important;
+  }
+
+  [data-testid="assessment-session"][data-phase="question"] > main > section > aside > div,
+  [data-testid="assessment-session"][data-phase="submitting"] > main > section > aside > div {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-testid="assessment-session"] * {
+    scroll-behavior: auto !important;
+  }
+}
