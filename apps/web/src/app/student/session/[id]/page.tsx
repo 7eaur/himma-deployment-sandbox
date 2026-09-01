@@ -3,7 +3,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { Check, Mic, MicOff, RotateCcw, Volume2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Check,
+  ClipboardList,
+  Info,
+  LogOut,
+  Mic,
+  MicOff,
+  RotateCcw,
+  Star,
+  Target,
+  Volume2,
+} from "lucide-react";
 import styles from "./session.module.css";
 
 type Interaction =
@@ -39,6 +51,22 @@ interface ContentStep {
   assets: ContentAsset[];
   media_gaps: Array<{ semantic_text?: string; status?: string }>;
 }
+interface PretestExperience {
+  version: string;
+  question_number: number;
+  section: string;
+  skill: string;
+  encouragement: string;
+  question_text: string;
+  instruction_text: string;
+  interaction_type: Interaction;
+  stimulus?: {
+    kind?: "text" | "reading" | "audio" | "image" | "reference" | "none" | string;
+    text?: string;
+    audio_target?: string;
+  };
+  media_semantics?: { option_kind?: string; stimulus?: string } | null;
+}
 interface ContentItem {
   id: number;
   stable_key: string;
@@ -47,7 +75,11 @@ interface ContentItem {
   interaction_type: Interaction;
   title?: string | null;
   source_method?: string | null;
-  template_data?: { criterion?: string | null; [key: string]: unknown } | null;
+  template_data?: {
+    criterion?: string | null;
+    pretest_experience?: PretestExperience;
+    [key: string]: unknown;
+  } | null;
   item_assets: ContentAsset[];
   steps: ContentStep[];
 }
@@ -75,16 +107,6 @@ function conciseTitle(title?: string | null) {
   return value.replace(/^السؤال\s+\d+\s*/u, "").trim() || "مهمة قصيرة";
 }
 
-function cleanPrompt(raw: string, interaction: Interaction) {
-  if (LISTEN.has(interaction) || READ.has(interaction) || ORDER.has(interaction)) return "";
-  let value = raw.replace(/^التعليمات:\s*/u, "");
-  value = value.split(/الخيارات:|الصور:/u)[0].trim();
-  if (value.startsWith("العناصر:") && value.includes("التعليمات:")) {
-    value = value.split("التعليمات:")[1]?.trim() || value;
-  }
-  return value;
-}
-
 function criterionCount(item: ContentItem, optionsLength: number) {
   const criterion = String(item.template_data?.criterion || "").trim();
   if (!criterion || criterion === "بالترتيب المذكور") return optionsLength;
@@ -96,11 +118,23 @@ function stableOptionOrder(values: ContentOption[]) {
   return [...values].sort((a, b) => ((a.id * 17) % 97) - ((b.id * 17) % 97));
 }
 
+function fallbackInstruction(interaction: Interaction) {
+  if (LISTEN.has(interaction)) return "استمع جيدًا، ثم اختر الإجابة المطابقة.";
+  if (READ.has(interaction)) return "اقرأ بصوت واضح، ثم أرسل تسجيلك.";
+  if (ORDER.has(interaction)) return "اضغط على العناصر بالترتيب الصحيح.";
+  return "انظر إلى الخيارات جيدًا، ثم اختر الإجابة المناسبة.";
+}
+
+function genericEncouragement(interaction: Interaction) {
+  if (READ.has(interaction)) return "اقرأ بهدوء وبصوت طبيعي. المهم أن تكون القراءة واضحة.";
+  if (LISTEN.has(interaction)) return "يمكنك الاستماع مرة أخرى قبل اختيار الإجابة.";
+  return "خذ وقتك، ركّز في السؤال، ثم اختر ما تراه صحيحًا.";
+}
+
 export default function SessionPage() {
   const params = useParams();
   const router = useRouter();
   const sessionId = String(params.id);
-
   const [phase, setPhase] = useState<Phase>("loading");
   const [item, setItem] = useState<ContentItem | null>(null);
   const [progress, setProgress] = useState<ProgressPayload | null>(null);
@@ -113,7 +147,6 @@ export default function SessionPage() {
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [finalScore, setFinalScore] = useState<number | null>(null);
   const [assignedLevel, setAssignedLevel] = useState<number | null>(null);
-
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -122,12 +155,14 @@ export default function SessionPage() {
 
   const step = item?.steps[0] ?? null;
   const interaction = item?.interaction_type;
+  const experience = item?.kind === "pretest_question" ? item.template_data?.pretest_experience : undefined;
   const options = useMemo(() => stableOptionOrder(step?.options ?? []), [step]);
   const audioAssets = useMemo(() => step?.assets.filter((asset) => asset.asset_type === "audio") ?? [], [step]);
   const imageAssets = useMemo(() => step?.assets.filter((asset) => asset.asset_type === "image") ?? [], [step]);
   const contextAssets = useMemo(() => item?.item_assets.filter((asset) => asset.asset_type === "image") ?? [], [item]);
   const answered = progress?.completed_items ?? 0;
   const total = progress?.total_items || 30;
+  const currentNumber = experience?.question_number ?? Math.min(answered + 1, total);
   const percent = Math.min(100, Math.round((answered / Math.max(1, total)) * 100));
   const targetCount = item && step ? criterionCount(item, step.options.length) : 0;
 
@@ -135,7 +170,6 @@ export default function SessionPage() {
     if (!item || !step) return "";
     return `himma:assessment:${sessionId}:${item.id}:${step.id}:${kind}`;
   };
-
   const getIdempotencyKey = (kind: "answer" | "upload") => {
     const key = operationKey(kind);
     if (!key) return crypto.randomUUID();
@@ -145,14 +179,12 @@ export default function SessionPage() {
     window.sessionStorage.setItem(key, created);
     return created;
   };
-
   const clearOperationKeys = () => {
     for (const kind of ["answer", "upload"] as const) {
       const key = operationKey(kind);
       if (key) window.sessionStorage.removeItem(key);
     }
   };
-
   const clearQuestionState = () => {
     setSelectedIds([]);
     setAudioBlob(null);
@@ -321,7 +353,6 @@ export default function SessionPage() {
       setError("لم نتمكن من تشغيل الميكروفون. اسمح للمتصفح باستخدامه ثم حاول مرة أخرى.");
     }
   };
-
   const stopRecording = () => {
     if (!recorderRef.current || recorderRef.current.state !== "recording") return;
     recorderRef.current.stop();
@@ -372,11 +403,11 @@ export default function SessionPage() {
       <div className={styles.resultPage} dir="rtl" data-testid="assessment-session" data-phase="done">
         <div className={styles.resultCard}>
           <div className={styles.resultContent}>
-            <span className={styles.badge}><Check size={16} /> اكتمل الاختبار</span>
-            <h1 className={styles.title}>أحسنت، أكملت المهمة!</h1>
-            <p className={styles.instruction}>تم حفظ إجاباتك وقراءتك. هِمّة ستقودك الآن إلى المسار الأنسب لك.</p>
+            <span className={styles.resultBadge}><Check size={18} /> اكتمل الاختبار</span>
+            <h1 className={styles.resultTitle}>أحسنت، أكملت المهمة!</h1>
+            <p className={styles.resultText}>تم حفظ إجاباتك وقراءتك. هِمّة ستقودك الآن إلى المسار الأنسب لك.</p>
             <div className={styles.score}>{Math.round(finalScore || 0)}%</div>
-            <p className="font-bold text-navy mb-6">مستواك: {LEVEL_LABELS[Math.max(0, assignedLevel - 1)] || assignedLevel}</p>
+            <p className={styles.resultLevel}>مستواك: {LEVEL_LABELS[Math.max(0, assignedLevel - 1)] || assignedLevel}</p>
             <button className={styles.primary} onClick={() => router.push("/student")}>متابعة رحلتي</button>
           </div>
           <div className={styles.resultVisual}><Image src="/characters/girl/success.png" alt="شخصية هِمّة تحتفل بالإنجاز" width={340} height={410} priority /></div>
@@ -390,9 +421,9 @@ export default function SessionPage() {
       <div className={styles.resultPage} dir="rtl" data-testid="assessment-session" data-phase="waiting_audio_review">
         <div className={styles.resultCard}>
           <div className={styles.resultContent}>
-            <span className={styles.badge}>تم حفظ إجاباتك</span>
-            <h1 className={styles.title}>عمل رائع</h1>
-            <p className={styles.instruction}>أنهيت الأسئلة. سيُراجع المشرف تسجيلات القراءة، وبعدها تظهر النتيجة بشكل صحيح.</p>
+            <span className={styles.resultBadge}>تم حفظ إجاباتك</span>
+            <h1 className={styles.resultTitle}>عمل رائع</h1>
+            <p className={styles.resultText}>أنهيت الأسئلة. سيُراجع المشرف تسجيلات القراءة، وبعدها تظهر النتيجة بشكل صحيح.</p>
             <button className={styles.primary} onClick={() => router.push("/student")}>العودة إلى مساري</button>
           </div>
           <div className={styles.resultVisual}><Image src="/characters/girl/encourage.png" alt="شخصية هِمّة تشجع الطالب" width={330} height={400} /></div>
@@ -404,10 +435,10 @@ export default function SessionPage() {
   if (phase === "finishing" || phase === "loading") {
     return (
       <div className={styles.page} dir="rtl" data-testid="assessment-session" data-phase={phase}>
-        <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-          <Image src="/brand/logo-navy.svg" alt="هِمّة" width={120} height={42} />
-          <div className="spinner w-12 h-12 border-4" />
-          <p className="text-muted">{phase === "finishing" ? "جاري إنهاء الاختبار..." : "جاري تجهيز المهمة التالية..."}</p>
+        <div className={styles.loadingState}>
+          <Image src="/brand/logo-navy.svg" alt="هِمّة" width={128} height={46} priority />
+          <div className={styles.spinner} />
+          <p>{phase === "finishing" ? "جاري إنهاء الاختبار..." : "جاري تجهيز السؤال التالي..."}</p>
         </div>
       </div>
     );
@@ -416,17 +447,22 @@ export default function SessionPage() {
   if (phase === "error" || !item || !step || !interaction) {
     return (
       <div className={styles.page} dir="rtl" data-testid="assessment-session" data-phase="error">
-        <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-6 text-center">
-          <Image src="/brand/logo-navy.svg" alt="هِمّة" width={120} height={42} />
-          <h1 className="text-2xl font-bold text-navy">تعذر فتح المهمة</h1>
-          <p className="text-muted max-w-lg">{error || "حدث خطأ غير متوقع."}</p>
+        <div className={styles.loadingState}>
+          <Image src="/brand/logo-navy.svg" alt="هِمّة" width={128} height={46} />
+          <h1>تعذر فتح السؤال</h1>
+          <p>{error || "حدث خطأ غير متوقع."}</p>
           <button className={styles.primary} onClick={() => void fetchNext()}>حاول مرة أخرى</button>
         </div>
       </div>
     );
   }
 
-  const displayPrompt = cleanPrompt(step.prompt_text, interaction);
+  const questionText = experience?.question_text || step.instruction_text || conciseTitle(item.title);
+  const skillText = experience?.skill || conciseTitle(item.title);
+  const instructionText = experience?.instruction_text || fallbackInstruction(interaction);
+  const encouragement = experience?.encouragement || genericEncouragement(interaction);
+  const stimulusKind = experience?.stimulus?.kind || "none";
+  const stimulusText = experience?.stimulus?.text || step.prompt_text || "";
   const hasMediaGap = step.media_gaps.length > 0;
   const imageChoice = interaction === "choose_image" || interaction === "listen_choose_image";
   const sequenceWithImages = ORDER.has(interaction) && imageAssets.some((asset) => asset.option_id);
@@ -435,135 +471,148 @@ export default function SessionPage() {
     || (MULTI.has(interaction) && selectedIds.length >= 2)
     || (ORDER.has(interaction) && selectedIds.length === targetCount),
   );
+  const visualAsset = contextAssets[0] || (stimulusKind === "image" ? imageAssets[0] : undefined);
   const sideCharacter = READ.has(interaction) ? "/characters/girl/encourage.png" : "/characters/girl/explain.png";
+  const assessmentLabel = item.kind === "pretest_question" ? "الاختبار القبلي" : "الاختبار البعدي";
 
   return (
     <div className={styles.page} dir="rtl" data-testid="assessment-session" data-phase={phase === "submitting" ? "submitting" : "question"}>
-      <header className={styles.topbar}>
-        <div className={styles.logo}><Image src="/brand/logo-navy.svg" alt="هِمّة" width={112} height={38} priority /></div>
-        <div className={styles.progressWrap}>
-          <div className={styles.progressMeta}><span>{conciseTitle(item.title)}</span><span>{Math.min(answered + 1, total)} من {total}</span></div>
-          <div className={styles.progressTrack}><div className={styles.progressFill} style={{ width: `${percent}%` }} /></div>
+      <header className={styles.header}>
+        <div className={styles.headerInner}>
+          <div className={styles.brandCluster}>
+            <Image src="/brand/logo-navy.svg" alt="هِمّة" width={124} height={44} priority />
+            <button className={styles.soundButton} type="button" onClick={() => void playPrompt()} disabled={!audioAssets.length || isListening} aria-label="تشغيل صوت السؤال"><Volume2 size={26} /></button>
+          </div>
+          <button className={styles.exit} type="button" onClick={() => router.push("/student")}><LogOut size={21} /><span>خروج</span></button>
         </div>
-        <button className={styles.exit} onClick={() => router.push("/student")}>خروج</button>
       </header>
+
+      <div className={styles.progressPanel}>
+        <div className={styles.progressTop}>
+          <span className={styles.assessmentBadge}><ClipboardList size={20} />{assessmentLabel}</span>
+          <span className={styles.progressCount}>{currentNumber} من {total}</span>
+        </div>
+        <div className={styles.progressTrack} aria-label={`التقدم ${percent}%`}><div className={styles.progressFill} style={{ width: `${Math.max(percent, 2)}%` }} /></div>
+      </div>
 
       <main className={styles.shell}>
         <section className={styles.card}>
-          <h1 className={styles.title}>{step.instruction_text || conciseTitle(item.title)}</h1>
-          <p className={styles.instruction}>{conciseTitle(item.title)}</p>
-          {displayPrompt && <div className={styles.prompt}>{displayPrompt}</div>}
+          <div className={styles.skillChip}><Target size={19} />{skillText}</div>
+          <div className={styles.contentColumn}>
+            <h1 className={styles.questionTitle} data-testid="question-title">{questionText}</h1>
 
-          {contextAssets[0] && (
-            <div className={styles.contextImage}><Image src={contextAssets[0].url} alt={contextAssets[0].semantic_text || "صورة توضيحية"} width={460} height={250} unoptimized /></div>
-          )}
+            {!LISTEN.has(interaction) && !READ.has(interaction) && stimulusKind === "text" && stimulusText && (
+              <div className={`${styles.stimulusBox} ${stimulusText.length <= 3 ? styles.letterStimulus : ""}`} data-testid="question-stimulus">{stimulusText}</div>
+            )}
 
-          {LISTEN.has(interaction) && (
-            <button className={`${styles.listenButton} ${isListening ? styles.listenPulse : ""}`} onClick={() => void playPrompt()} disabled={isListening || !audioAssets.length} data-testid="listen-prompt">
-              <Volume2 size={26} aria-hidden="true" /><span>استمع</span>
-            </button>
-          )}
+            {visualAsset && (
+              <div className={styles.contextImage} data-testid="question-image">
+                <Image src={visualAsset.url} alt={visualAsset.semantic_text || experience?.media_semantics?.stimulus || "صورة مرتبطة بالسؤال"} width={420} height={260} unoptimized />
+              </div>
+            )}
 
-          {hasMediaGap && <div className={styles.notice}>هذا الصوت غير متوفر ضمن الملفات المعتمدة حاليًا، لذلك لن يُطلب منك الإجابة على هذه المهمة الآن.</div>}
+            {LISTEN.has(interaction) && (
+              <button className={`${styles.listenButton} ${isListening ? styles.listenPulse : ""}`} onClick={() => void playPrompt()} disabled={isListening || !audioAssets.length} data-testid="listen-prompt" type="button">
+                <Volume2 size={34} aria-hidden="true" /><span>{isListening ? "استمع..." : "استمع"}</span>
+              </button>
+            )}
 
-          {!hasMediaGap && imageChoice && (
-            <div className={styles.imageOptions} data-testid="image-options">
-              {imageAssets.filter((asset) => asset.option_id).map((asset) => {
-                const optionId = Number(asset.option_id);
-                const selected = selectedIds.includes(optionId);
-                return (
-                  <button key={`${asset.asset_id}-${optionId}`} className={`${styles.imageOption} ${selected ? styles.imageOptionSelected : ""}`} onClick={() => toggleOption(optionId)} aria-pressed={selected}>
-                    {selected && <span className={styles.selectedMark}><Check size={16} /></span>}
-                    <Image src={asset.url} alt={asset.semantic_text || "خيار مصور"} width={220} height={150} unoptimized />
-                    <span className={styles.imageLabel}>{asset.semantic_text || step.options.find((option) => option.id === optionId)?.text}</span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+            {READ.has(interaction) && (
+              <div className={`${styles.readingBox} ${(step.expected_reading_text?.length || 0) > 55 ? styles.readingBoxLong : ""}`} data-testid="reading-text">{step.expected_reading_text || stimulusText || "اقرأ النص الظاهر"}</div>
+            )}
 
-          {!hasMediaGap && ORDER.has(interaction) && (
-            <>
-              <div className={styles.sequenceBoard} data-testid="sequence-board">
-                {!selectedIds.length && <span className={styles.sequenceHint}>{interaction === "build_word" ? "اضغط الحروف بالترتيب لتكوين الكلمة" : "اضغط العناصر بالترتيب الصحيح"}</span>}
-                {selectedIds.map((id, index) => {
-                  const option = step.options.find((candidate) => candidate.id === id);
-                  return <span className={styles.sequenceChip} key={`${id}-${index}`}><span className={styles.number}>{index + 1}</span>{option?.text}</span>;
+            <div className={styles.instructionRow}><Info size={21} aria-hidden="true" /><p>{instructionText}</p></div>
+            {hasMediaGap && <div className={styles.notice}>هذا الصوت غير متوفر ضمن الملفات المعتمدة حاليًا، لذلك لن يُطلب منك الإجابة على هذه المهمة الآن.</div>}
+
+            {!hasMediaGap && imageChoice && (
+              <div className={styles.imageOptions} data-testid="image-options">
+                {imageAssets.filter((asset) => asset.option_id).map((asset) => {
+                  const optionId = Number(asset.option_id);
+                  const selected = selectedIds.includes(optionId);
+                  return (
+                    <button key={`${asset.asset_id}-${optionId}`} className={`${styles.imageOption} ${selected ? styles.optionSelected : ""}`} onClick={() => toggleOption(optionId)} aria-pressed={selected} type="button">
+                      {selected && <span className={styles.selectedMark}><Check size={18} /></span>}
+                      <Image src={asset.url} alt={asset.semantic_text || "خيار مصور"} width={220} height={150} unoptimized />
+                      <span className={styles.imageLabel}>{asset.semantic_text || step.options.find((option) => option.id === optionId)?.text}</span>
+                    </button>
+                  );
                 })}
               </div>
+            )}
 
-              {interaction === "build_word" && imageAssets[0] && (
-                <div className={styles.contextImage}><Image src={imageAssets[0].url} alt={imageAssets[0].semantic_text || "صورة الكلمة"} width={340} height={200} unoptimized /></div>
-              )}
-
-              {sequenceWithImages && interaction !== "build_word" ? (
-                <div className={styles.imageOptions} data-testid="sequence-image-options">
-                  {imageAssets.filter((asset) => asset.option_id && !selectedIds.includes(Number(asset.option_id))).map((asset) => (
-                    <button key={asset.asset_id} className={styles.imageOption} onClick={() => toggleOption(Number(asset.option_id))} disabled={targetCount > 0 && selectedIds.length >= targetCount}>
-                      <Image src={asset.url} alt={asset.semantic_text || "عنصر ترتيب"} width={220} height={150} unoptimized />
-                      <span className={styles.imageLabel}>{asset.semantic_text}</span>
-                    </button>
-                  ))}
+            {!hasMediaGap && ORDER.has(interaction) && (
+              <>
+                <div className={styles.sequenceBoard} data-testid="sequence-board">
+                  {!selectedIds.length && <span className={styles.sequenceHint}>{interaction === "build_word" ? "اضغط الحروف بالترتيب لتكوين الكلمة" : "اضغط العناصر بالترتيب الصحيح"}</span>}
+                  {selectedIds.map((id, index) => {
+                    const option = step.options.find((candidate) => candidate.id === id);
+                    return <span className={styles.sequenceChip} key={`${id}-${index}`}><span className={styles.number}>{index + 1}</span>{option?.text}</span>;
+                  })}
                 </div>
-              ) : (
-                <div className={styles.options}>
-                  {options.filter((option) => !selectedIds.includes(option.id)).map((option) => (
-                    <button key={option.id} className={styles.option} onClick={() => toggleOption(option.id)} disabled={targetCount > 0 && selectedIds.length >= targetCount}>{option.text}</button>
-                  ))}
-                </div>
-              )}
-            </>
-          )}
+                {sequenceWithImages && interaction !== "build_word" ? (
+                  <div className={styles.imageOptions} data-testid="sequence-image-options">
+                    {imageAssets.filter((asset) => asset.option_id && !selectedIds.includes(Number(asset.option_id))).map((asset) => (
+                      <button key={asset.asset_id} className={styles.imageOption} onClick={() => toggleOption(Number(asset.option_id))} disabled={targetCount > 0 && selectedIds.length >= targetCount} type="button">
+                        <Image src={asset.url} alt={asset.semantic_text || "عنصر ترتيب"} width={220} height={150} unoptimized /><span className={styles.imageLabel}>{asset.semantic_text}</span>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className={styles.options}>
+                    {options.filter((option) => !selectedIds.includes(option.id)).map((option) => (
+                      <button key={option.id} className={styles.option} onClick={() => toggleOption(option.id)} disabled={targetCount > 0 && selectedIds.length >= targetCount} type="button">{option.text}</button>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
 
-          {!hasMediaGap && !READ.has(interaction) && !ORDER.has(interaction) && !imageChoice && (
-            <div className={styles.options}>
-              {options.map((option) => {
-                const selected = selectedIds.includes(option.id);
-                return <button key={option.id} className={`${styles.option} ${selected ? styles.optionSelected : ""}`} onClick={() => toggleOption(option.id)} aria-pressed={selected}>{option.text}</button>;
-              })}
-            </div>
-          )}
+            {!hasMediaGap && !READ.has(interaction) && !ORDER.has(interaction) && !imageChoice && (
+              <div className={styles.options} data-testid="text-options">
+                {options.map((option) => {
+                  const selected = selectedIds.includes(option.id);
+                  return <button key={option.id} className={`${styles.option} ${selected ? styles.optionSelected : ""}`} onClick={() => toggleOption(option.id)} aria-pressed={selected} type="button">{selected && <span className={styles.selectedMark}><Check size={18} /></span>}{option.text}</button>;
+                })}
+              </div>
+            )}
 
-          {!hasMediaGap && READ.has(interaction) && (
-            <>
-              <div className={`${styles.readingBox} ${(step.expected_reading_text?.length || 0) > 55 ? styles.readingBoxLong : ""}`} data-testid="reading-text">{step.expected_reading_text || "اقرأ النص الظاهر"}</div>
+            {!hasMediaGap && READ.has(interaction) && (
               <div className={styles.recordPanel}>
                 {!audioBlob ? (
                   <>
-                    <button className={`${styles.recordButton} ${isRecording ? styles.recordButtonRecording : ""}`} onClick={isRecording ? stopRecording : () => void startRecording()} aria-label={isRecording ? "إيقاف التسجيل" : "بدء التسجيل"} data-testid="record-reading">
-                      {isRecording ? <MicOff size={30} /> : <Mic size={30} />}
-                    </button>
-                    <p className="font-bold text-navy">{isRecording ? "جاري التسجيل... اضغط للإيقاف" : "اضغط لبدء التسجيل"}</p>
+                    <button className={`${styles.recordButton} ${isRecording ? styles.recordButtonRecording : ""}`} onClick={isRecording ? stopRecording : () => void startRecording()} aria-label={isRecording ? "إيقاف التسجيل" : "بدء التسجيل"} data-testid="record-reading" type="button">{isRecording ? <MicOff size={31} /> : <Mic size={31} />}</button>
+                    <p className={styles.recordLabel}>{isRecording ? "جاري التسجيل... اضغط للإيقاف" : "اضغط لبدء التسجيل"}</p>
                     {isRecording && <p className={styles.timer}>{String(Math.floor(recordingSeconds / 60)).padStart(2, "0")}:{String(recordingSeconds % 60).padStart(2, "0")}</p>}
                   </>
                 ) : (
                   <>
                     {audioUrl && <audio className={styles.audioPreview} src={audioUrl} controls />}
-                    <p className="text-sm text-muted">استمع إلى تسجيلك، ثم أرسله أو أعد المحاولة.</p>
-                    <div className={styles.actions}>
-                      <button className={styles.secondary} onClick={() => { clearQuestionState(); stepStartedAtRef.current = Date.now(); }}><RotateCcw size={17} /> إعادة التسجيل</button>
-                      <button className={styles.primary} onClick={() => void uploadReading()} disabled={phase === "submitting"}>إرسال التسجيل</button>
+                    <p className={styles.previewText}>استمع إلى تسجيلك، ثم أرسله أو أعد المحاولة.</p>
+                    <div className={styles.inlineActions}>
+                      <button className={styles.secondary} type="button" onClick={() => { clearQuestionState(); stepStartedAtRef.current = Date.now(); }}><RotateCcw size={18} /> إعادة التسجيل</button>
+                      <button className={styles.primary} type="button" onClick={() => void uploadReading()} disabled={phase === "submitting"}>إرسال التسجيل</button>
                     </div>
                   </>
                 )}
               </div>
-            </>
-          )}
+            )}
+            {error && <div className={styles.error} role="alert">{error}</div>}
+          </div>
 
-          {error && <div className={styles.error} role="alert">{error}</div>}
+          <aside className={styles.coach} aria-label="نصيحة هِمّة">
+            <div className={styles.tip}><Star size={21} fill="currentColor" aria-hidden="true" /><span>{encouragement}</span></div>
+            <Image className={styles.character} src={sideCharacter} alt="شخصية هِمّة المساعدة" width={180} height={245} priority />
+          </aside>
 
           {!hasMediaGap && !READ.has(interaction) && (
-            <div className={styles.actions}>
-              {ORDER.has(interaction) && selectedIds.length > 0 && <button className={styles.secondary} onClick={() => setSelectedIds([])}><RotateCcw size={17} /> إعادة الترتيب</button>}
-              <button className={styles.primary} onClick={() => void submitAnswer()} disabled={!canSubmit || phase === "submitting"}>{phase === "submitting" ? "جاري الحفظ..." : "تأكيد والمتابعة"}</button>
+            <div className={styles.bottomActions}>
+              {ORDER.has(interaction) && selectedIds.length > 0 && <button className={styles.secondary} type="button" onClick={() => setSelectedIds([])}><RotateCcw size={18} /> إعادة الترتيب</button>}
+              <button className={styles.primaryWide} type="button" onClick={() => void submitAnswer()} disabled={!canSubmit || phase === "submitting"}>
+                <span>{phase === "submitting" ? "جاري الحفظ..." : "تأكيد والمتابعة"}</span><span className={styles.primaryIcon}><ArrowLeft size={24} /></span>
+              </button>
             </div>
           )}
         </section>
-
-        <aside className={styles.side} aria-label="نصيحة هِمّة">
-          <div className={styles.tip}>{READ.has(interaction) ? "اقرأ بهدوء وبصوت طبيعي. لا تحتاج إلى السرعة؛ المهم أن تكون القراءة واضحة." : LISTEN.has(interaction) ? "يمكنك الاستماع مرة أخرى قبل اختيار الإجابة." : "خذ وقتك، ركّز في المهمة، ثم اختر ما تراه صحيحًا."}</div>
-          <Image className={styles.character} src={sideCharacter} alt="شخصية هِمّة المساعدة" width={190} height={260} />
-        </aside>
       </main>
     </div>
   );
