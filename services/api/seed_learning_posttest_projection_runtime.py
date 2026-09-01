@@ -6,6 +6,7 @@ show legacy prompt strings that also contain serialized choices.
 """
 from __future__ import annotations
 
+import re
 from typing import Any
 
 import seed_learning_posttest_experience_2026_09_01 as base
@@ -18,6 +19,47 @@ LISTEN = {"listen_choose_one", "listen_choose_image", "listen_choose_many"}
 NO_TEXT = {"read_aloud", "timed_read_aloud", "memory_sequence", "sequence", "build_word", "choose_image", "choose_many", "listen_choose_image", "listen_choose_many"}
 LISTEN_WITH_VISIBLE_STIMULUS = {"L1-CORE-06"}
 
+# These level-one tasks explicitly require one visible letter/word/printed item.
+# Their legacy prompt_text often serializes that item together with choices, so
+# never pass the raw prompt through to the student-facing stimulus box.
+L1_SINGLE_VISIBLE_STIMULUS = {
+    "L1-CORE-01",
+    "L1-CORE-03",
+    "L1-CORE-07",
+    "L1-REIN-01",
+    "L1-REIN-07",
+    "L1-REIN-09",
+}
+
+
+def _strip_serialized_choices(text: str) -> str:
+    value = text.strip().replace("التعليمات:", "").strip()
+    for marker in ("الخيارات:", "الصور:"):
+        if marker in value:
+            value = value.split(marker, 1)[0].strip()
+    if "؛" in value:
+        value = value.split("؛", 1)[0].strip()
+    return value
+
+
+def _single_visible_stimulus(text: str) -> str:
+    """Extract only the one student-visible target, never its serialized choices."""
+    value = _strip_serialized_choices(text)
+    quoted = re.search(r"«([^»]+)»", value)
+    if quoted:
+        return quoted.group(1).strip()
+
+    # Source rounds use forms such as `ب: ب/ت`, `ب ← حرف`, or `ب = حرف`.
+    for separator in ("←", "=", ":"):
+        if separator in value:
+            value = value.split(separator, 1)[0].strip()
+            break
+
+    # A legacy prompt can still contain slash-separated choices without a colon.
+    if "/" in value:
+        value = value.split("/", 1)[0].strip()
+    return value.strip(" .،؛«»")
+
 
 def _clean_stimulus(item: ContentItem, step, interaction: str) -> str:
     key = base.canonical(item)
@@ -25,17 +67,24 @@ def _clean_stimulus(item: ContentItem, step, interaction: str) -> str:
         return ""
     if interaction in LISTEN and key not in LISTEN_WITH_VISIBLE_STIMULUS:
         return ""
-    text = str(step.prompt_text or "").strip().replace("التعليمات:", "").strip()
+
+    text = str(step.prompt_text or "").strip()
     if not text:
         return ""
-    for marker in ("الخيارات:", "الصور:"):
-        if marker in text:
-            text = text.split(marker, 1)[0].strip()
-    # Legacy rounds sometimes serialize display value and choices in one prompt:
-    # `بَ؛ بَ/بِ/بُ`. Only the first segment is a stimulus.
-    if "؛" in text:
-        text = text.split("؛", 1)[0].strip()
-    return text
+
+    if key in L1_SINGLE_VISIBLE_STIMULUS:
+        return _single_visible_stimulus(text)
+
+    if key == "L1-CORE-06":
+        # Student Experience v2: a heard sound is compared with the first letter
+        # of one displayed word. The visible box must contain that word only.
+        value = _strip_serialized_choices(text)
+        if ":" in value:
+            value = value.split(":", 1)[1].strip()
+        return value.strip(" .،؛«»")
+
+    value = _strip_serialized_choices(text)
+    return value
 
 
 def _learning_round(item: ContentItem, step, total: int) -> dict[str, Any]:
