@@ -13,12 +13,9 @@ from sqlalchemy import text
 
 from db.database import SessionLocal
 from db.models import ContentItem, Skill, User
-from seed_all import _base_stable_keys, run_seed_all
+from seed_all import LEARNING_VERSION, POSTTEST_VERSION, PRETEST_VERSION, _base_stable_keys, run_seed_all
 
 _SANDBOX_SEED_LOCK_KEY = 481_663_202_608_31
-_PRETEST_VERSION = "HIMMA-PRETEST-2026-09-01"
-_LEARNING_VERSION = "HIMMA-LEARNING-2026-09-01"
-_POSTTEST_VERSION = "HIMMA-POSTTEST-2026-09-01"
 
 
 def _is_sandbox() -> bool:
@@ -33,9 +30,9 @@ def _catalog_is_complete(db) -> bool:
     reinforcement_items = db.query(ContentItem).filter(ContentItem.kind == "reinforcement_activity").count()
     skills = db.query(Skill).count()
     v2_items = sum(1 for item in all_items if (item.template_data or {}).get("student_experience_version") == "HIMMA-STUDENT-EXPERIENCE-2.0")
-    pretest_items = sum(1 for item in all_items if item.kind == "pretest_question" and (item.template_data or {}).get("pretest_experience_version") == _PRETEST_VERSION)
-    learning_items = sum(1 for item in all_items if item.kind in {"core_activity", "reinforcement_activity"} and (item.template_data or {}).get("learning_experience_version") == _LEARNING_VERSION)
-    posttest_items = sum(1 for item in all_items if item.kind == "posttest_question" and (item.template_data or {}).get("posttest_experience_version") == _POSTTEST_VERSION)
+    pretest_items = sum(1 for item in all_items if item.kind == "pretest_question" and (item.template_data or {}).get("pretest_experience_version") == PRETEST_VERSION)
+    learning_items = sum(1 for item in all_items if item.kind in {"core_activity", "reinforcement_activity"} and (item.template_data or {}).get("learning_experience_version") == LEARNING_VERSION)
+    posttest_items = sum(1 for item in all_items if item.kind == "posttest_question" and (item.template_data or {}).get("posttest_experience_version") == POSTTEST_VERSION)
     return (
         total_items == 125
         and base_items == 105
@@ -80,13 +77,7 @@ def ensure_sandbox_admin() -> None:
 
 
 def ensure_sandbox_runtime() -> None:
-    """Synchronize sandbox content without blocking overlapping rollouts.
-
-    If another container already owns the advisory lock, that container is the
-    designated seeder. This container starts normally instead of waiting until
-    PostgreSQL's statement timeout. A later clean rollout/restart re-checks the
-    versions and seeds if the previous owner did not complete.
-    """
+    """Synchronize sandbox content without blocking overlapping rollouts."""
     if not _is_sandbox():
         return
 
@@ -102,9 +93,6 @@ def ensure_sandbox_runtime() -> None:
                 ).scalar()
             )
             if not lock_acquired:
-                # Never hold a Railway healthcheck behind a concurrent rollout.
-                # The lock owner is responsible for the seed; this instance will
-                # re-check on its next restart/deployment.
                 return
 
         if not _catalog_is_complete(lock_db):
