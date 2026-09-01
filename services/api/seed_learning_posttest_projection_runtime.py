@@ -59,7 +59,9 @@ def _single_visible_stimulus(text: str) -> str:
     # A legacy prompt can still contain slash-separated choices without a colon.
     if "/" in value:
         value = value.split("/", 1)[0].strip()
-    return value.strip(" .،؛«»")
+    # Preserve meaningful sentence punctuation. Only remove wrapper punctuation
+    # that can be introduced by legacy prompt serialization.
+    return value.strip(" ،؛«»")
 
 
 def _clean_stimulus(item: ContentItem, step, interaction: str) -> str:
@@ -77,15 +79,15 @@ def _clean_stimulus(item: ContentItem, step, interaction: str) -> str:
         return _single_visible_stimulus(text)
 
     if key == "L1-CORE-06":
-        # Student Experience v2: a heard sound is compared with the first letter
-        # of one displayed word. The visible box must contain that word only.
+        # Student Experience v2 currently projects a heard sound against one
+        # displayed word. Keep the display box to that word only; source-version
+        # reconciliation is audited separately from presentation correctness.
         value = _strip_serialized_choices(text)
         if ":" in value:
             value = value.split(":", 1)[1].strip()
-        return value.strip(" .،؛«»")
+        return value.strip(" ،؛«»")
 
-    value = _strip_serialized_choices(text)
-    return value
+    return _strip_serialized_choices(text)
 
 
 def _learning_round(item: ContentItem, step, total: int) -> dict[str, Any]:
