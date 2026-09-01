@@ -1,4 +1,5 @@
 import AssessmentLetterStimulusPreviewFix from "@/components/AssessmentLetterStimulusPreviewFix";
+import AssessmentExperienceEnhancer from "@/components/AssessmentExperienceEnhancer";
 import TemporaryAudioSkipControl from "@/components/TemporaryAudioSkipControl";
 import "./assessment-polish.css";
 
@@ -7,6 +8,7 @@ export default function StudentAssessmentLayout({ children }: { children: React.
     <>
       {children}
       <AssessmentLetterStimulusPreviewFix />
+      <AssessmentExperienceEnhancer />
       <TemporaryAudioSkipControl mode="assessment" />
     </>
   );
