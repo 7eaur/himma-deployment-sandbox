@@ -57,6 +57,48 @@ def get_pending_audio(
     return payload
 
 
+def _assessment_session_for_submission(db: Session, response: AttemptResponse) -> AssessmentSession | None:
+    attempt = db.query(Attempt).filter(Attempt.id == response.attempt_id).first()
+    if not attempt:
+        return None
+    return db.query(AssessmentSession).filter(AssessmentSession.id == attempt.session_id).first()
+
+
+def _try_finalize_reviewed_assessment(db: Session, session: AssessmentSession | None) -> dict | None:
+    """Finalize a finished pre/post assessment as soon as its last audio review lands.
+
+    The student must not have to reopen a completed 30-question assessment just to
+    trigger /finish again.  This helper only runs when every attempt is already
+    complete and there are no uploaded/rerecord-required recordings left.
+    """
+    if not session or session.session_type not in {"pretest", "posttest"} or session.status != "in_progress":
+        return None
+
+    attempts = db.query(Attempt).filter(Attempt.session_id == session.id).all()
+    if len(attempts) != 30 or any(attempt.status != "completed" for attempt in attempts):
+        return None
+
+    submissions = (
+        db.query(AudioSubmission)
+        .join(AttemptResponse, AttemptResponse.id == AudioSubmission.response_id)
+        .join(Attempt, Attempt.id == AttemptResponse.attempt_id)
+        .filter(Attempt.session_id == session.id)
+        .all()
+    )
+    if any(submission.status in {"uploaded", "rerecord_required"} for submission in submissions):
+        return None
+
+    student = db.query(Student).filter(Student.id == session.student_id).first()
+    if not student:
+        return None
+
+    # Import locally so the shared authoritative completion policy stays in one
+    # place without introducing an application-import cycle.
+    from temporary_audio_skip import _finish_session_with_journey_scoring
+
+    return _finish_session_with_journey_scoring(db, student, session)
+
+
 @router.post("/audio/{submission_id}/grade")
 def grade_audio_submission(
     submission_id: int,
@@ -76,6 +118,8 @@ def grade_audio_submission(
     if submission.status != "uploaded":
         raise HTTPException(status_code=409, detail="تمت معالجة هذا التسجيل مسبقًا")
 
+    session = _assessment_session_for_submission(db, response)
+
     if not request.is_valid:
         submission.status = "rerecord_required"
         response.is_correct = None
@@ -93,7 +137,7 @@ def grade_audio_submission(
             details="Recording marked invalid; student attempt reopened",
         ))
         db.commit()
-        return {"status": "ok", "message": "تم طلب إعادة التسجيل"}
+        return {"status": "ok", "message": "تم طلب إعادة التسجيل", "assessment_finalized": False}
 
     if not request.target_units or request.target_units <= 0:
         raise HTTPException(status_code=400, detail="أدخل عدد الوحدات أو الكلمات المستهدفة")
@@ -138,5 +182,18 @@ def grade_audio_submission(
         details=f"Graded score={rubric_score}",
     ))
 
-    db.commit()
-    return {"status": "ok", "rubric_score": float(rubric_score)}
+    # Flush the new review so the authoritative scorer can see it.  If this was
+    # the final pending recording, completion/placement is committed atomically
+    # by the shared finish policy; otherwise we just persist this review.
+    db.flush()
+    finalized = _try_finalize_reviewed_assessment(db, session)
+    if finalized is None:
+        db.commit()
+
+    return {
+        "status": "ok",
+        "rubric_score": float(rubric_score),
+        "assessment_finalized": finalized is not None,
+        "final_score": float(finalized["final_score"]) if finalized else None,
+        "assigned_level": finalized.get("assigned_level") if finalized else None,
+    }
