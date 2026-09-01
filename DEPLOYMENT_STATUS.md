@@ -1,9 +1,16 @@
 # Himma Sandbox Deployment Status
 
-Last updated: 2026-08-31
+Last updated: 2026-09-01
 
 ## Scope
 This is an isolated deployment/integration sandbox. It is not production approval and does not authorize merging into source branches.
+
+## Continuous audit register
+The authoritative living register for discovered defects, risks, verification gaps, resolutions, and release blockers is:
+
+`docs/audit/HIMMA_CONTINUOUS_AUDIT_REGISTER_AR.md`
+
+All new audit findings and all later fix/reverification states should be recorded there instead of relying on chat history alone.
 
 ## Current services
 - GitHub source: `7eaur/himma-deployment-sandbox` branch `main`.
@@ -30,7 +37,8 @@ This is an isolated deployment/integration sandbox. It is not production approva
 ## Not yet production-ready
 - Temporary audio bypass is deliberately enabled for sandbox (`HIMMA_TEMP_AUDIO_SKIP=true`).
 - No real student data should be introduced without explicit approval.
-- Final hosted browser journey verification is still required after the new Vercel rebuild completes.
+- Final hosted browser journey verification is still required.
+- Open and investigating release blockers are tracked in `docs/audit/HIMMA_CONTINUOUS_AUDIT_REGISTER_AR.md`.
 
 ## Rollback
 Use previous successful Railway/Vercel sandbox deployments. Do not force-push, hard-reset, or modify the original source repository branches. Database rollback requires a reviewed migration-specific plan.
