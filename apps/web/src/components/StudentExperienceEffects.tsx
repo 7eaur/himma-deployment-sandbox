@@ -54,6 +54,7 @@ function playTone(kind: Tone, enabled: boolean) {
 export default function StudentExperienceEffects() {
   const [enabled, setEnabled] = useState(initialSoundPreference);
   const [taskVisible, setTaskVisible] = useState(false);
+  const [assessmentVisible, setAssessmentVisible] = useState(false);
   const [reward, setReward] = useState<Reward>(null);
   const lastSignalRef = useRef("");
   const rewardTimerRef = useRef<number | null>(null);
@@ -61,7 +62,10 @@ export default function StudentExperienceEffects() {
   useEffect(() => {
     const rootSelector = '[data-testid="activity-session"], [data-testid="assessment-session"]';
 
-    const updateTaskVisibility = () => setTaskVisible(Boolean(document.querySelector(rootSelector)));
+    const updateTaskVisibility = () => {
+      setTaskVisible(Boolean(document.querySelector(rootSelector)));
+      setAssessmentVisible(Boolean(document.querySelector('[data-testid="assessment-session"]')));
+    };
     updateTaskVisibility();
 
     const showReward = (next: Reward, sound: Tone) => {
@@ -123,15 +127,17 @@ export default function StudentExperienceEffects() {
 
   return (
     <>
-      <button
-        type="button"
-        className={styles.soundToggle}
-        onClick={toggle}
-        aria-label={enabled ? "كتم أصوات التفاعل" : "تشغيل أصوات التفاعل"}
-        title={enabled ? "كتم أصوات التفاعل" : "تشغيل أصوات التفاعل"}
-      >
-        {enabled ? <Volume2 size={20} aria-hidden="true" /> : <VolumeX size={20} aria-hidden="true" />}
-      </button>
+      {!assessmentVisible && (
+        <button
+          type="button"
+          className={styles.soundToggle}
+          onClick={toggle}
+          aria-label={enabled ? "كتم أصوات التفاعل" : "تشغيل أصوات التفاعل"}
+          title={enabled ? "كتم أصوات التفاعل" : "تشغيل أصوات التفاعل"}
+        >
+          {enabled ? <Volume2 size={20} aria-hidden="true" /> : <VolumeX size={20} aria-hidden="true" />}
+        </button>
+      )}
       {reward && (
         <div className={styles.reward} role="status" aria-live="polite">
           {reward.kind === "star"
