@@ -81,6 +81,12 @@ export default function StudentExperienceEffects() {
       const text = root.innerText || "";
       const phase = root.dataset.phase || "";
 
+      if (phase === "waiting_audio_review") {
+        lastSignalRef.current = "waiting_audio_review";
+        setReward(null);
+        return;
+      }
+
       let signal = "";
       if (phase === "done") signal = `done:${text.slice(0, 120)}`;
       else if (/أحسنت|إجابة صحيحة|رائع/u.test(text)) signal = `success:${text.slice(-180)}`;
