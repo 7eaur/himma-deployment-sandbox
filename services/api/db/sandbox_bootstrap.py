@@ -1,9 +1,9 @@
 """Sandbox-only runtime bootstrap.
 
 Keeps the supervisor account synchronized and seeds the approved runtime catalog
-when the sandbox database is incomplete or any student-facing content projection
-is stale. A PostgreSQL advisory lock prevents parallel rollout containers from
-running the catalog seed concurrently. No credentials are stored or logged here.
+when the sandbox database is incomplete or a student-facing content projection is
+stale. PostgreSQL uses a non-blocking advisory lock so overlapping Railway rollout
+containers never stall application startup behind another seeder.
 """
 
 import os
@@ -80,15 +80,33 @@ def ensure_sandbox_admin() -> None:
 
 
 def ensure_sandbox_runtime() -> None:
+    """Synchronize sandbox content without blocking overlapping rollouts.
+
+    If another container already owns the advisory lock, that container is the
+    designated seeder. This container starts normally instead of waiting until
+    PostgreSQL's statement timeout. A later clean rollout/restart re-checks the
+    versions and seeds if the previous owner did not complete.
+    """
     if not _is_sandbox():
         return
+
     lock_db = SessionLocal()
     lock_acquired = False
     try:
         is_postgres = lock_db.get_bind().dialect.name == "postgresql"
         if is_postgres:
-            lock_db.execute(text("SELECT pg_advisory_lock(:lock_key)"), {"lock_key": _SANDBOX_SEED_LOCK_KEY})
-            lock_acquired = True
+            lock_acquired = bool(
+                lock_db.execute(
+                    text("SELECT pg_try_advisory_lock(:lock_key)"),
+                    {"lock_key": _SANDBOX_SEED_LOCK_KEY},
+                ).scalar()
+            )
+            if not lock_acquired:
+                # Never hold a Railway healthcheck behind a concurrent rollout.
+                # The lock owner is responsible for the seed; this instance will
+                # re-check on its next restart/deployment.
+                return
+
         if not _catalog_is_complete(lock_db):
             run_seed_all()
             lock_db.expire_all()
@@ -98,7 +116,10 @@ def ensure_sandbox_runtime() -> None:
     finally:
         if lock_acquired:
             try:
-                lock_db.execute(text("SELECT pg_advisory_unlock(:lock_key)"), {"lock_key": _SANDBOX_SEED_LOCK_KEY})
+                lock_db.execute(
+                    text("SELECT pg_advisory_unlock(:lock_key)"),
+                    {"lock_key": _SANDBOX_SEED_LOCK_KEY},
+                )
             except Exception:
                 pass
         lock_db.close()
