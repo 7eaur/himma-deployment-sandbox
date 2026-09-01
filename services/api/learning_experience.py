@@ -1,9 +1,9 @@
-"""Student-facing presentation metadata for the current learning round.
+"""Authoritative student-facing learning view payload.
 
-Scoring and adaptive decisions remain owned by activities.py. This endpoint only
-projects the approved 2026-09-01 learning-experience metadata so the web client
-can render the correct question, encouragement/hint, round number and memory
-preview without parsing source-document prose.
+This endpoint is the single read source for the learning screen. Academic scoring
+and adaptive execution remain owned by activities.py; this endpoint exposes only
+approved structured presentation data plus the exact options/media needed to
+render the current round. The client must never parse legacy prompt_text.
 """
 from __future__ import annotations
 
@@ -11,12 +11,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
 
 from activities import _activity_session_or_404, _step_state
-from content_runtime import canonical_interaction, item_assets, step_assets
+from content_runtime import canonical_interaction, item_assets, media_gaps, step_assets
 from db.models import Attempt, ContentItem, ContentStep, Student
 from dependencies import get_current_student, get_db
 
 router = APIRouter(prefix="/learning-experience", tags=["Learning Experience"])
-VERSION = "HIMMA-LEARNING-2026-09-01"
+VERSION = "HIMMA-LEARNING-2026-09-01-R2"
+MAX_STEP_ATTEMPTS = 2
 
 
 @router.get("/session/{session_id}")
@@ -34,6 +35,7 @@ def current_learning_experience(
     )
     if attempt is None:
         return None
+
     item = (
         db.query(ContentItem)
         .options(
@@ -53,26 +55,44 @@ def current_learning_experience(
         return None
 
     data = item.template_data or {}
-    experience = data.get("learning_experience") or {}
     if data.get("learning_experience_version") != VERSION:
         raise HTTPException(status_code=409, detail="بيانات عرض النشاط تحتاج إلى تحديث")
-    rounds = experience.get("rounds") or []
+    experience = data.get("learning_experience") or {}
     round_data = next(
-        (value for value in rounds if int(value.get("round_number") or 0) == int(step.order_index)),
+        (
+            value
+            for value in (experience.get("rounds") or [])
+            if int(value.get("round_number") or 0) == int(step.order_index)
+        ),
         None,
     )
     if not round_data:
         raise HTTPException(status_code=409, detail="تعذر العثور على بيانات الجولة الحالية")
 
     state = _step_state(db, attempt, step)
+    interaction = canonical_interaction(item)
     return {
         "version": VERSION,
+        "session_id": session.id,
+        "level_id": item.level_id,
         "item_id": item.id,
         "stable_key": item.stable_key,
         "kind": item.kind,
-        "interaction_type": canonical_interaction(item),
+        "interaction_type": interaction,
         "round": round_data,
         "retry": state["attempts_used"] > 0 and not state["done"],
+        "attempts_used": state["attempts_used"],
+        "max_attempts": MAX_STEP_ATTEMPTS,
+        "step": {
+            "id": step.id,
+            "order_index": step.order_index,
+            "expected_reading_text": step.expected_reading_text,
+            "options": [
+                {"id": option.id, "text": option.text, "order_index": option.order_index}
+                for option in sorted(step.options, key=lambda value: value.order_index)
+            ],
+            "assets": step_assets(item, step),
+            "media_gaps": media_gaps(item, step),
+        },
         "assets": item_assets(item),
-        "step_assets": step_assets(item, step),
     }
