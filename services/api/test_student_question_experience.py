@@ -40,6 +40,12 @@ def _by_canonical(db, wanted: str) -> ContentItem:
     raise AssertionError(f"Missing canonical item {wanted}")
 
 
+def _learning_rounds(item: ContentItem) -> list[dict]:
+    data = item.template_data or {}
+    experience = data.get("learning_experience") or {}
+    return list(experience.get("rounds") or [])
+
+
 def test_all_runtime_steps_have_child_clear_non_generic_instructions():
     _seed()
     db = SessionLocal()
@@ -96,5 +102,29 @@ def test_known_ambiguous_questions_are_explained_by_their_real_intent():
         assert "أول حرف" in copy
         assert "متشابهان أم مختلفان" in copy
         assert canonical_interaction(onset) == "listen_choose_one"
+    finally:
+        db.close()
+
+
+def test_level_one_visible_stimulus_never_serializes_its_choices():
+    """The display box contains one target only; options stay in option controls."""
+    _seed()
+    db = SessionLocal()
+    try:
+        expected = {
+            "L1-CORE-01": ["ب", "ج", "س", "ق", "د"],
+            "L1-CORE-03": ["ب", "م", "س", "ك", "ل"],
+            "L1-CORE-06": ["مَوْزَة", "قَلَم", "قَمَر", "شَمْس", "نَخْلَة"],
+            "L1-CORE-07": ["ب", "كِتَاب", "ذَهَبَ سَالِمٌ.", "م", "شَجَرَة"],
+        }
+        for canonical, wanted in expected.items():
+            item = _by_canonical(db, canonical)
+            rounds = _learning_rounds(item)
+            actual = [str(round_data.get("stimulus_text") or "").strip() for round_data in rounds]
+            assert actual == wanted, (canonical, actual)
+            for stimulus in actual:
+                assert "الخيارات" not in stimulus
+                assert "/" not in stimulus
+                assert "؛" not in stimulus
     finally:
         db.close()
