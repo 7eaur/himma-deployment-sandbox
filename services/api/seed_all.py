@@ -17,8 +17,8 @@ from db.models import ContentItem
 ROOT = Path(__file__).resolve().parents[2]
 BASE_CATALOG = ROOT / "packages" / "content" / "src" / "catalog.json"
 PRETEST_VERSION = "HIMMA-PRETEST-2026-09-01"
-LEARNING_VERSION = "HIMMA-LEARNING-2026-09-01"
-POSTTEST_VERSION = "HIMMA-POSTTEST-2026-09-01"
+LEARNING_VERSION = seed_learning_posttest_projection_runtime.LEARNING_VERSION
+POSTTEST_VERSION = seed_learning_posttest_projection_runtime.POSTTEST_VERSION
 
 
 def _base_stable_keys() -> set[str]:
