@@ -1,0 +1,37 @@
+/* Scoped learning polish: keep the existing activity logic/layout and make the
+   approved round presentation fluid in the same visual language as assessments. */
+[data-testid="activity-session"][data-phase="active"] [data-round-position="top-left"] {
+  margin-inline-start: auto;
+  white-space: nowrap;
+  font-size: clamp(.7rem, 1vw, .8rem) !important;
+}
+
+[data-testid="activity-session"][data-phase="active"] [data-testid="student-task-instruction"] {
+  width: min(100%, 900px);
+  max-width: 900px;
+  font-size: clamp(1.25rem, 2.15vw, 2rem) !important;
+  line-height: 1.35 !important;
+  text-wrap: balance;
+}
+
+[data-testid="activity-session"][data-phase="active"] [data-testid="student-task-prompt"] {
+  font-size: clamp(1rem, 1.65vw, 1.3rem) !important;
+  line-height: 1.45 !important;
+}
+
+[data-testid="activity-session"][data-phase="active"] [data-learning-instruction="true"] {
+  width: min(100%, 760px);
+}
+
+@media (max-width: 640px) {
+  [data-testid="activity-session"][data-phase="active"] [data-testid="student-task-instruction"] {
+    font-size: clamp(1.05rem, 5vw, 1.32rem) !important;
+    line-height: 1.35 !important;
+  }
+  [data-testid="activity-session"][data-phase="active"] [data-testid="student-task-prompt"] {
+    font-size: clamp(.96rem, 4.2vw, 1.1rem) !important;
+  }
+  [data-testid="activity-session"][data-phase="active"] [data-round-position="top-left"] {
+    font-size: .7rem !important;
+  }
+}
