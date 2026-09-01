@@ -13,7 +13,11 @@ interface StudentMe {
   current_level: number;
   posttest_enabled: boolean;
   next_action: "resume" | "pretest" | "learning" | "posttest" | "completed";
-  active_session: { id: number; session_type: "pretest" | "posttest" | "core" } | null;
+  active_session: {
+    id: number;
+    session_type: "pretest" | "posttest" | "core";
+    status: "in_progress" | "answering" | "waiting_audio_review" | "rerecord_required" | "ready_to_finalize" | string;
+  } | null;
 }
 
 interface LearningStatus {
@@ -114,8 +118,10 @@ export default function StudentHomePage() {
     void fetchData();
   }, []);
 
+  const waitingForAudioReview = student?.active_session?.status === "waiting_audio_review";
+
   const handlePrimaryAction = async () => {
-    if (!student) return;
+    if (!student || waitingForAudioReview) return;
     setStarting(true);
     setError("");
     try {
@@ -222,6 +228,13 @@ export default function StudentHomePage() {
     primaryLabel = student.active_session?.session_type === "posttest" ? "متابعة الاختبار" : "ابدأ الاختبار البعدي";
     character = "/characters/girl/encourage.png";
   }
+  if (waitingForAudioReview) {
+    phaseIndex = student.active_session?.session_type === "posttest" ? 2 : 0;
+    heroTitle = "بانتظار مراجعة التسجيلات";
+    heroDescription = "أنهيت جميع الأسئلة، وتم حفظ إجاباتك وتسجيلاتك. لا تحتاج إلى إعادة الاختبار؛ ستظهر نتيجتك ومسارك تلقائيًا بعد اكتمال مراجعة التسجيلات.";
+    primaryLabel = "تم إرسال التسجيلات للمراجعة";
+    character = "/characters/girl/encourage.png";
+  }
   if (student.next_action === "completed") {
     phaseIndex = 3;
     heroTitle = "أكملت رحلتك";
@@ -230,7 +243,7 @@ export default function StudentHomePage() {
     character = "/characters/girl/success.png";
   }
 
-  const primaryDisabled = starting || student.next_action === "completed" || (isLearning && learningCompleted);
+  const primaryDisabled = starting || waitingForAudioReview || student.next_action === "completed" || (isLearning && learningCompleted);
 
   return (
     <div className={styles.page} dir="rtl" data-testid="student-home">
@@ -259,7 +272,11 @@ export default function StudentHomePage() {
               <h2>{heroTitle}</h2>
               <p>{heroDescription}</p>
               <div className={styles.meta}>
-                {isLearning ? <><span>{learning?.completed_items ?? 0} من {learning?.total_items ?? 10} أنشطة</span><span>•</span><span>مهمة واحدة في كل شاشة</span></> : <><span>30 سؤالًا</span><span>•</span><span>يحفظ تلقائيًا</span></>}
+                {waitingForAudioReview
+                  ? <><span>30 من 30 سؤالًا</span><span>•</span><span>بانتظار التقييم الصوتي</span></>
+                  : isLearning
+                    ? <><span>{learning?.completed_items ?? 0} من {learning?.total_items ?? 10} أنشطة</span><span>•</span><span>مهمة واحدة في كل شاشة</span></>
+                    : <><span>30 سؤالًا</span><span>•</span><span>يحفظ تلقائيًا</span></>}
               </div>
               <button className={styles.button} onClick={() => void handlePrimaryAction()} disabled={primaryDisabled} data-testid="student-primary-action">
                 {starting && <span className="spinner w-5 h-5" />}{primaryLabel}
@@ -273,15 +290,15 @@ export default function StudentHomePage() {
             <div className={styles.tipCard}>
               <div className={styles.tipIcon}><Headphones size={21} /></div>
               <h3>قبل أن تبدأ</h3>
-              <p>اختر مكانًا هادئًا، وارفع صوت الجهاز بدرجة مريحة، ثم اتبع تعليمات كل مهمة كما تظهر لك.</p>
+              <p>{waitingForAudioReview ? "تم حفظ تسجيلاتك. يمكنك العودة لاحقًا، وستتحدث النتيجة تلقائيًا بعد المراجعة." : "اختر مكانًا هادئًا، وارفع صوت الجهاز بدرجة مريحة، ثم اتبع تعليمات كل مهمة كما تظهر لك."}</p>
             </div>
             <div className={styles.progressCard}>
               <div className={styles.tipIcon}><Map size={21} /></div>
               <h3>تقدم المستوى</h3>
-              <div className={styles.progressRing} style={{ "--progress": `${isLearning ? learningProgress : phaseIndex >= 2 ? 100 : 0}%` } as React.CSSProperties}>
-                <strong>{isLearning ? `${learningProgress}%` : phaseIndex >= 2 ? "100%" : "جاهز"}</strong>
+              <div className={styles.progressRing} style={{ "--progress": `${waitingForAudioReview ? 100 : isLearning ? learningProgress : phaseIndex >= 2 ? 100 : 0}%` } as React.CSSProperties}>
+                <strong>{waitingForAudioReview ? "100%" : isLearning ? `${learningProgress}%` : phaseIndex >= 2 ? "100%" : "جاهز"}</strong>
               </div>
-              <p>{isLearning ? "كل نشاط مكتمل يقربك من هدفك." : "سنبدأ بخطوة قصيرة لتحديد مسارك."}</p>
+              <p>{waitingForAudioReview ? "اكتملت الأسئلة، والمتبقي مراجعة التسجيلات فقط." : isLearning ? "كل نشاط مكتمل يقربك من هدفك." : "سنبدأ بخطوة قصيرة لتحديد مسارك."}</p>
             </div>
           </aside>
         </div>
