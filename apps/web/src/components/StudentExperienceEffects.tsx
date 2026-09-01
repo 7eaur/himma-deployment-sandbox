@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Award, Star } from "lucide-react";
+import { Award } from "lucide-react";
 import styles from "./StudentExperienceEffects.module.css";
 
 type Tone = "select" | "listen" | "success" | "retry" | "transition" | "award";
-type Reward = { kind: "star" | "award"; text: string } | null;
+type Reward = { kind: "award"; text: string } | null;
 
 const STORAGE_KEY = "himma:student-ui-sounds";
 
@@ -71,7 +71,7 @@ export default function StudentExperienceEffects() {
       setReward(next);
       playTone(sound, enabled);
       if (rewardTimerRef.current) window.clearTimeout(rewardTimerRef.current);
-      rewardTimerRef.current = window.setTimeout(() => setReward(null), next.kind === "award" ? 1500 : 950);
+      rewardTimerRef.current = window.setTimeout(() => setReward(null), 1500);
     };
 
     const inspect = () => {
@@ -87,15 +87,17 @@ export default function StudentExperienceEffects() {
         return;
       }
 
+      // Do not infer correctness from encouragement copy such as "أحسنت" or
+      // "رائع". Those phrases are part of the approved round content and can be
+      // present before the learner answers. Pop-up rewards are reserved for a
+      // real terminal completion state only.
       let signal = "";
       if (phase === "done") signal = `done:${text.slice(0, 120)}`;
-      else if (/أحسنت|إجابة صحيحة|رائع/u.test(text)) signal = `success:${text.slice(-180)}`;
       else if (/قريب جدًا|حاول مرة أخرى|جرّب مرة أخرى/u.test(text)) signal = `retry:${text.slice(-180)}`;
 
       if (!signal || signal === lastSignalRef.current) return;
       lastSignalRef.current = signal;
       if (signal.startsWith("done:")) showReward({ kind: "award", text: "إنجاز جديد في رحلتك" }, "award");
-      else if (signal.startsWith("success:")) showReward({ kind: "star", text: "أحسنت، تقدّم رائع" }, "success");
       else if (signal.startsWith("retry:")) playTone("retry", enabled);
     };
 
@@ -124,9 +126,7 @@ export default function StudentExperienceEffects() {
 
   return (
     <div className={styles.reward} role="status" aria-live="polite">
-      {reward.kind === "star"
-        ? <Star className={styles.star} size={28} aria-hidden="true" />
-        : <Award className={styles.award} size={30} aria-hidden="true" />}
+      <Award className={styles.award} size={30} aria-hidden="true" />
       <span>{reward.text}</span>
     </div>
   );
