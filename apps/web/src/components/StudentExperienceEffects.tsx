@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Award, Star, Volume2, VolumeX } from "lucide-react";
+import { Award, Star } from "lucide-react";
 import styles from "./StudentExperienceEffects.module.css";
 
 type Tone = "select" | "listen" | "success" | "retry" | "transition" | "award";
@@ -52,9 +52,8 @@ function playTone(kind: Tone, enabled: boolean) {
 }
 
 export default function StudentExperienceEffects() {
-  const [enabled, setEnabled] = useState(initialSoundPreference);
+  const [enabled] = useState(initialSoundPreference);
   const [taskVisible, setTaskVisible] = useState(false);
-  const [assessmentVisible, setAssessmentVisible] = useState(false);
   const [reward, setReward] = useState<Reward>(null);
   const lastSignalRef = useRef("");
   const rewardTimerRef = useRef<number | null>(null);
@@ -64,7 +63,6 @@ export default function StudentExperienceEffects() {
 
     const updateTaskVisibility = () => {
       setTaskVisible(Boolean(document.querySelector(rootSelector)));
-      setAssessmentVisible(Boolean(document.querySelector('[data-testid="assessment-session"]')));
     };
     updateTaskVisibility();
 
@@ -116,36 +114,14 @@ export default function StudentExperienceEffects() {
     };
   }, [enabled]);
 
-  if (!taskVisible) return null;
-
-  const toggle = () => {
-    const next = !enabled;
-    setEnabled(next);
-    window.localStorage.setItem(STORAGE_KEY, next ? "on" : "off");
-    if (next) playTone("select", true);
-  };
+  if (!taskVisible || !reward) return null;
 
   return (
-    <>
-      {!assessmentVisible && (
-        <button
-          type="button"
-          className={styles.soundToggle}
-          onClick={toggle}
-          aria-label={enabled ? "كتم أصوات التفاعل" : "تشغيل أصوات التفاعل"}
-          title={enabled ? "كتم أصوات التفاعل" : "تشغيل أصوات التفاعل"}
-        >
-          {enabled ? <Volume2 size={20} aria-hidden="true" /> : <VolumeX size={20} aria-hidden="true" />}
-        </button>
-      )}
-      {reward && (
-        <div className={styles.reward} role="status" aria-live="polite">
-          {reward.kind === "star"
-            ? <Star className={styles.star} size={28} aria-hidden="true" />
-            : <Award className={styles.award} size={30} aria-hidden="true" />}
-          <span>{reward.text}</span>
-        </div>
-      )}
-    </>
+    <div className={styles.reward} role="status" aria-live="polite">
+      {reward.kind === "star"
+        ? <Star className={styles.star} size={28} aria-hidden="true" />
+        : <Award className={styles.award} size={30} aria-hidden="true" />}
+      <span>{reward.text}</span>
+    </div>
   );
 }
