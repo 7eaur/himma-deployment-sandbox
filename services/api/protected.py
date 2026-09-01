@@ -14,7 +14,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from db.models import AssessmentSession, AuditLog, Attempt, ContentItem, Student, User
+from db.models import AssessmentSession, AuditLog, Attempt, AttemptResponse, AudioSubmission, ContentItem, Student, User
 from dependencies import get_db, get_current_user, get_current_student, get_any_authenticated
 from journey import build_journey_summary
 import schemas
@@ -187,6 +187,31 @@ def _ensure_unique_access_code(db: Session, code: str, *, excluding_student_id: 
         raise HTTPException(status_code=409, detail="رمز الدخول مستخدم لطالب آخر، اختر رمزًا مختلفًا")
 
 
+def _assessment_display_status(db: Session, session: AssessmentSession | None) -> str | None:
+    """Describe an active assessment without confusing review wait with answering."""
+    if not session or session.session_type not in {"pretest", "posttest"}:
+        return None
+
+    required_kind = "pretest_question" if session.session_type == "pretest" else "posttest_question"
+    required_items = db.query(ContentItem.id).filter(ContentItem.kind == required_kind).count()
+    attempts = db.query(Attempt).filter(Attempt.session_id == session.id).all()
+    if required_items != 30 or len(attempts) != required_items or any(attempt.status != "completed" for attempt in attempts):
+        return "answering"
+
+    submissions = (
+        db.query(AudioSubmission)
+        .join(AttemptResponse, AttemptResponse.id == AudioSubmission.response_id)
+        .join(Attempt, Attempt.id == AttemptResponse.attempt_id)
+        .filter(Attempt.session_id == session.id)
+        .all()
+    )
+    if any(submission.status == "rerecord_required" for submission in submissions):
+        return "rerecord_required"
+    if any(submission.status == "uploaded" for submission in submissions):
+        return "waiting_audio_review"
+    return "ready_to_finalize"
+
+
 @router.get("/profile", response_model=schemas.StudentProfileResponse)
 def student_profile(student: Student = Depends(get_current_student), db: Session = Depends(get_db)):
     active_session = db.query(AssessmentSession).filter(
@@ -196,6 +221,7 @@ def student_profile(student: Student = Depends(get_current_student), db: Session
     pretest_completed = _completed_session(db, student.id, "pretest")
     posttest_completed = _completed_session(db, student.id, "posttest")
     journey = build_journey_summary(db, student)
+    assessment_display_status = _assessment_display_status(db, active_session)
 
     if active_session and active_session.session_type in {"pretest", "posttest"}:
         next_action = "resume"
@@ -207,6 +233,18 @@ def student_profile(student: Student = Depends(get_current_student), db: Session
         next_action = "posttest"
     else:
         next_action = "learning"
+
+    active_session_payload = None
+    if active_session:
+        active_session_payload = {
+            "id": active_session.id,
+            "session_type": active_session.session_type,
+            "status": assessment_display_status or active_session.status,
+            "elapsed_seconds": active_session.elapsed_seconds,
+            "started_at": active_session.started_at,
+            "completed_at": active_session.completed_at,
+        }
+
     return {
         "id": student.id,
         "full_name": student.name,
@@ -216,7 +254,7 @@ def student_profile(student: Student = Depends(get_current_student), db: Session
         "status": "active" if student.is_active else "inactive",
         "posttest_enabled": student.posttest_enabled,
         "next_action": next_action,
-        "active_session": active_session,
+        "active_session": active_session_payload,
     }
 
 
