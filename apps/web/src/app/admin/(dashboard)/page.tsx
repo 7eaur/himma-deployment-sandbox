@@ -61,7 +61,7 @@ export default function AdminDashboard() {
   return (
     <AdminPage>
       <AdminPageHeader
-        eyebrow="مركز متابعة المنصة"
+        eyebrow="لوحة المشرف"
         icon={ShieldCheck}
         title={`مرحبًا، ${supervisorName}`}
         description="ابدأ بما يحتاج تدخلًا الآن، ثم تابع تقدم الطلاب والاختبارات والتقارير من مكان واحد."
