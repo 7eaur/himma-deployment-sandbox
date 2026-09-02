@@ -77,7 +77,7 @@ def _clean_payload(item: ContentItem, step: ContentStep) -> dict:
     }
 
 
-@router.get("/session/{session_id}/next", response_model=schemas.ContentItemResponse | None)
+@router.get("/session/{session_id}/next", response_model=schemas.AssessmentStudentViewResponse | None)
 def next_student_view(
     session_id: int,
     db: Session = Depends(get_db),
