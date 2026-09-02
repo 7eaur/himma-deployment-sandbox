@@ -18,6 +18,13 @@ READ = {"read_aloud", "timed_read_aloud"}
 LISTEN = {"listen_choose_one", "listen_choose_image", "listen_choose_many"}
 ORDER = {"sequence", "memory_sequence", "path_sequence", "build_word"}
 
+# Compatibility labels for approved item-level context assets when a development
+# database has only the relational base seed and not the full DB runtime snapshot.
+# This is DB/runtime metadata only; no repository files are opened at request time.
+ITEM_ASSET_SEMANTIC_FALLBACKS = {
+    ("PRE-Q24", "STY-01"): "نص الاختبار القبلي",
+}
+
 
 def semantic_key(value: str) -> str:
     value = unicodedata.normalize("NFKC", value or "")
@@ -183,14 +190,28 @@ def item_assets(item: ContentItem) -> list[dict[str, Any]]:
             for value in runtime_assets
             if value.get("asset_id") and value.get("asset_type")
         ]
-    return [
-        {
+
+    data = item.template_data or {}
+    stored_assets = {
+        str(value.get("asset_id") or ""): value
+        for value in data.get("item_assets", [])
+        if value.get("asset_id")
+    }
+    canonical = canonical_id(item)
+    result = []
+    for link in sorted(item.assets, key=lambda value: value.id or 0):
+        stored = stored_assets.get(link.manifest_asset_id, {})
+        semantic = str(
+            stored.get("semantic_text")
+            or ITEM_ASSET_SEMANTIC_FALLBACKS.get((canonical, link.manifest_asset_id))
+            or ""
+        ).strip()
+        result.append({
             "asset_id": link.manifest_asset_id,
             "asset_type": link.asset_type,
             "usage": link.usage_context,
-            "semantic_text": None,
+            "semantic_text": semantic or None,
             "url": f"/api/media/{link.manifest_asset_id}",
             "option_id": None,
-        }
-        for link in sorted(item.assets, key=lambda value: value.id or 0)
-    ]
+        })
+    return result
