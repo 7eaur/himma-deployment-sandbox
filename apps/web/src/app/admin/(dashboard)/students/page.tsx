@@ -1,9 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { Eye, Search, UserPlus } from "lucide-react";
+import { Eye, Search, UserPlus, Users } from "lucide-react";
+import {
+  AdminAction,
+  AdminEmptyState,
+  AdminMobileCard,
+  AdminPage,
+  AdminPageHeader,
+  AdminPanel,
+  AdminResponsiveTable,
+  AdminToolbar,
+} from "@/components/admin/AdminUI";
 
 interface Student {
   id: number;
@@ -36,87 +45,66 @@ export default function StudentsPage() {
       .catch((caught: unknown) => {
         if (!cancelled) setError(caught instanceof Error ? caught.message : "تعذر تحميل الطلاب");
       })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, []);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase("ar");
     return students.filter((student) => {
       const matchesStatus = status === "all" || student.status === status;
-      const matchesQuery = !needle
-        || student.full_name.toLocaleLowerCase("ar").includes(needle)
-        || student.access_code.includes(needle);
+      const matchesQuery = !needle || student.full_name.toLocaleLowerCase("ar").includes(needle) || student.access_code.includes(needle);
       return matchesStatus && matchesQuery;
     });
   }, [query, status, students]);
 
+  const rows = filtered.map((student) => ({
+    student,
+    progress: Math.round((student.core_completed_items / Math.max(1, student.core_total_items)) * 100),
+  }));
+
   return (
-    <div className="flex-1 font-plex max-w-6xl w-full mx-auto" dir="rtl">
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-7">
-        <div>
-          <p className="text-sm text-primary font-semibold mb-1">إدارة العينة</p>
-          <h1 className="text-3xl font-bold text-navy mb-2">الطلاب</h1>
-          <p className="text-muted">عرض الحسابات، الرموز، المستوى الحالي وتقدم الأنشطة.</p>
-        </div>
-        <Link href="/admin/students/new" className="btn-primary flex items-center gap-2 w-fit"><UserPlus size={18} /><span>إضافة طالب</span></Link>
-      </div>
+    <AdminPage>
+      <AdminPageHeader
+        eyebrow="إدارة العينة"
+        icon={Users}
+        title="الطلاب"
+        description="ابحث عن الطالب، راجع مستواه وتقدمه، وافتح ملفه مباشرة بدون التنقل بين شاشات متفرقة."
+        actions={<AdminAction href="/admin/students/new" tone="primary" icon={UserPlus}>إضافة طالب</AdminAction>}
+      />
 
-      {error && <div className="alert-error mb-5">{error}</div>}
+      {error && <div className="alert-error">{error}</div>}
 
-      <section className="card">
-        <div className="grid md:grid-cols-[1fr_180px_auto] gap-3 mb-6">
-          <label className="relative">
+      <AdminPanel>
+        <AdminToolbar>
+          <label className="relative flex-1 min-w-0">
             <span className="sr-only">البحث عن طالب</span>
             <input className="input-field pr-11" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ابحث بالاسم أو رمز الدخول" />
             <Search size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted" aria-hidden="true" />
           </label>
-          <select className="input-field" value={status} onChange={(event) => setStatus(event.target.value as typeof status)} aria-label="تصفية حسب حالة الحساب">
+          <select className="input-field" style={{ maxWidth: 190 }} value={status} onChange={(event) => setStatus(event.target.value as typeof status)} aria-label="تصفية حسب حالة الحساب">
             <option value="all">كل الحالات</option>
             <option value="active">نشط</option>
             <option value="inactive">موقوف</option>
           </select>
-          <div className="rounded-xl bg-bg border border-border px-4 flex items-center justify-center text-sm text-muted">{filtered.length} من {students.length}</div>
-        </div>
+          <div className="rounded-xl bg-white border border-border px-4 min-h-11 flex items-center justify-center text-sm text-muted whitespace-nowrap">{filtered.length} من {students.length}</div>
+        </AdminToolbar>
+
+        <div style={{ height: 14 }} />
 
         {loading ? (
           <div className="flex flex-col items-center justify-center gap-3 py-14"><div className="spinner w-9 h-9" /><p className="text-muted">جاري تحميل الطلاب...</p></div>
         ) : students.length === 0 ? (
-          <div className="empty-state">
-            <Image src="/characters/girl/welcome.png" alt="شخصية هِمّة" width={115} height={150} />
-            <h3>لا يوجد طلاب حتى الآن</h3>
-            <p className="mb-6">أضف أول طالب ليبدأ استخدام المنصة.</p>
-            <Link href="/admin/students/new" className="btn-primary">إضافة طالب جديد</Link>
-          </div>
+          <AdminEmptyState title="لا يوجد طلاب حتى الآن" description="أضف أول طالب ليبدأ استخدام المنصة." action={<AdminAction href="/admin/students/new" tone="primary" icon={UserPlus}>إضافة طالب جديد</AdminAction>} />
         ) : filtered.length === 0 ? (
-          <div className="empty-state py-12"><Search size={36} className="mb-3" /><h3>لا توجد نتائج مطابقة</h3><p>جرّب اسمًا آخر أو غيّر التصفية.</p></div>
+          <AdminEmptyState title="لا توجد نتائج مطابقة" description="جرّب اسمًا آخر أو غيّر التصفية." />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="data-table">
-              <thead><tr><th>الطالب</th><th>رمز الدخول</th><th>المستوى</th><th>تقدم الأنشطة</th><th>الحالة</th><th>التفاصيل</th></tr></thead>
-              <tbody>
-                {filtered.map((student) => {
-                  const progress = Math.round((student.core_completed_items / Math.max(1, student.core_total_items)) * 100);
-                  return (
-                    <tr key={student.id}>
-                      <td><div><Link href={`/admin/students/${student.id}`} className="font-semibold text-navy hover:text-primary">{student.full_name}</Link><p className="text-xs text-muted mt-1">أضيف {new Date(student.created_at).toLocaleDateString("ar-SA")}</p></div></td>
-                      <td><span className="badge badge-gray border border-border tracking-widest px-3 py-1 font-mono" dir="ltr">{student.access_code}</span></td>
-                      <td><span className="font-semibold text-navy">{student.current_level}</span></td>
-                      <td><div className="flex items-center gap-2 min-w-[150px]"><div className="progress-track"><div className="progress-fill" style={{ width: `${progress}%` }} /></div><span className="text-xs text-muted whitespace-nowrap">{student.core_completed_items}/{student.core_total_items}</span></div></td>
-                      <td><span className={`badge ${student.status === "active" ? "badge-green" : "badge-gray"}`}>{student.status === "active" ? "نشط" : "موقوف"}</span></td>
-                      <td><Link href={`/admin/students/${student.id}`} className="inline-flex items-center gap-2 text-primary font-semibold text-sm p-2 rounded-md hover:bg-primary/10" aria-label={`فتح ملف ${student.full_name}`}><Eye size={18} /> فتح</Link></td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <AdminResponsiveTable
+            table={<table className="data-table"><thead><tr><th>الطالب</th><th>رمز الدخول</th><th>المستوى</th><th>تقدم الأنشطة</th><th>الحالة</th><th>التفاصيل</th></tr></thead><tbody>{rows.map(({ student, progress }) => <tr key={student.id}><td><div><Link href={`/admin/students/${student.id}`} className="font-semibold text-navy hover:text-primary">{student.full_name}</Link><p className="text-xs text-muted mt-1">أضيف {new Date(student.created_at).toLocaleDateString("ar-SA")}</p></div></td><td><span className="badge badge-gray border border-border tracking-widest px-3 py-1 font-mono" dir="ltr">{student.access_code}</span></td><td><span className="font-semibold text-navy">{student.current_level}</span></td><td><div className="flex items-center gap-2 min-w-[150px]"><div className="progress-track"><div className="progress-fill" style={{ width: `${progress}%` }} /></div><span className="text-xs text-muted whitespace-nowrap">{student.core_completed_items}/{student.core_total_items}</span></div></td><td><span className={`badge ${student.status === "active" ? "badge-green" : "badge-gray"}`}>{student.status === "active" ? "نشط" : "موقوف"}</span></td><td><Link href={`/admin/students/${student.id}`} className="inline-flex items-center gap-2 text-primary font-semibold text-sm p-2 rounded-md hover:bg-primary/10"><Eye size={18} /> فتح</Link></td></tr>)}</tbody></table>}
+            cards={rows.map(({ student, progress }) => <AdminMobileCard key={student.id} title={<Link href={`/admin/students/${student.id}`}>{student.full_name}</Link>}><span><strong>رمز الدخول:</strong> <b dir="ltr">{student.access_code}</b></span><span><strong>المستوى:</strong> {student.current_level}</span><span><strong>التقدم:</strong> {student.core_completed_items}/{student.core_total_items} ({progress}%)</span><span><strong>الحالة:</strong> {student.status === "active" ? "نشط" : "موقوف"}</span><span><strong>أضيف:</strong> {new Date(student.created_at).toLocaleDateString("ar-SA")}</span><span><AdminAction href={`/admin/students/${student.id}`} icon={Eye}>فتح الملف</AdminAction></span></AdminMobileCard>)}
+          />
         )}
-      </section>
-    </div>
+      </AdminPanel>
+    </AdminPage>
   );
 }
