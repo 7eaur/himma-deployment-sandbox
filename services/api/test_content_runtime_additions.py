@@ -1,15 +1,15 @@
 """Regression coverage for additive reinforcement media projection."""
 
-import seed
-import seed_reinforcement_additions
+import seed_all
 from content_runtime import canonical_interaction, media_gaps, step_assets
 from db.database import SessionLocal
 from db.models import ContentItem
 
 
 def _seed_full_catalog():
-    seed.run_seed()
-    seed_reinforcement_additions.run_seed()
+    result = seed_all.run_seed_all()
+    assert result["total_items"] == 125
+    assert result["db_runtime_items"] == 125
 
 
 def _item(db, canonical_id: str):
