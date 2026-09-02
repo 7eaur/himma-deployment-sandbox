@@ -3,19 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import {
-  ArrowLeft,
-  Check,
-  ClipboardList,
-  Info,
-  LogOut,
-  Mic,
-  MicOff,
-  RotateCcw,
-  Star,
-  Target,
-  Volume2,
-} from "lucide-react";
+import { Check, ClipboardList, Info, LogOut, Mic, MicOff, RotateCcw, Star, Target, Volume2 } from "lucide-react";
 import styles from "./session.module.css";
 
 type Interaction =
@@ -44,14 +32,13 @@ interface ContentAsset {
 interface ContentStep {
   id: number;
   order_index: number;
-  prompt_text: string;
-  instruction_text?: string | null;
   expected_reading_text?: string | null;
+  required_selection_count: number;
   options: ContentOption[];
   assets: ContentAsset[];
   media_gaps: Array<{ semantic_text?: string; status?: string }>;
 }
-interface PretestExperience {
+interface AssessmentPresentation {
   version: string;
   question_number: number;
   section: string;
@@ -60,10 +47,10 @@ interface PretestExperience {
   question_text: string;
   instruction_text: string;
   interaction_type: Interaction;
-  stimulus?: {
+  stimulus: {
     kind?: "text" | "reading" | "audio" | "image" | "reference" | "none" | string;
-    text?: string;
-    audio_target?: string;
+    text?: string | null;
+    audio_target?: string | null;
   };
   media_semantics?: { option_kind?: string; stimulus?: string } | null;
 }
@@ -71,15 +58,10 @@ interface ContentItem {
   id: number;
   stable_key: string;
   canonical_id?: string | null;
-  kind: string;
+  kind: "pretest_question" | "posttest_question";
   interaction_type: Interaction;
   title?: string | null;
-  source_method?: string | null;
-  template_data?: {
-    criterion?: string | null;
-    pretest_experience?: PretestExperience;
-    [key: string]: unknown;
-  } | null;
+  presentation: AssessmentPresentation;
   item_assets: ContentAsset[];
   steps: ContentStep[];
 }
@@ -101,34 +83,8 @@ const LISTEN = new Set<Interaction>(["listen_choose_one", "listen_choose_image",
 const READ = new Set<Interaction>(["read_aloud", "timed_read_aloud"]);
 const LEVEL_LABELS = ["الاستعداد للقراءة", "بناء الكلمة", "الطلاقة والفهم"];
 
-function conciseTitle(title?: string | null) {
-  if (!title) return "مهمة قصيرة";
-  const value = title.includes(":") ? title.split(":").slice(1).join(":").trim() : title;
-  return value.replace(/^السؤال\s+\d+\s*/u, "").trim() || "مهمة قصيرة";
-}
-
-function criterionCount(item: ContentItem, optionsLength: number) {
-  const criterion = String(item.template_data?.criterion || "").trim();
-  if (!criterion || criterion === "بالترتيب المذكور") return optionsLength;
-  const parts = criterion.split(/\s+ثم\s+|[،,]/u).map((part) => part.trim()).filter(Boolean);
-  return parts.length ? Math.min(parts.length, optionsLength) : optionsLength;
-}
-
 function stableOptionOrder(values: ContentOption[]) {
   return [...values].sort((a, b) => ((a.id * 17) % 97) - ((b.id * 17) % 97));
-}
-
-function fallbackInstruction(interaction: Interaction) {
-  if (LISTEN.has(interaction)) return "استمع جيدًا، ثم اختر الإجابة المطابقة.";
-  if (READ.has(interaction)) return "اقرأ بصوت واضح، ثم أرسل تسجيلك.";
-  if (ORDER.has(interaction)) return "اضغط على العناصر بالترتيب الصحيح.";
-  return "انظر إلى الخيارات جيدًا، ثم اختر الإجابة المناسبة.";
-}
-
-function genericEncouragement(interaction: Interaction) {
-  if (READ.has(interaction)) return "اقرأ بهدوء وبصوت طبيعي. المهم أن تكون القراءة واضحة.";
-  if (LISTEN.has(interaction)) return "يمكنك الاستماع مرة أخرى قبل اختيار الإجابة.";
-  return "خذ وقتك، ركّز في السؤال، ثم اختر ما تراه صحيحًا.";
 }
 
 export default function SessionPage() {
@@ -155,16 +111,16 @@ export default function SessionPage() {
 
   const step = item?.steps[0] ?? null;
   const interaction = item?.interaction_type;
-  const experience = item?.kind === "pretest_question" ? item.template_data?.pretest_experience : undefined;
+  const presentation = item?.presentation;
   const options = useMemo(() => stableOptionOrder(step?.options ?? []), [step]);
   const audioAssets = useMemo(() => step?.assets.filter((asset) => asset.asset_type === "audio") ?? [], [step]);
   const imageAssets = useMemo(() => step?.assets.filter((asset) => asset.asset_type === "image") ?? [], [step]);
   const contextAssets = useMemo(() => item?.item_assets.filter((asset) => asset.asset_type === "image") ?? [], [item]);
   const answered = progress?.completed_items ?? 0;
   const total = progress?.total_items || 30;
-  const currentNumber = experience?.question_number ?? Math.min(answered + 1, total);
+  const currentNumber = presentation?.question_number ?? Math.min(answered + 1, total);
   const percent = Math.min(100, Math.round((answered / Math.max(1, total)) * 100));
-  const targetCount = item && step ? criterionCount(item, step.options.length) : 0;
+  const targetCount = step?.required_selection_count ?? 0;
 
   const operationKey = (kind: "answer" | "upload") => {
     if (!item || !step) return "";
@@ -226,7 +182,7 @@ export default function SessionPage() {
     setPhase("loading");
     setError("");
     try {
-      const response = await fetch(`/api/assessment/session/${sessionId}/next`, { cache: "no-store" });
+      const response = await fetch(`/api/assessment-view/session/${sessionId}/next`, { cache: "no-store" });
       const data = await response.json().catch(() => null);
       if (!response.ok) throw new Error(data?.detail || "تعذر تحميل السؤال");
       if (!data) {
@@ -234,13 +190,7 @@ export default function SessionPage() {
         return;
       }
       setItem(data);
-      setSelectedIds([]);
-      setAudioBlob(null);
-      setAudioUrl((current) => {
-        if (current) URL.revokeObjectURL(current);
-        return null;
-      });
-      setRecordingSeconds(0);
+      clearQuestionState();
       stepStartedAtRef.current = Date.now();
       await fetchProgress();
       setPhase("active");
@@ -290,7 +240,11 @@ export default function SessionPage() {
       return;
     }
     if (MULTI.has(interaction)) {
-      setSelectedIds((current) => current.includes(optionId) ? current.filter((id) => id !== optionId) : [...current, optionId]);
+      setSelectedIds((current) => {
+        if (current.includes(optionId)) return current.filter((id) => id !== optionId);
+        if (targetCount > 0 && current.length >= targetCount) return current;
+        return [...current, optionId];
+      });
       return;
     }
     if (ORDER.has(interaction)) {
@@ -353,6 +307,7 @@ export default function SessionPage() {
       setError("لم نتمكن من تشغيل الميكروفون. اسمح للمتصفح باستخدامه ثم حاول مرة أخرى.");
     }
   };
+
   const stopRecording = () => {
     if (!recorderRef.current || recorderRef.current.state !== "recording") return;
     recorderRef.current.stop();
@@ -444,34 +399,34 @@ export default function SessionPage() {
     );
   }
 
-  if (phase === "error" || !item || !step || !interaction) {
+  if (phase === "error" || !item || !step || !interaction || !presentation) {
     return (
       <div className={styles.page} dir="rtl" data-testid="assessment-session" data-phase="error">
         <div className={styles.loadingState}>
           <Image src="/brand/logo-navy.svg" alt="هِمّة" width={128} height={46} />
           <h1>تعذر فتح السؤال</h1>
-          <p>{error || "حدث خطأ غير متوقع."}</p>
+          <p>{error || "بيانات عرض السؤال غير مكتملة."}</p>
           <button className={styles.primary} onClick={() => void fetchNext()}>حاول مرة أخرى</button>
         </div>
       </div>
     );
   }
 
-  const questionText = experience?.question_text || step.instruction_text || conciseTitle(item.title);
-  const skillText = experience?.skill || conciseTitle(item.title);
-  const instructionText = experience?.instruction_text || fallbackInstruction(interaction);
-  const encouragement = experience?.encouragement || genericEncouragement(interaction);
-  const stimulusKind = experience?.stimulus?.kind || "none";
-  const stimulusText = experience?.stimulus?.text || step.prompt_text || "";
+  const questionText = presentation.question_text;
+  const skillText = presentation.skill;
+  const instructionText = presentation.instruction_text;
+  const encouragement = presentation.encouragement;
+  const stimulusKind = presentation.stimulus?.kind || "none";
+  const stimulusText = String(presentation.stimulus?.text || "");
   const hasMediaGap = step.media_gaps.length > 0;
   const imageChoice = interaction === "choose_image" || interaction === "listen_choose_image";
   const sequenceWithImages = ORDER.has(interaction) && imageAssets.some((asset) => asset.option_id);
   const canSubmit = Boolean(
     (SINGLE.has(interaction) && selectedIds.length === 1)
-    || (MULTI.has(interaction) && selectedIds.length >= 2)
-    || (ORDER.has(interaction) && selectedIds.length === targetCount),
+    || (MULTI.has(interaction) && targetCount > 0 && selectedIds.length === targetCount)
+    || (ORDER.has(interaction) && targetCount > 0 && selectedIds.length === targetCount),
   );
-  const visualAsset = contextAssets[0] || (stimulusKind === "image" ? imageAssets[0] : undefined);
+  const visualAsset = contextAssets[0] || (stimulusKind === "image" ? imageAssets.find((asset) => !asset.option_id) || imageAssets[0] : undefined);
   const sideCharacter = READ.has(interaction) ? "/characters/girl/encourage.png" : "/characters/girl/explain.png";
   const assessmentLabel = item.kind === "pretest_question" ? "الاختبار القبلي" : "الاختبار البعدي";
 
@@ -479,10 +434,7 @@ export default function SessionPage() {
     <div className={styles.page} dir="rtl" data-testid="assessment-session" data-phase={phase === "submitting" ? "submitting" : "question"}>
       <header className={styles.header}>
         <div className={styles.headerInner}>
-          <div className={styles.brandCluster}>
-            <Image src="/brand/logo-navy.svg" alt="هِمّة" width={124} height={44} priority />
-            <button className={styles.soundButton} type="button" onClick={() => void playPrompt()} disabled={!audioAssets.length || isListening} aria-label="تشغيل صوت السؤال"><Volume2 size={26} /></button>
-          </div>
+          <div className={styles.brandCluster}><Image src="/brand/logo-navy.svg" alt="هِمّة" width={124} height={44} priority /></div>
           <button className={styles.exit} type="button" onClick={() => router.push("/student")}><LogOut size={21} /><span>خروج</span></button>
         </div>
       </header>
@@ -507,7 +459,7 @@ export default function SessionPage() {
 
             {visualAsset && (
               <div className={styles.contextImage} data-testid="question-image">
-                <Image src={visualAsset.url} alt={visualAsset.semantic_text || experience?.media_semantics?.stimulus || "صورة مرتبطة بالسؤال"} width={420} height={260} unoptimized />
+                <Image src={visualAsset.url} alt={visualAsset.semantic_text || presentation.media_semantics?.stimulus || "صورة مرتبطة بالسؤال"} width={420} height={260} unoptimized />
               </div>
             )}
 
@@ -518,11 +470,11 @@ export default function SessionPage() {
             )}
 
             {READ.has(interaction) && (
-              <div className={`${styles.readingBox} ${(step.expected_reading_text?.length || 0) > 55 ? styles.readingBoxLong : ""}`} data-testid="reading-text">{step.expected_reading_text || stimulusText || "اقرأ النص الظاهر"}</div>
+              <div className={`${styles.readingBox} ${(step.expected_reading_text?.length || stimulusText.length) > 55 ? styles.readingBoxLong : ""}`} data-testid="reading-text">{step.expected_reading_text || stimulusText}</div>
             )}
 
             <div className={styles.instructionRow}><Info size={21} aria-hidden="true" /><p>{instructionText}</p></div>
-            {hasMediaGap && <div className={styles.notice}>هذا الصوت غير متوفر ضمن الملفات المعتمدة حاليًا، لذلك لن يُطلب منك الإجابة على هذه المهمة الآن.</div>}
+            {hasMediaGap && <div className={styles.notice}>هذا الملف غير متوفر ضمن الوسائط المعتمدة حاليًا، لذلك لن يُطلب منك الإجابة على هذه المهمة الآن.</div>}
 
             {!hasMediaGap && imageChoice && (
               <div className={styles.imageOptions} data-testid="image-options">
@@ -552,7 +504,7 @@ export default function SessionPage() {
                 {sequenceWithImages && interaction !== "build_word" ? (
                   <div className={styles.imageOptions} data-testid="sequence-image-options">
                     {imageAssets.filter((asset) => asset.option_id && !selectedIds.includes(Number(asset.option_id))).map((asset) => (
-                      <button key={asset.asset_id} className={styles.imageOption} onClick={() => toggleOption(Number(asset.option_id))} disabled={targetCount > 0 && selectedIds.length >= targetCount} type="button">
+                      <button key={`${asset.asset_id}-${asset.option_id}`} className={styles.imageOption} onClick={() => toggleOption(Number(asset.option_id))} disabled={targetCount > 0 && selectedIds.length >= targetCount} type="button">
                         <Image src={asset.url} alt={asset.semantic_text || "عنصر ترتيب"} width={220} height={150} unoptimized /><span className={styles.imageLabel}>{asset.semantic_text}</span>
                       </button>
                     ))}
@@ -608,7 +560,7 @@ export default function SessionPage() {
             <div className={styles.bottomActions}>
               {ORDER.has(interaction) && selectedIds.length > 0 && <button className={styles.secondary} type="button" onClick={() => setSelectedIds([])}><RotateCcw size={18} /> إعادة الترتيب</button>}
               <button className={styles.primaryWide} type="button" onClick={() => void submitAnswer()} disabled={!canSubmit || phase === "submitting"}>
-                <span>{phase === "submitting" ? "جاري الحفظ..." : "تأكيد والمتابعة"}</span><span className={styles.primaryIcon}><ArrowLeft size={24} /></span>
+                <span>{phase === "submitting" ? "جاري الحفظ..." : "تأكيد والمتابعة"}</span>
               </button>
             </div>
           )}
