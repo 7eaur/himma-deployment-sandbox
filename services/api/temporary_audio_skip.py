@@ -360,6 +360,27 @@ def _finish_session_with_journey_scoring(db: Session, student: Student, session:
     }
 
 
+def _completed_result_payload(session: AssessmentSession) -> dict:
+    """Replay persisted completion state without recalculating or mutating it."""
+    if session.final_score is None or session.assigned_level is None:
+        raise HTTPException(status_code=409, detail="نتيجة الجلسة المكتملة غير متاحة")
+    final_percentage = Decimal(str(session.final_score))
+    return {
+        "id": session.id,
+        "final_score": final_percentage,
+        "assigned_level": int(session.assigned_level),
+        "result_band": 1 if final_percentage < 50 else 2 if final_percentage < 80 else 3,
+        "section_points": {},
+        "placement_reason": None,
+        "placement_provisional": False,
+        "placement_provisional_reasons": [],
+        "temporary_audio_skips": 0,
+        "scorable_items": 0,
+        "scorable_units": 0,
+        "replayed_completed_result": True,
+    }
+
+
 # Registered before assessment.router in main.py, making this the single
 # authoritative pre/post completion endpoint for both normal and temporary-skip
 # runs. Other assessment routes remain unchanged.
@@ -373,6 +394,10 @@ def finish_assessment_with_optional_temporary_skips(
         AssessmentSession.id == session_id,
         AssessmentSession.student_id == student.id,
     ).first()
-    if not session or session.status != "in_progress":
+    if not session:
+        raise HTTPException(status_code=400, detail="الجلسة غير صالحة أو مكتملة")
+    if session.status == "completed":
+        return _completed_result_payload(session)
+    if session.status != "in_progress":
         raise HTTPException(status_code=400, detail="الجلسة غير صالحة أو مكتملة")
     return _finish_session_with_journey_scoring(db, student, session)
