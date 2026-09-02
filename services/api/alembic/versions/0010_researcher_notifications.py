@@ -29,12 +29,12 @@ def upgrade() -> None:
         sa.UniqueConstraint("dedupe_key", name="uq_researcher_notifications_dedupe_key"),
     )
     op.create_index("ix_researcher_notifications_id", "researcher_notifications", ["id"])
-    op.create_index("ix_researcher_notifications_type", "researcher_notifications", ["notification_type"])
+    op.create_index("ix_researcher_notifications_notification_type", "researcher_notifications", ["notification_type"])
     op.create_index("ix_researcher_notifications_is_read", "researcher_notifications", ["is_read"])
 
 
 def downgrade() -> None:
     op.drop_index("ix_researcher_notifications_is_read", table_name="researcher_notifications")
-    op.drop_index("ix_researcher_notifications_type", table_name="researcher_notifications")
+    op.drop_index("ix_researcher_notifications_notification_type", table_name="researcher_notifications")
     op.drop_index("ix_researcher_notifications_id", table_name="researcher_notifications")
     op.drop_table("researcher_notifications")
