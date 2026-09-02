@@ -35,7 +35,7 @@ L1_SINGLE_VISIBLE_STIMULUS = {
 # These overrides replace legacy hints that literally contained the correct
 # classification/direction option and therefore leaked the answer after error.
 SAFE_HINT_OVERRIDES = {
-    "L1-CORE-07": "انظر إلى مقدار النص: هل هو رمز واحد، أم مجموعة أحرف، أم أكثر من كلمة؟",
+    "L1-CORE-07": "لاحظ حجم العنصر وعدد الرموز والمسافات بين أجزائه، ثم اختر التصنيف المناسب.",
     "L1-CORE-09": "تذكّر جهة البداية في السطر العربي، ثم فكّر في اتجاه متابعة القراءة.",
     "L1-REIN-11": "تذكّر جهة بداية السطر العربي، ثم اختر الاتجاه المناسب دون استعجال.",
 }
