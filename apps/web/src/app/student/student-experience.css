@@ -81,6 +81,20 @@
   border-radius:16px;
 }
 
+/* Primary CTA labels are real content, not decorative icon wrappers. Keep their
+   text visible and available to the accessibility tree even while the action is
+   disabled before a learner selects an answer. */
+[data-testid="activity-session"] button[class*="primaryWide"] > span,
+[data-testid="assessment-session"] button[class*="primaryWide"] > span{
+  display:inline!important;
+  visibility:visible!important;
+  opacity:1!important;
+  color:inherit!important;
+  font:inherit!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+}
+
 /* Shared compact learning/assessment tuning.
    Both routes consume the same session.module.css classes, so these rules keep
    the visual rhythm aligned without introducing a second page-specific theme. */
