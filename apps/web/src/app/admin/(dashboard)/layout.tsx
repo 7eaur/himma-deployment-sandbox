@@ -4,15 +4,17 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { LayoutDashboard, Users, UserPlus, Mic, BarChart2, Settings, LogOut, Menu, X } from "lucide-react";
+import { BarChart3, ClipboardList, LayoutDashboard, LogOut, Menu, Mic, Settings, UserPlus, Users, X } from "lucide-react";
 import ReinforcementReviewPanel from "@/components/ReinforcementReviewPanel";
+import AdminNotifications from "@/components/admin/AdminNotifications";
 import styles from "./dashboard-layout.module.css";
 
 const navSections = [
   {
-    label: "الرئيسية",
+    label: "المتابعة",
     items: [
       { href: "/admin", label: "نظرة عامة", icon: LayoutDashboard },
+      { href: "/admin/audio-review", label: "مراجعة التسجيلات", icon: Mic },
     ],
   },
   {
@@ -23,16 +25,10 @@ const navSections = [
     ],
   },
   {
-    label: "المراجعات",
+    label: "النتائج والتقارير",
     items: [
-      { href: "/admin/audio-review", label: "التسجيلات الصوتية", icon: Mic },
-    ],
-  },
-  {
-    label: "النتائج",
-    items: [
-      { href: "/admin/reports", label: "التقارير", icon: BarChart2 },
-      { href: "/admin/skill-reports", label: "ملخص المهارات", icon: BarChart2 },
+      { href: "/admin/reports", label: "التقارير", icon: BarChart3 },
+      { href: "/admin/skill-reports", label: "ملخص المهارات", icon: ClipboardList },
     ],
   },
   {
@@ -55,8 +51,11 @@ function SidebarContent({ pathname, supervisorName, onNavigate, onLogout }: Side
   return (
     <>
       <div className={styles.brand}>
-        <Image src="/brand/logo-navy.svg" alt="هِمّة" width={120} height={40} priority />
-        <span className={styles.brandLabel}>لوحة المشرف</span>
+        <div className={styles.brandRow}>
+          <Image src="/brand/logo-navy.svg" alt="هِمّة" width={112} height={38} priority />
+          <AdminNotifications />
+        </div>
+        <span className={styles.brandLabel}>مركز متابعة المشرف</span>
       </div>
 
       <nav className={styles.nav} aria-label="التنقل في لوحة المشرف">
@@ -128,9 +127,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
       }
     };
     void verify();
-    return () => {
-      alive = false;
-    };
+    return () => { alive = false; };
   }, [router]);
 
   const handleLogout = async () => {
@@ -177,9 +174,10 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
 
       <main className={styles.content}>
         <div className={styles.mobileBar}>
-          <Image src="/brand/logo-navy.svg" alt="هِمّة" width={100} height={32} />
-          <div className={styles.mobileBarText}>لوحة المشرف</div>
-          <button onClick={() => setMobileMenuOpen(true)} className={styles.menuButton} aria-label="فتح القائمة"><Menu size={24} /></button>
+          <button onClick={() => setMobileMenuOpen(true)} className={styles.menuButton} aria-label="فتح القائمة"><Menu size={23} /></button>
+          <Image src="/brand/logo-navy.svg" alt="هِمّة" width={92} height={30} />
+          <span className={styles.mobileBarText}>لوحة المشرف</span>
+          <AdminNotifications />
         </div>
         <ReinforcementReviewPanel />
         {children}
