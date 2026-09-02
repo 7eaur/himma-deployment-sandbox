@@ -31,13 +31,8 @@ L1_SINGLE_VISIBLE_STIMULUS = {
     "L1-REIN-09",
 }
 
-# Hints guide the learner without directly printing one of the answer choices.
-# These overrides replace legacy hints that literally contained the correct
-# classification/direction option and therefore leaked the answer after error.
 SAFE_HINT_OVERRIDES = {
     "L1-CORE-07": "لاحظ حجم العنصر وعدد الرموز والمسافات بين أجزائه، ثم اختر التصنيف المناسب.",
-    "L1-CORE-09": "تذكّر جهة البداية في السطر العربي، ثم فكّر في اتجاه متابعة القراءة.",
-    "L1-REIN-11": "تذكّر جهة بداية السطر العربي، ثم اختر الاتجاه المناسب دون استعجال.",
 }
 
 
@@ -58,18 +53,13 @@ def _single_visible_stimulus(text: str) -> str:
     if quoted:
         return quoted.group(1).strip()
 
-    # Source rounds use forms such as `ب: ب/ت`, `ب ← حرف`, `ب → بـ / تـ`,
-    # or `ب = حرف`.
     for separator in ("←", "→", "=", ":"):
         if separator in value:
             value = value.split(separator, 1)[0].strip()
             break
 
-    # A legacy prompt can still contain slash-separated choices without a colon.
     if "/" in value:
         value = value.split("/", 1)[0].strip()
-    # Preserve meaningful sentence punctuation. Only remove wrapper punctuation
-    # that can be introduced by legacy prompt serialization.
     return value.strip(" ،؛«»")
 
 
@@ -88,9 +78,6 @@ def _clean_stimulus(item: ContentItem, step, interaction: str) -> str:
         return _single_visible_stimulus(text)
 
     if key == "L1-CORE-06":
-        # Student Experience v2 currently projects a heard sound against one
-        # displayed word. Keep the display box to that word only; source-version
-        # reconciliation is audited separately from presentation correctness.
         value = _strip_serialized_choices(text)
         if ":" in value:
             value = value.split(":", 1)[1].strip()
@@ -99,7 +86,34 @@ def _clean_stimulus(item: ContentItem, step, interaction: str) -> str:
     return _strip_serialized_choices(text)
 
 
+def _auditory_story_round(item: ContentItem, step, total: int) -> dict[str, Any] | None:
+    story = dict((item.template_data or {}).get("auditory_story") or {})
+    if not story:
+        return None
+    rounds = list(story.get("rounds") or [])
+    index = int(step.order_index) - 1
+    if index < 0 or index >= len(rounds):
+        raise RuntimeError(f"{base.canonical(item)} auditory story round mismatch")
+    round_data = dict(rounds[index])
+    return {
+        "round_number": int(step.order_index),
+        "round_total": total,
+        "skill": str(story.get("skill") or "الفهم السمعي المباشر"),
+        "encouragement": base.encouragement(int(step.order_index), total),
+        "hint": str(round_data.get("hint") or ""),
+        "question_text": str(round_data.get("question_text") or ""),
+        "instruction_text": str(round_data.get("instruction_text") or ""),
+        # The approved story is audio-only. Its internal text must never be
+        # rendered in the visible stimulus box.
+        "stimulus_text": "",
+    }
+
+
 def _learning_round(item: ContentItem, step, total: int) -> dict[str, Any]:
+    auditory = _auditory_story_round(item, step, total)
+    if auditory is not None:
+        return auditory
+
     key = base.canonical(item)
     override = base.ITEM_OVERRIDES.get(key, {})
     interaction = str((item.template_data or {}).get("canonical_interaction_type") or item.interaction_type)
