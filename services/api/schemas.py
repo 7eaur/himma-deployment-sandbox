@@ -192,6 +192,35 @@ class ContentAssetResponse(BaseModel):
     option_id: Optional[int] = None
 
 
+# Legacy engine response retained for internal compatibility/tests. The student
+# web app no longer consumes this payload.
+class ContentStepResponse(BaseModel):
+    id: int
+    order_index: int
+    prompt_text: str
+    instruction_text: Optional[str] = None
+    expected_reading_text: Optional[str] = None
+    options: list[ContentOptionResponse] = Field(default_factory=list)
+    assets: list[ContentAssetResponse] = Field(default_factory=list)
+    media_gaps: list[dict[str, Any]] = Field(default_factory=list)
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ContentItemResponse(BaseModel):
+    id: int
+    stable_key: str
+    canonical_id: Optional[str] = None
+    kind: str
+    interaction_type: str
+    title: Optional[str] = None
+    source_method: Optional[str] = None
+    steps: list[ContentStepResponse] = Field(default_factory=list)
+    item_assets: list[ContentAssetResponse] = Field(default_factory=list)
+    template_data: Optional[dict[str, Any]] = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Clean student-view response. prompt_text/template_data are deliberately absent.
 class AssessmentStimulusResponse(BaseModel):
     kind: str = "none"
     text: Optional[str] = None
@@ -211,7 +240,7 @@ class AssessmentPresentationResponse(BaseModel):
     media_semantics: Optional[dict[str, Any]] = None
 
 
-class ContentStepResponse(BaseModel):
+class StudentContentStepResponse(BaseModel):
     id: int
     order_index: int
     expected_reading_text: Optional[str] = None
@@ -219,20 +248,18 @@ class ContentStepResponse(BaseModel):
     options: list[ContentOptionResponse] = Field(default_factory=list)
     assets: list[ContentAssetResponse] = Field(default_factory=list)
     media_gaps: list[dict[str, Any]] = Field(default_factory=list)
-    model_config = ConfigDict(from_attributes=True)
 
 
-class ContentItemResponse(BaseModel):
+class AssessmentStudentViewResponse(BaseModel):
     id: int
     stable_key: str
     canonical_id: Optional[str] = None
     kind: str
     interaction_type: str
     title: Optional[str] = None
-    steps: list[ContentStepResponse] = Field(default_factory=list)
+    steps: list[StudentContentStepResponse] = Field(default_factory=list)
     item_assets: list[ContentAssetResponse] = Field(default_factory=list)
     presentation: AssessmentPresentationResponse
-    model_config = ConfigDict(from_attributes=True)
 
 
 class AttemptResponseSubmit(BaseModel):
