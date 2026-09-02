@@ -25,6 +25,12 @@ AUDIO_MANIFEST = ROOT / "assets" / "audio" / "HIMMA_AUDIO_V1" / "manifest.csv"
 IMAGE_MAP = ROOT / "assets" / "education" / "developer" / "asset-map.json"
 VERSION = "HIMMA-DB-RUNTIME-1.0"
 
+# Approved item-level context assets whose semantic label is part of the student
+# content contract but is not present in the generic education image map.
+ITEM_ASSET_SEMANTIC_FALLBACKS = {
+    ("PRE-Q24", "STY-01"): "نص الاختبار القبلي",
+}
+
 
 def _json(path: Path, default: Any = None) -> Any:
     try:
@@ -199,10 +205,16 @@ def _resolved_step_assets(item, step, source_round: dict[str, Any]) -> list[dict
 def _resolved_item_assets(item, source: dict[str, Any]) -> list[dict[str, Any]]:
     source_assets = {str(value.get("asset_id") or ""): value for value in source.get("item_assets", [])}
     image_semantics = _image_semantics_by_id()
+    canonical = str(source.get("canonical_id") or (item.template_data or {}).get("canonical_id") or item.stable_key)
     result = []
     for link in sorted(item.assets, key=lambda value: value.id or 0):
         source_asset = source_assets.get(link.manifest_asset_id, {})
-        semantic = str(source_asset.get("semantic_text") or image_semantics.get(link.manifest_asset_id) or "").strip()
+        semantic = str(
+            source_asset.get("semantic_text")
+            or image_semantics.get(link.manifest_asset_id)
+            or ITEM_ASSET_SEMANTIC_FALLBACKS.get((canonical, link.manifest_asset_id))
+            or ""
+        ).strip()
         result.append({"asset_id": link.manifest_asset_id, "asset_type": link.asset_type, "usage": link.usage_context, "semantic_text": semantic or None})
     return result
 
