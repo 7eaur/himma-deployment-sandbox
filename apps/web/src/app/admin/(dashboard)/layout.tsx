@@ -176,7 +176,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
         <div className={styles.mobileBar}>
           <button onClick={() => setMobileMenuOpen(true)} className={styles.menuButton} aria-label="فتح القائمة"><Menu size={23} /></button>
           <Image src="/brand/logo-navy.svg" alt="هِمّة" width={92} height={30} />
-          <span className={styles.mobileBarText}>لوحة المشرف</span>
+          <span className={styles.mobileBarText}>الإدارة</span>
           <AdminNotifications />
         </div>
         <ReinforcementReviewPanel />
