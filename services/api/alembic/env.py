@@ -13,6 +13,7 @@ import db.activity_models  # noqa: F401,E402
 import db.adaptation_models  # noqa: F401,E402
 import db.reinforcement_models  # noqa: F401,E402
 import db.speech_models  # noqa: F401,E402
+import db.notification_models  # noqa: F401,E402
 from db.database import SQLALCHEMY_DATABASE_URL
 
 config = context.config
