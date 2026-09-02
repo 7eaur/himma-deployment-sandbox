@@ -106,34 +106,41 @@ def test_known_ambiguous_questions_are_explained_by_their_real_intent():
         copy = _display_copy(final_sound)
         assert "تنتهي به" in copy or "آخر صوت" in copy
 
-        # L1-CORE-06 compares a heard sound with the beginning of a displayed
-        # word. The question/instruction explain that intent; answer labels stay
-        # exclusively in option controls and must never be serialized into copy.
+        # Latest approved L1-CORE-06 compares the onsets of two heard words.
+        # No word from the pair is exposed in the visible stimulus box.
         onset = _by_canonical(db, "L1-CORE-06")
         copy = _display_copy(onset)
-        assert "بداية الكلمة" in copy or "أول حرف" in copy
+        assert "الكلمتين" in copy
+        assert "أول صوت" in copy or "بدا" in copy
         assert canonical_interaction(onset) == "listen_choose_one"
         option_texts = {
             option.text
             for step in onset.steps
             for option in step.options
         }
-        assert {"متشابهان", "مختلفان"} <= option_texts
-        assert "متشابهان" not in copy
-        assert "مختلفان" not in copy
+        assert {"الصوت نفسه", "صوتان مختلفان"} <= option_texts
+
+        pair = (onset.template_data or {}).get("onset_pair_compare") or {}
+        assert [round_data["audio_words"] for round_data in pair.get("rounds", [])] == [
+            ["موز", "ماء"],
+            ["باب", "بطة"],
+            ["قلم", "كرة"],
+            ["سمك", "شمس"],
+            ["نور", "نخلة"],
+        ]
     finally:
         db.close()
 
 
 def test_level_one_visible_stimulus_never_serializes_its_choices():
-    """The display box contains one target only; options stay in option controls."""
+    """The display box contains only the approved target; listening pairs stay audio-only."""
     _seed()
     db = SessionLocal()
     try:
         expected = {
             "L1-CORE-01": ["ب", "ج", "س", "ق", "د"],
             "L1-CORE-03": ["ب", "م", "س", "ك", "ل"],
-            "L1-CORE-06": ["مَوْزَة", "قَلَم", "قَمَر", "شَمْس", "نَخْلَة"],
+            "L1-CORE-06": ["", "", "", "", ""],
             "L1-CORE-07": ["ب", "كِتَاب", "ذَهَبَ سَالِمٌ.", "م", "شَجَرَة"],
         }
         for canonical, wanted in expected.items():
@@ -145,5 +152,34 @@ def test_level_one_visible_stimulus_never_serializes_its_choices():
                 assert "الخيارات" not in stimulus
                 assert "/" not in stimulus
                 assert "؛" not in stimulus
+    finally:
+        db.close()
+
+
+def test_level_one_direction_content_is_fully_replaced_by_auditory_comprehension():
+    _seed()
+    db = SessionLocal()
+    try:
+        core = _by_canonical(db, "L1-CORE-09")
+        rein = _by_canonical(db, "L1-REIN-11")
+        for item, expected_title in [
+            (core, "استمع إلى القصة ثم أجب"),
+            (rein, "استمع واختر الإجابة"),
+        ]:
+            data = item.template_data or {}
+            story = data.get("auditory_story") or {}
+            assert story.get("student_visible_story_text") is False
+            assert story.get("skill") == "الفهم السمعي المباشر"
+            assert data.get("canonical_interaction_type") == "listen_choose_one"
+            assert expected_title in str(data.get("title") or "")
+            rounds = _learning_rounds(item)
+            assert len(rounds) == 5
+            assert all(not str(round_data.get("stimulus_text") or "").strip() for round_data in rounds)
+            visible = " ".join(
+                str(round_data.get("question_text") or "") + " " + str(round_data.get("instruction_text") or "")
+                for round_data in rounds
+            )
+            assert "اتجاه القراءة" not in visible
+            assert "يمين أم يسار" not in visible
     finally:
         db.close()
