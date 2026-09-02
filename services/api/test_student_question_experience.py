@@ -103,7 +103,8 @@ def test_known_ambiguous_questions_are_explained_by_their_real_intent():
         assert "تبدأ به" in copy or "أول صوت" in copy
 
         final_sound = _by_canonical(db, "PRE-Q07")
-        assert "آخرها" in _display_copy(final_sound)
+        copy = _display_copy(final_sound)
+        assert "تنتهي به" in copy or "آخر صوت" in copy
 
         # Student Experience v2 explicitly defines L1-CORE-06 as a heard letter
         # sound compared with the first letter of a displayed word. Assert the
