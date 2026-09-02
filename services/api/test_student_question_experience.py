@@ -99,7 +99,8 @@ def test_known_ambiguous_questions_are_explained_by_their_real_intent():
         assert "يبدأ اسمها" in copy
 
         initial_sound = _by_canonical(db, "PRE-Q06")
-        assert "بدايتها" in _display_copy(initial_sound)
+        copy = _display_copy(initial_sound)
+        assert "تبدأ به" in copy or "أول صوت" in copy
 
         final_sound = _by_canonical(db, "PRE-Q07")
         assert "آخرها" in _display_copy(final_sound)
