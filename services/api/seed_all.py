@@ -9,6 +9,7 @@ import seed_reinforcement_additions
 import seed_reinforcement_additions_v2
 import seed_student_choice_corrections
 import seed_student_experience_v2
+import seed_l1_auditory_story_replacement
 import seed_pretest_experience_2026_09_01
 import seed_db_runtime_contract
 import seed_learning_posttest_projection_runtime
@@ -45,11 +46,13 @@ def run_seed_all() -> dict[str, int]:
     v2_created = seed_reinforcement_additions_v2.run_seed()
     choice_corrections_created = seed_student_choice_corrections.run_seed()
     student_experience_changes = seed_student_experience_v2.run_seed()
+    auditory_story_changes = seed_l1_auditory_story_replacement.run_seed()
     pretest_experience_changes = seed_pretest_experience_2026_09_01.run_seed()
 
     # Source files are allowed only in the import pipeline. Snapshot all source,
     # media semantics and media gaps into PostgreSQL before runtime projection.
     db_runtime_changes = seed_db_runtime_contract.run_seed()
+    auditory_runtime_changes = seed_l1_auditory_story_replacement.patch_db_runtime()
     projection_result = seed_learning_posttest_projection_runtime.run_seed()
 
     db = SessionLocal()
@@ -80,8 +83,9 @@ def run_seed_all() -> dict[str, int]:
         "v1_additions_created": v1_created, "v2_additions_created": v2_created,
         "choice_corrections_created": choice_corrections_created,
         "student_experience_v2_changes": student_experience_changes, "student_experience_v2_items": v2_marked,
+        "auditory_story_changes": auditory_story_changes,
         "pretest_experience_changes": pretest_experience_changes, "pretest_experience_items": pretest_marked,
-        "db_runtime_changes": db_runtime_changes, "db_runtime_items": db_runtime_marked,
+        "db_runtime_changes": db_runtime_changes, "auditory_runtime_changes": auditory_runtime_changes, "db_runtime_items": db_runtime_marked,
         "learning_experience_changes": projection_result["learning_changed"], "learning_experience_items": learning_marked,
         "posttest_experience_changes": projection_result["posttest_changed"], "posttest_experience_items": posttest_marked,
         "additions_created": v1_created + v2_created,
