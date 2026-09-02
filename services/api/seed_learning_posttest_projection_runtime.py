@@ -17,11 +17,8 @@ LEARNING_VERSION = "HIMMA-LEARNING-2026-09-01-R2"
 POSTTEST_VERSION = base.POSTTEST_VERSION
 LISTEN = {"listen_choose_one", "listen_choose_image", "listen_choose_many"}
 NO_TEXT = {"read_aloud", "timed_read_aloud", "memory_sequence", "sequence", "build_word", "choose_image", "choose_many", "listen_choose_image", "listen_choose_many"}
-LISTEN_WITH_VISIBLE_STIMULUS = {"L1-CORE-06"}
+LISTEN_WITH_VISIBLE_STIMULUS: set[str] = set()
 
-# These level-one tasks explicitly require one visible letter/word/printed item.
-# Their legacy prompt_text often serializes that item together with choices, so
-# never pass the raw prompt through to the student-facing stimulus box.
 L1_SINGLE_VISIBLE_STIMULUS = {
     "L1-CORE-01",
     "L1-CORE-03",
@@ -47,17 +44,14 @@ def _strip_serialized_choices(text: str) -> str:
 
 
 def _single_visible_stimulus(text: str) -> str:
-    """Extract only the one student-visible target, never its serialized choices."""
     value = _strip_serialized_choices(text)
     quoted = re.search(r"«([^»]+)»", value)
     if quoted:
         return quoted.group(1).strip()
-
     for separator in ("←", "→", "=", ":"):
         if separator in value:
             value = value.split(separator, 1)[0].strip()
             break
-
     if "/" in value:
         value = value.split("/", 1)[0].strip()
     return value.strip(" ،؛«»")
@@ -69,21 +63,32 @@ def _clean_stimulus(item: ContentItem, step, interaction: str) -> str:
         return ""
     if interaction in LISTEN and key not in LISTEN_WITH_VISIBLE_STIMULUS:
         return ""
-
     text = str(step.prompt_text or "").strip()
     if not text:
         return ""
-
     if key in L1_SINGLE_VISIBLE_STIMULUS:
         return _single_visible_stimulus(text)
-
-    if key == "L1-CORE-06":
-        value = _strip_serialized_choices(text)
-        if ":" in value:
-            value = value.split(":", 1)[1].strip()
-        return value.strip(" ،؛«»")
-
     return _strip_serialized_choices(text)
+
+
+def _onset_pair_round(item: ContentItem, step, total: int) -> dict[str, Any] | None:
+    pair = dict((item.template_data or {}).get("onset_pair_compare") or {})
+    if not pair:
+        return None
+    rounds = list(pair.get("rounds") or [])
+    index = int(step.order_index) - 1
+    if index < 0 or index >= len(rounds):
+        raise RuntimeError(f"{base.canonical(item)} onset pair round mismatch")
+    return {
+        "round_number": int(step.order_index),
+        "round_total": total,
+        "skill": str(pair.get("skill") or "التمييز السمعي بين بدايات الكلمات"),
+        "encouragement": base.encouragement(int(step.order_index), total),
+        "hint": "ركّز على بداية الكلمة الأولى ثم بداية الكلمة الثانية.",
+        "question_text": str(pair.get("student_question") or "استمع إلى الكلمتين، ثم قارن بدايتهما."),
+        "instruction_text": str(pair.get("instruction") or "استمع إلى الكلمتين كاملتين، ثم قارن أول صوت في كل كلمة."),
+        "stimulus_text": "",
+    }
 
 
 def _auditory_story_round(item: ContentItem, step, total: int) -> dict[str, Any] | None:
@@ -103,13 +108,14 @@ def _auditory_story_round(item: ContentItem, step, total: int) -> dict[str, Any]
         "hint": str(round_data.get("hint") or ""),
         "question_text": str(round_data.get("question_text") or ""),
         "instruction_text": str(round_data.get("instruction_text") or ""),
-        # The approved story is audio-only. Its internal text must never be
-        # rendered in the visible stimulus box.
         "stimulus_text": "",
     }
 
 
 def _learning_round(item: ContentItem, step, total: int) -> dict[str, Any]:
+    onset_pair = _onset_pair_round(item, step, total)
+    if onset_pair is not None:
+        return onset_pair
     auditory = _auditory_story_round(item, step, total)
     if auditory is not None:
         return auditory
