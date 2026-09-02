@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import Session
 
 from db.models import AssessmentSession, Attempt, AttemptResponse, AudioSubmission, Student, User
@@ -24,22 +25,38 @@ def _upsert_notification(
     entity_type: str,
     entity_id: str,
 ) -> None:
+    values = {
+        "dedupe_key": dedupe_key,
+        "notification_type": notification_type,
+        "title": title,
+        "message": message,
+        "href": href,
+        "entity_type": entity_type,
+        "entity_id": entity_id,
+        "is_read": False,
+        "created_at": datetime.now(timezone.utc),
+        "read_at": None,
+    }
+
+    # The dashboard and the notification bell can request the inbox at nearly
+    # the same time. PostgreSQL must arbitrate that race at the unique index,
+    # rather than relying on a query-then-insert window in application code.
+    if db.bind is not None and db.bind.dialect.name == "postgresql":
+        statement = (
+            pg_insert(ResearcherNotification)
+            .values(**values)
+            .on_conflict_do_nothing(index_elements=[ResearcherNotification.dedupe_key])
+        )
+        db.execute(statement)
+        return
+
+    # Test/development fallback for non-PostgreSQL engines.
     existing = db.query(ResearcherNotification).filter(
         ResearcherNotification.dedupe_key == dedupe_key,
     ).first()
     if existing:
         return
-    db.add(ResearcherNotification(
-        dedupe_key=dedupe_key,
-        notification_type=notification_type,
-        title=title,
-        message=message,
-        href=href,
-        entity_type=entity_type,
-        entity_id=entity_id,
-        is_read=False,
-        created_at=datetime.now(timezone.utc),
-    ))
+    db.add(ResearcherNotification(**values))
 
 
 def _sync_actionable_notifications(db: Session) -> None:
@@ -71,6 +88,10 @@ def _sync_actionable_notifications(db: Session) -> None:
             entity_type="audio_submission",
             entity_id=str(submission.id),
         )
+
+    # Flush conflict-safe inserts before evaluating stale unread rows so this
+    # same transaction sees the materialized attention state consistently.
+    db.flush()
 
     stale_audio = db.query(ResearcherNotification).filter(
         ResearcherNotification.notification_type == "audio_review_required",
