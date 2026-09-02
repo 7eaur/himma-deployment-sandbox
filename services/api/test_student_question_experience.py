@@ -106,14 +106,21 @@ def test_known_ambiguous_questions_are_explained_by_their_real_intent():
         copy = _display_copy(final_sound)
         assert "تنتهي به" in copy or "آخر صوت" in copy
 
-        # Student Experience v2 explicitly defines L1-CORE-06 as a heard letter
-        # sound compared with the first letter of a displayed word. Assert the
-        # canonical task directly rather than guessing by historical title text.
+        # L1-CORE-06 compares a heard sound with the beginning of a displayed
+        # word. The question/instruction explain that intent; answer labels stay
+        # exclusively in option controls and must never be serialized into copy.
         onset = _by_canonical(db, "L1-CORE-06")
         copy = _display_copy(onset)
         assert "بداية الكلمة" in copy or "أول حرف" in copy
-        assert "متشابهان" in copy and "مختلفان" in copy
         assert canonical_interaction(onset) == "listen_choose_one"
+        option_texts = {
+            option.text
+            for step in onset.steps
+            for option in step.options
+        }
+        assert {"متشابهان", "مختلفان"} <= option_texts
+        assert "متشابهان" not in copy
+        assert "مختلفان" not in copy
     finally:
         db.close()
 
