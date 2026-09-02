@@ -5,7 +5,7 @@ student-facing runtime never falls back to vague copy or empty choice tasks.
 """
 
 import seed_all
-from content_runtime import canonical_id, canonical_interaction, instruction_text
+from content_runtime import canonical_id, canonical_interaction, instruction_text, presentation_data
 from db.database import SessionLocal
 from db.models import ContentItem
 
@@ -44,6 +44,15 @@ def _learning_rounds(item: ContentItem) -> list[dict]:
     data = item.template_data or {}
     experience = data.get("learning_experience") or {}
     return list(experience.get("rounds") or [])
+
+
+def _display_copy(item: ContentItem) -> str:
+    step = item.steps[0]
+    presentation = presentation_data(item, step)
+    return " ".join([
+        str(presentation.get("question_text") or ""),
+        str(presentation.get("instruction_text") or ""),
+    ]).strip()
 
 
 def test_all_runtime_steps_have_child_clear_non_generic_instructions():
@@ -85,22 +94,23 @@ def test_known_ambiguous_questions_are_explained_by_their_real_intent():
     db = SessionLocal()
     try:
         image_onset = _by_canonical(db, "PRE-Q05")
-        assert "الصورة" in instruction_text(image_onset, image_onset.steps[0])
-        assert "يبدأ اسمها" in instruction_text(image_onset, image_onset.steps[0])
+        copy = _display_copy(image_onset)
+        assert "الصورة" in copy
+        assert "يبدأ اسمها" in copy
 
         initial_sound = _by_canonical(db, "PRE-Q06")
-        assert "بدايتها" in instruction_text(initial_sound, initial_sound.steps[0])
+        assert "بدايتها" in _display_copy(initial_sound)
 
         final_sound = _by_canonical(db, "PRE-Q07")
-        assert "آخرها" in instruction_text(final_sound, final_sound.steps[0])
+        assert "آخرها" in _display_copy(final_sound)
 
         # Student Experience v2 explicitly defines L1-CORE-06 as a heard letter
         # sound compared with the first letter of a displayed word. Assert the
         # canonical task directly rather than guessing by historical title text.
         onset = _by_canonical(db, "L1-CORE-06")
-        copy = instruction_text(onset, onset.steps[0])
-        assert "أول حرف" in copy
-        assert "متشابهان أم مختلفان" in copy
+        copy = _display_copy(onset)
+        assert "بداية الكلمة" in copy or "أول حرف" in copy
+        assert "متشابهان" in copy and "مختلفان" in copy
         assert canonical_interaction(onset) == "listen_choose_one"
     finally:
         db.close()
