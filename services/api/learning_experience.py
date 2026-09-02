@@ -18,6 +18,19 @@ from dependencies import get_current_student, get_db
 router = APIRouter(prefix="/learning-experience", tags=["Learning Experience"])
 VERSION = "HIMMA-LEARNING-2026-09-01-R2"
 MAX_STEP_ATTEMPTS = 2
+SINGLE = {"choose_one", "listen_choose_one", "choose_image", "listen_choose_image"}
+MULTI = {"choose_many", "listen_choose_many"}
+ORDER = {"sequence", "memory_sequence", "build_word"}
+
+
+def _required_selection_count(interaction: str, step: ContentStep) -> int:
+    if interaction in SINGLE:
+        return 1
+    if interaction in MULTI:
+        return len([option for option in step.options if option.is_correct])
+    if interaction in ORDER:
+        return len(step.options)
+    return 0
 
 
 @router.get("/session/{session_id}")
@@ -87,6 +100,7 @@ def current_learning_experience(
             "id": step.id,
             "order_index": step.order_index,
             "expected_reading_text": step.expected_reading_text,
+            "required_selection_count": _required_selection_count(interaction, step),
             "options": [
                 {"id": option.id, "text": option.text, "order_index": option.order_index}
                 for option in sorted(step.options, key=lambda value: value.order_index)
