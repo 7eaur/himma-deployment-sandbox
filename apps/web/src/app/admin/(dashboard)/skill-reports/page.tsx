@@ -2,6 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { BarChart3, Download, RefreshCw } from "lucide-react";
+import {
+  AdminAction,
+  AdminEmptyState,
+  AdminMobileCard,
+  AdminPage,
+  AdminPageHeader,
+  AdminPanel,
+  AdminResponsiveTable,
+  AdminStat,
+  AdminStatGrid,
+} from "@/components/admin/AdminUI";
 
 interface SkillEvidenceRow {
   level: number;
@@ -53,110 +64,56 @@ export default function SkillReportsPage() {
   useEffect(() => {
     let cancelled = false;
     fetchSkillEvidence()
-      .then((payload) => {
-        if (!cancelled) setData(payload);
-      })
-      .catch((caught: unknown) => {
-        if (!cancelled) setError(caught instanceof Error ? caught.message : "تعذر تحميل ملخص المهارات");
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
+      .then((payload) => { if (!cancelled) setData(payload); })
+      .catch((caught: unknown) => { if (!cancelled) setError(caught instanceof Error ? caught.message : "تعذر تحميل ملخص المهارات"); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, []);
 
   const totalObservations = data?.cohort_skills.reduce((sum, row) => sum + row.graded_responses, 0) ?? 0;
   const observedSkills = data?.cohort_skills.length ?? 0;
 
   return (
-    <div className="flex-1 font-plex max-w-6xl w-full mx-auto" dir="rtl">
-      <div className="mb-7 flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <p className="text-sm text-primary font-semibold mb-1">دليل بحثي وصفي</p>
-          <h1 className="text-3xl font-bold text-navy mb-2">ملخص المهارات</h1>
-          <p className="text-muted max-w-3xl">
-            يلخص الاستجابات المصححة والمخزنة حسب المهارة. هذه النسب وصفية للتقرير فقط، وليست درجة إتقان ولا تغير التصنيف أو مسار الطالب.
-          </p>
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          <a className="btn-secondary min-h-11" href="/api/researcher/reports/exports/skills.xlsx">
-            <Download size={17} aria-hidden="true" /> تصدير المهارات Excel
-          </a>
-          <button className="btn-secondary min-h-11" onClick={() => void refresh()} disabled={loading}>
-            <RefreshCw size={17} aria-hidden="true" /> تحديث
-          </button>
-        </div>
-      </div>
+    <AdminPage>
+      <AdminPageHeader
+        eyebrow="دليل بحثي وصفي"
+        icon={BarChart3}
+        title="ملخص المهارات"
+        description="يلخص الاستجابات المصححة والمخزنة حسب المهارة. هذه النسب وصفية للتقرير فقط، وليست درجة إتقان ولا تغير التصنيف أو مسار الطالب."
+        actions={<>
+          <AdminAction href="/api/researcher/reports/exports/skills.xlsx" icon={Download}>تصدير Excel</AdminAction>
+          <AdminAction icon={RefreshCw} disabled={loading} onClick={() => void refresh()}>تحديث</AdminAction>
+        </>}
+      />
 
-      {error && (
-        <div className="alert-error mb-5 flex items-center justify-between gap-3 flex-wrap">
-          <span>{error}</span>
-          <button className="btn-secondary" onClick={() => void refresh()}>إعادة المحاولة</button>
-        </div>
-      )}
+      {error && <div className="alert-error flex items-center justify-between gap-3 flex-wrap"><span>{error}</span><AdminAction onClick={() => void refresh()}>إعادة المحاولة</AdminAction></div>}
 
       {loading ? (
         <div aria-label="جاري تجهيز ملخص المهارات" className="space-y-5">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="card min-h-28 animate-pulse bg-slate-50" />
-            <div className="card min-h-28 animate-pulse bg-slate-50" />
-          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4"><div className="card min-h-28 animate-pulse bg-slate-50" /><div className="card min-h-28 animate-pulse bg-slate-50" /></div>
           <div className="card min-h-72 animate-pulse bg-slate-50" />
         </div>
       ) : data ? (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-            <div className="stat-card">
-              <div className="stat-card-icon blue"><BarChart3 size={23} /></div>
-              <div><p className="stat-card-value">{observedSkills}</p><p className="stat-card-label">مهارات لها دليل مخزن</p></div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-card-icon green"><BarChart3 size={23} /></div>
-              <div><p className="stat-card-value">{totalObservations}</p><p className="stat-card-label">استجابات مقيمة</p></div>
-            </div>
-          </div>
+          <AdminStatGrid>
+            <AdminStat icon={BarChart3} value={observedSkills} label="مهارات لها دليل مخزن" />
+            <AdminStat icon={BarChart3} value={totalObservations} label="استجابات مقيمة" />
+          </AdminStatGrid>
 
-          <section className="card">
-            <div className="mb-5">
-              <h2 className="font-bold text-navy text-lg">الدليل حسب المهارة</h2>
-              <p className="text-sm text-muted mt-1">تُحسب الدقة المرصودة من الاستجابات التي تحمل حكمًا صحيح/غير صحيح فقط.</p>
-            </div>
-
+          <AdminPanel title="الدليل حسب المهارة" description="تُحسب الدقة المرصودة من الاستجابات التي تحمل حكمًا صحيح/غير صحيح فقط.">
             {data.cohort_skills.length === 0 ? (
-              <div className="empty-state py-10">
-                <h3>لا توجد استجابات مقيمة بعد</h3>
-                <p>ستظهر المهارات هنا بعد حفظ إجابات مصححة للطلاب.</p>
-              </div>
+              <AdminEmptyState title="لا توجد استجابات مقيمة بعد" description="ستظهر المهارات هنا بعد حفظ إجابات مصححة للطلاب." />
             ) : (
-              <div className="overflow-x-auto">
-                <table className="data-table">
-                  <thead>
-                    <tr><th>المستوى</th><th>المهارة</th><th>الاستجابات</th><th>صحيح</th><th>غير صحيح</th><th>الدقة المرصودة</th></tr>
-                  </thead>
-                  <tbody>
-                    {data.cohort_skills.map((row) => (
-                      <tr key={`${row.level}-${row.skill_code}`}>
-                        <td>L{row.level}</td>
-                        <td><div className="font-semibold text-navy">{row.skill_name}</div><div className="text-xs text-muted mt-1">{row.skill_code}</div></td>
-                        <td>{row.graded_responses}</td>
-                        <td>{row.correct_responses}</td>
-                        <td>{row.incorrect_responses}</td>
-                        <td>{row.observed_accuracy_percent == null ? "—" : `${row.observed_accuracy_percent}%`}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <AdminResponsiveTable
+                table={<table className="data-table"><thead><tr><th>المستوى</th><th>المهارة</th><th>الاستجابات</th><th>صحيح</th><th>غير صحيح</th><th>الدقة المرصودة</th></tr></thead><tbody>{data.cohort_skills.map((row) => <tr key={`${row.level}-${row.skill_code}`}><td>L{row.level}</td><td><div className="font-semibold text-navy">{row.skill_name}</div><div className="text-xs text-muted mt-1">{row.skill_code}</div></td><td>{row.graded_responses}</td><td>{row.correct_responses}</td><td>{row.incorrect_responses}</td><td>{row.observed_accuracy_percent == null ? "—" : `${row.observed_accuracy_percent}%`}</td></tr>)}</tbody></table>}
+                cards={data.cohort_skills.map((row) => <AdminMobileCard key={`${row.level}-${row.skill_code}`} title={row.skill_name}><span><strong>المستوى:</strong> L{row.level}</span><span><strong>الاستجابات:</strong> {row.graded_responses}</span><span><strong>صحيح:</strong> {row.correct_responses}</span><span><strong>غير صحيح:</strong> {row.incorrect_responses}</span><span><strong>الدقة:</strong> {row.observed_accuracy_percent == null ? "—" : `${row.observed_accuracy_percent}%`}</span><span><strong>الرمز:</strong> {row.skill_code}</span></AdminMobileCard>)}
+              />
             )}
-          </section>
+          </AdminPanel>
 
-          <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-muted leading-7">
-            <strong className="text-navy">حدود التقرير:</strong> المحاولات المعادة تبقى ملاحظات مستقلة كما حُفظت، ولا يطبق هذا التقرير أوزان 50/30/20 أو أي قاعدة ترقية. ولا يعرض أخطاء نطق آلية قبل اعتماد الدليل الصوتي المُعاير.
-          </div>
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-muted leading-7"><strong className="text-navy">حدود التقرير:</strong> المحاولات المعادة تبقى ملاحظات مستقلة كما حُفظت، ولا يطبق هذا التقرير أوزان 50/30/20 أو أي قاعدة ترقية. ولا يعرض أخطاء نطق آلية قبل اعتماد الدليل الصوتي المُعاير.</div>
         </>
       ) : null}
-    </div>
+    </AdminPage>
   );
 }
