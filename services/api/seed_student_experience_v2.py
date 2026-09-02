@@ -1,24 +1,21 @@
-"""Idempotent migration for the user-approved Student Experience v2 content contract.
+"""Idempotent migration for the reconciled Student Experience v2 contract.
 
-This migration is intentionally separate from the immutable 105-item client
-baseline. It makes the newly approved student-facing content authoritative in
-runtime while preserving canonical IDs, skill assignments, item order and the
-125-item journey contract.
+The immutable 105-item baseline remains untouched. This runtime overlay applies
+only approved student-facing corrections while preserving canonical IDs, item
+order and the 125-item journey contract.
 
-Explicit changes:
-- L1-CORE-06 becomes letter-sound versus first letter of a displayed word.
-- L1-CORE-09 replaces the path-tracing task with Arabic reading-direction work.
-- L1-REIN-11 replaces the path reinforcement with a simpler direction task.
-- POST-Q14 is made semantically coherent: palm-tree image -> نَخْلَة.
+Authoritative 2026-09-02/03 corrections:
+- L1-CORE-06 compares the beginnings of two heard words.
+- L1-CORE-09 and L1-REIN-11 are handled by the approved auditory-story overlay.
+- POST-Q14 targets نَخْلَة.
 """
 from __future__ import annotations
 
-from typing import Iterable
-
 from db.database import SessionLocal
-from db.models import ContentAssetLink, ContentItem, ContentOption
+from db.models import ContentItem, ContentOption
 
 VERSION = "HIMMA-STUDENT-EXPERIENCE-2.0"
+PAIR_VERSION = "HIMMA-L1-ONSET-PAIR-2026-09-03"
 
 
 def _find_item(db, canonical: str) -> ContentItem:
@@ -54,97 +51,55 @@ def _set_two_choice_step(db, step, *, prompt: str, first: str, second: str, answ
     options[1].text = second
     options[1].order_index = 2
     options[1].is_correct = second == answer
-    # Do not remove through the relationship collection: ContentOption.step_id is
-    # NOT NULL, so relationship disassociation would emit step_id=NULL. Delete
-    # retired projection rows explicitly instead.
     for extra in options[2:]:
         db.delete(extra)
 
 
-def _set_prompt_audio(db, step, asset_id: str, semantic_text: str) -> None:
-    prompt_assets = [
-        asset for asset in step.assets
-        if asset.asset_type == "audio" and asset.usage_context == "prompt"
-    ]
-    if prompt_assets:
-        prompt_assets[0].manifest_asset_id = asset_id
-        for extra in prompt_assets[1:]:
-            db.delete(extra)
-    else:
-        db.add(ContentAssetLink(
-            step_id=step.id,
-            manifest_asset_id=asset_id,
-            asset_type="audio",
-            usage_context="prompt",
-        ))
-
-
 def _replace_onset_compare(db) -> None:
     item = _find_item(db, "L1-CORE-06")
-    _mark(item, title="النشاط الأساسي 6: بداية الكلمة — متشابهان أم مختلفان؟", interaction="listen_choose_one")
+    _mark(item, title="النشاط الأساسي 6: متشابهان أم مختلفان؟", interaction="listen_choose_one")
     rounds = [
-        ("م", "LET-01", "مَوْزَة", "متشابهان"),
-        ("ب", "LET-02", "قَلَم", "مختلفان"),
-        ("ق", "LET-04", "قَمَر", "متشابهان"),
-        ("س", "LET-03", "شَمْس", "مختلفان"),
-        ("ن", "LET-06", "نَخْلَة", "متشابهان"),
+        (["موز", "ماء"], "الصوت نفسه"),
+        (["باب", "بطة"], "الصوت نفسه"),
+        (["قلم", "كرة"], "صوتان مختلفان"),
+        (["سمك", "شمس"], "صوتان مختلفان"),
+        (["نور", "نخلة"], "الصوت نفسه"),
     ]
     steps = sorted(item.steps, key=lambda step: step.order_index)
     if len(steps) != len(rounds):
         raise RuntimeError("L1-CORE-06 must have five rounds")
-    for step, (sound, audio_id, word, answer) in zip(steps, rounds, strict=True):
+
+    data = dict(item.template_data or {})
+    data["onset_pair_version"] = PAIR_VERSION
+    data["onset_pair_compare"] = {
+        "version": PAIR_VERSION,
+        "skill": "التمييز السمعي بين بدايات الكلمات",
+        "student_question": "استمع إلى الكلمتين، ثم حدّد: هل تبدأان بالصوت نفسه أم بصوتين مختلفين؟",
+        "instruction": "استمع إلى الكلمتين كاملتين، ثم قارن أول صوت في كل كلمة.",
+        "student_visible_pair_text": False,
+        "rounds": [
+            {"audio_words": words, "answer": answer}
+            for words, answer in rounds
+        ],
+        "media_note": "لا يُنشأ أو يُستبدل أي ملف صوتي آليًا؛ أصل «موز» يبقى فجوة M08 المعلنة حتى يصل التسجيل المعتمد.",
+    }
+    item.template_data = data
+
+    for step, (words, answer) in zip(steps, rounds, strict=True):
         _set_two_choice_step(
             db,
             step,
-            prompt=f"الكلمة المعروضة: {word}",
-            first="متشابهان",
-            second="مختلفان",
+            prompt="مقارنة كلمتين مسموعتين — النص غير معروض للطالب",
+            first="الصوت نفسه",
+            second="صوتان مختلفان",
             answer=answer,
         )
-        _set_prompt_audio(db, step, audio_id, sound)
-
-
-def _replace_direction_item(db, canonical: str, *, title: str, rounds: Iterable[tuple[str, str, str, str]]) -> None:
-    item = _find_item(db, canonical)
-    _mark(item, title=title, interaction="choose_one")
-    steps = sorted(item.steps, key=lambda step: step.order_index)
-    round_list = list(rounds)
-    if len(steps) != len(round_list):
-        raise RuntimeError(f"{canonical} round count mismatch")
-    for step, (prompt, first, second, answer) in zip(steps, round_list, strict=True):
-        _set_two_choice_step(db, step, prompt=prompt, first=first, second=second, answer=answer)
-        # The replacement is intentionally non-audio/non-path. Delete obsolete
-        # links explicitly so no NOT NULL foreign key is nulled by disassociation.
+        # Remove the obsolete single-letter prompt links created by the older
+        # Student Experience contract. Approved pair audio is linked only from
+        # verified media; do not keep a wrong letter prompt merely to make audio play.
         for asset in list(step.assets):
-            if asset.asset_type == "audio" or asset.usage_context in {"path", "prompt"}:
+            if asset.asset_type == "audio" and asset.usage_context == "prompt":
                 db.delete(asset)
-
-
-def _replace_direction_tasks(db) -> None:
-    _replace_direction_item(
-        db,
-        "L1-CORE-09",
-        title="النشاط الأساسي 9: من أين نبدأ القراءة؟",
-        rounds=[
-            ("أين نبدأ قراءة السطر العربي؟", "من اليمين", "من اليسار", "من اليمين"),
-            ("أي سهم يوضح اتجاه القراءة في العربية؟", "←", "→", "←"),
-            ("إذا كانت «كِتَاب» على يمين «قَلَم»، فأي كلمة نقرأ أولًا؟", "كِتَاب", "قَلَم", "كِتَاب"),
-            ("أين تكون بداية السطر العربي؟", "الطرف الأيمن", "الطرف الأيسر", "الطرف الأيمن"),
-            ("بعد أن نبدأ من اليمين، إلى أين نتابع القراءة؟", "نحو اليسار", "نحو اليمين", "نحو اليسار"),
-        ],
-    )
-    _replace_direction_item(
-        db,
-        "L1-REIN-11",
-        title="يمين أم يسار؟",
-        rounds=[
-            ("اختر جهة بداية القراءة بالعربية.", "اليمين", "اليسار", "اليمين"),
-            ("اختر سهم اتجاه القراءة الصحيح.", "←", "→", "←"),
-            ("أين نضع نظرنا أولًا عند قراءة سطر عربي؟", "في اليمين", "في اليسار", "في اليمين"),
-            ("بعد الكلمة الأولى نتابع القراءة في أي اتجاه؟", "نحو اليسار", "نحو اليمين", "نحو اليسار"),
-            ("اختر الترتيب الصحيح: بداية السطر ثم المتابعة.", "يمين ثم يسار", "يسار ثم يمين", "يمين ثم يسار"),
-        ],
-    )
 
 
 def _repair_post_q14(db) -> None:
@@ -180,11 +135,12 @@ def run_seed() -> int:
     db = SessionLocal()
     try:
         _replace_onset_compare(db)
-        _replace_direction_tasks(db)
         _repair_post_q14(db)
         _mark_all_items(db)
         db.commit()
-        return 4
+        # CORE-09 and REIN-11 are intentionally not patched here. The later
+        # seed_l1_auditory_story_replacement overlay is their single authority.
+        return 2
     except Exception:
         db.rollback()
         raise
@@ -193,4 +149,4 @@ def run_seed() -> int:
 
 
 if __name__ == "__main__":
-    print(f"Student Experience v2 migrations applied: {run_seed()}")
+    print(f"Student Experience v2 reconciled migrations applied: {run_seed()}")
