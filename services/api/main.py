@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from auth import router as auth_router
 from protected import router as protected_router
 from assessment import router as assessment_router
+from assessment_view import router as assessment_view_router
 from assessment_retake import router as assessment_retake_router
 from temporary_audio_skip import router as temporary_audio_skip_router
 from review import router as review_router
@@ -54,6 +55,7 @@ app.include_router(journey_router)
 app.include_router(assessment_retake_router)
 app.include_router(temporary_audio_skip_router)
 app.include_router(assessment_router)
+app.include_router(assessment_view_router)
 app.include_router(learning_experience_router)
 app.include_router(activities_router)
 app.include_router(adaptation_router)
