@@ -7,106 +7,27 @@ export function AdminPage({ children, className = "" }: { children: ReactNode; c
   return <div className={`${styles.page} ${className}`.trim()} dir="rtl">{children}</div>;
 }
 
-export function AdminPageHeader({
-  eyebrow,
-  icon: Icon,
-  title,
-  description,
-  actions,
-}: {
-  eyebrow?: string;
-  icon?: LucideIcon;
-  title: string;
-  description?: string;
-  actions?: ReactNode;
-}) {
-  return (
-    <header className={styles.pageHeader}>
-      <div className={styles.headingBlock}>
-        {eyebrow && <div className={styles.eyebrow}>{Icon && <Icon size={16} aria-hidden="true" />}{eyebrow}</div>}
-        <h1 className={styles.title}>{title}</h1>
-        {description && <p className={styles.description}>{description}</p>}
-      </div>
-      {actions && <div className={styles.actions}>{actions}</div>}
-    </header>
-  );
+export function AdminPageHeader({ eyebrow, icon: Icon, title, description, actions }: { eyebrow?: string; icon?: LucideIcon; title: string; description?: string; actions?: ReactNode }) {
+  return <header className={styles.pageHeader}><div className={styles.headingBlock}>{eyebrow && <div className={styles.eyebrow}>{Icon && <Icon size={16} aria-hidden="true" />}{eyebrow}</div>}<h1 className={styles.title}>{title}</h1>{description && <p className={styles.description}>{description}</p>}</div>{actions && <div className={styles.actions}>{actions}</div>}</header>;
 }
 
-export function AdminAction({
-  href,
-  children,
-  icon: Icon,
-  tone = "secondary",
-  disabled = false,
-  onClick,
-  type = "button",
-}: {
-  href?: string;
-  children: ReactNode;
-  icon?: LucideIcon;
-  tone?: "primary" | "secondary" | "danger" | "ghost";
-  disabled?: boolean;
-  onClick?: () => void;
-  type?: "button" | "submit";
-}) {
+export function AdminAction({ href, children, icon: Icon, tone = "secondary", disabled = false, onClick, type = "button" }: { href?: string; children: ReactNode; icon?: LucideIcon; tone?: "primary" | "secondary" | "danger" | "ghost"; disabled?: boolean; onClick?: () => void; type?: "button" | "submit" }) {
   const className = `${styles.action} ${styles[tone]}`;
   const content = <>{Icon && <Icon size={17} aria-hidden="true" />}{children}</>;
+  if (href?.startsWith("/api/")) return <a href={href} className={className}>{content}</a>;
   if (href) return <Link href={href} className={className}>{content}</Link>;
   return <button type={type} className={className} disabled={disabled} onClick={onClick}>{content}</button>;
 }
 
-export function AdminPanel({
-  title,
-  description,
-  actions,
-  children,
-  className = "",
-}: {
-  title?: string;
-  description?: string;
-  actions?: ReactNode;
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <section className={`${styles.panel} ${className}`.trim()}>
-      {(title || description || actions) && (
-        <div className={styles.panelHeader}>
-          <div>{title && <h2 className={styles.panelTitle}>{title}</h2>}{description && <p className={styles.panelDescription}>{description}</p>}</div>
-          {actions}
-        </div>
-      )}
-      {children}
-    </section>
-  );
+export function AdminPanel({ title, description, actions, children, className = "" }: { title?: string; description?: string; actions?: ReactNode; children: ReactNode; className?: string }) {
+  return <section className={`${styles.panel} ${className}`.trim()}>{(title || description || actions) && <div className={styles.panelHeader}><div>{title && <h2 className={styles.panelTitle}>{title}</h2>}{description && <p className={styles.panelDescription}>{description}</p>}</div>{actions}</div>}{children}</section>;
 }
 
-export function AdminToolbar({ children }: { children: ReactNode }) {
-  return <div className={styles.toolbar}>{children}</div>;
-}
-
-export function AdminStatGrid({ children }: { children: ReactNode }) {
-  return <div className={styles.statGrid}>{children}</div>;
-}
-
-export function AdminStat({ icon: Icon, value, label }: { icon: LucideIcon; value: ReactNode; label: string }) {
-  return <div className={styles.stat}><span className={styles.statIcon}><Icon size={20} aria-hidden="true" /></span><span><strong className={styles.statValue}>{value}</strong><span className={styles.statLabel}>{label}</span></span></div>;
-}
-
-export function AdminEmptyState({ title, description, action }: { title: string; description?: string; action?: ReactNode }) {
-  return <div className={styles.empty}><strong>{title}</strong>{description && <span>{description}</span>}{action}</div>;
-}
-
-export function AdminResponsiveTable({ table, cards }: { table: ReactNode; cards: ReactNode }) {
-  return <><div className={`${styles.tableWrap} ${styles.desktopTable}`}>{table}</div><div className={styles.mobileCards}>{cards}</div></>;
-}
-
-export function AdminMobileCard({ title, children }: { title: ReactNode; children: ReactNode }) {
-  return <article className={styles.mobileCard}><div className={styles.mobileCardTitle}>{title}</div><div className={styles.mobileCardMeta}>{children}</div></article>;
-}
-
-export function AdminNotice({ children }: { children: ReactNode }) {
-  return <div className={styles.notice}>{children}</div>;
-}
-
+export function AdminToolbar({ children }: { children: ReactNode }) { return <div className={styles.toolbar}>{children}</div>; }
+export function AdminStatGrid({ children }: { children: ReactNode }) { return <div className={styles.statGrid}>{children}</div>; }
+export function AdminStat({ icon: Icon, value, label }: { icon: LucideIcon; value: ReactNode; label: string }) { return <div className={styles.stat}><span className={styles.statIcon}><Icon size={20} aria-hidden="true" /></span><span><strong className={styles.statValue}>{value}</strong><span className={styles.statLabel}>{label}</span></span></div>; }
+export function AdminEmptyState({ title, description, action }: { title: string; description?: string; action?: ReactNode }) { return <div className={styles.empty}><strong>{title}</strong>{description && <span>{description}</span>}{action}</div>; }
+export function AdminResponsiveTable({ table, cards }: { table: ReactNode; cards: ReactNode }) { return <><div className={`${styles.tableWrap} ${styles.desktopTable}`}>{table}</div><div className={styles.mobileCards}>{cards}</div></>; }
+export function AdminMobileCard({ title, children }: { title: ReactNode; children: ReactNode }) { return <article className={styles.mobileCard}><div className={styles.mobileCardTitle}>{title}</div><div className={styles.mobileCardMeta}>{children}</div></article>; }
+export function AdminNotice({ children }: { children: ReactNode }) { return <div className={styles.notice}>{children}</div>; }
 export const adminUiStyles = styles;
