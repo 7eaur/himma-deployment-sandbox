@@ -6,8 +6,11 @@ import hashlib
 import json
 from pathlib import Path
 
-import content_runtime
 import media as media_module
+import seed_all
+from content_runtime import canonical_id
+from db.database import SessionLocal
+from db.models import ContentItem
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 EDUCATION_ROOT = REPO_ROOT / "assets" / "education"
@@ -64,21 +67,28 @@ def test_visual_plan_has_no_remaining_generated_sequence_gap():
         assert plan["reuse"][activity][label] == asset_id
 
 
-def test_runtime_projects_all_generated_sequence_asset_ids():
-    for canonical_id in ("L1-REIN-12", "L3-REIN-10"):
-        item = content_runtime._ITEMS[canonical_id]
-        projected_ids = {
-            media_entry["asset_id"]
-            for round_data in item["rounds"]
-            for media_entry in round_data.get("media", [])
-            if media_entry.get("type") == "image"
-        }
-        expected_ids = {
-            asset_id
-            for asset_id, (activity, _label) in EXPECTED.items()
-            if activity == canonical_id
-        }
-        assert expected_ids <= projected_ids
+def test_runtime_projects_all_generated_sequence_asset_ids_from_database():
+    result = seed_all.run_seed_all()
+    assert result["db_runtime_items"] == 125
+    db = SessionLocal()
+    try:
+        by_canonical = {canonical_id(item): item for item in db.query(ContentItem).all()}
+        for wanted in ("L1-REIN-12", "L3-REIN-10"):
+            runtime = (by_canonical[wanted].template_data or {})["db_runtime"]
+            projected_ids = {
+                str(media_entry.get("asset_id"))
+                for round_data in runtime.get("rounds", [])
+                for media_entry in round_data.get("assets", [])
+                if media_entry.get("asset_type") == "image"
+            }
+            expected_ids = {
+                asset_id
+                for asset_id, (activity, _label) in EXPECTED.items()
+                if activity == wanted
+            }
+            assert expected_ids <= projected_ids
+    finally:
+        db.close()
 
 
 def test_generated_assets_are_served_from_approved_media_index():
