@@ -21,6 +21,7 @@ from speech_analysis import router as speech_analysis_router
 from journey import router as journey_router
 from reports import router as reports_router
 from skill_reports import router as skill_reports_router
+from admin_notifications import router as admin_notifications_router
 from readiness import readiness_report
 from runtime_flags import validate_runtime_safety
 from db.sandbox_bootstrap import ensure_sandbox_runtime
@@ -67,6 +68,7 @@ app.include_router(recordings_router)
 app.include_router(speech_analysis_router)
 app.include_router(reports_router)
 app.include_router(skill_reports_router)
+app.include_router(admin_notifications_router)
 
 
 @app.get("/health")
