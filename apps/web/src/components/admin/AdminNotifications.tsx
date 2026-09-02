@@ -55,10 +55,11 @@ export default function AdminNotifications() {
 
   useEffect(() => {
     mounted.current = true;
-    void refresh();
+    const initial = window.setTimeout(() => void refresh(), 0);
     const timer = window.setInterval(() => void refresh(), 30000);
     return () => {
       mounted.current = false;
+      window.clearTimeout(initial);
       window.clearInterval(timer);
     };
   }, [refresh]);
