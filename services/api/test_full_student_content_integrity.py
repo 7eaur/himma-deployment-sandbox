@@ -6,9 +6,12 @@ media mapping. It intentionally reports all discovered violations in one failure
 """
 from __future__ import annotations
 
+import re
+import unicodedata
+
 import seed_all
 from assessment_view import _clean_payload
-from content_runtime import canonical_id, canonical_interaction, media_gaps, presentation_data, semantic_key, step_assets
+from content_runtime import canonical_id, canonical_interaction, media_gaps, presentation_data, step_assets
 from db.database import SessionLocal
 from db.models import ContentItem
 
@@ -19,6 +22,12 @@ READ = {"read_aloud", "timed_read_aloud"}
 LISTEN = {"listen_choose_one", "listen_choose_image", "listen_choose_many"}
 IMAGE_CHOICE = {"choose_image", "listen_choose_image"}
 SERIALIZED_MARKERS = ("الخيارات:", "الصور:", "طريقة الإجابة:", "الإجابة الصحيحة:")
+
+
+def _display_key(value: str) -> str:
+    """Normalize only invisible formatting; preserve pedagogical distinctions."""
+    value = unicodedata.normalize("NFKC", value or "")
+    return re.sub(r"\s+", " ", value).strip()
 
 
 def _issue(errors: list[str], canonical: str, step_no: int | None, message: str) -> None:
@@ -74,7 +83,7 @@ def test_complete_student_runtime_has_no_presentation_or_choice_overlap():
                     _issue(errors, canonical, int(step.order_index), f"non-consecutive round order; expected {expected_order}")
                 options = sorted(step.options, key=lambda value: value.order_index)
                 texts = [str(option.text).strip() for option in options]
-                normalized = [semantic_key(text) for text in texts]
+                normalized = [_display_key(text) for text in texts]
                 correct = [option for option in options if option.is_correct]
                 assets = step_assets(item, step)
                 gaps = media_gaps(item, step)
@@ -87,14 +96,14 @@ def test_complete_student_runtime_has_no_presentation_or_choice_overlap():
                     if len(correct) != 1:
                         _issue(errors, canonical, step.order_index, f"single-choice correct option count is {len(correct)}")
                     if len(set(normalized)) != len(normalized):
-                        _issue(errors, canonical, step.order_index, f"duplicate choice text: {texts}")
+                        _issue(errors, canonical, step.order_index, f"duplicate visible choice text: {texts}")
                 elif interaction in MULTI:
                     if not 2 <= len(options) <= 6:
                         _issue(errors, canonical, step.order_index, f"multi-choice option count is {len(options)}")
                     if not 1 <= len(correct) < len(options):
                         _issue(errors, canonical, step.order_index, f"multi-choice correct count is {len(correct)} of {len(options)}")
                     if len(set(normalized)) != len(normalized):
-                        _issue(errors, canonical, step.order_index, f"duplicate multi-choice text: {texts}")
+                        _issue(errors, canonical, step.order_index, f"duplicate visible multi-choice text: {texts}")
                 elif interaction in ORDER:
                     if not 2 <= len(options) <= 8:
                         _issue(errors, canonical, step.order_index, f"ordered-task option count is {len(options)}")
