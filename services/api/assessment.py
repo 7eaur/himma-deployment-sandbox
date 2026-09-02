@@ -223,7 +223,9 @@ def _answered_step_ids(db: Session, attempt_id: int) -> set[int]:
 
 def _completed_response_count(db: Session, attempt_id: int) -> int:
     classic = db.query(AttemptResponse.id).filter(AttemptResponse.attempt_id == attempt_id).count()
-    structured = db.query(ActivityStepResponse.id).filter(ActivityStepResponse.attempt_id == attempt_id).count()
+    structured = db.query(ActivityStepResponse.id).filter(
+        ActivityStepResponse.attempt_id == attempt_id,
+    ).count()
     return classic + structured
 
 
@@ -344,7 +346,9 @@ def get_next_item(
     db: Session = Depends(get_db),
     student: Student = Depends(get_current_student),
 ):
-    session = _session_for_student(db, session_id, student.id)
+    session = _session_for_student(db, session_id, student.id, require_active=False)
+    if session.status == "completed":
+        return None
 
     pending_attempt = db.query(Attempt).filter(
         Attempt.session_id == session_id,
@@ -586,7 +590,17 @@ def finish_session(
         AssessmentSession.id == session_id,
         AssessmentSession.student_id == student.id,
     ).first()
-    if not session or session.status != "in_progress":
+    if not session:
+        raise HTTPException(status_code=400, detail="الجلسة غير صالحة أو مكتملة")
+    if session.status == "completed":
+        if session.final_score is None or session.assigned_level is None:
+            raise HTTPException(status_code=409, detail="نتيجة الجلسة المكتملة غير متاحة")
+        return {
+            "id": session.id,
+            "final_score": session.final_score,
+            "assigned_level": session.assigned_level,
+        }
+    if session.status != "in_progress":
         raise HTTPException(status_code=400, detail="الجلسة غير صالحة أو مكتملة")
 
     rerecord_exists = db.query(AudioSubmission).join(
