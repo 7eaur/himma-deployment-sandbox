@@ -76,7 +76,8 @@
   font-size: clamp(.8rem, 1.25vw, 1rem) !important;
 }
 
-/* Compact confirmation button, centered, with no arrow bubble. */
+/* Compact confirmation button, centered. The CTA no longer contains an arrow bubble,
+   so its only span is the visible/accessibility label and must never be hidden. */
 [data-testid="assessment-session"][data-phase="question"] > main > section > div:last-child > button:last-child,
 [data-testid="assessment-session"][data-phase="submitting"] > main > section > div:last-child > button:last-child {
   width: auto !important;
@@ -89,9 +90,11 @@
   font-size: clamp(.95rem, 1.25vw, 1.12rem) !important;
 }
 
-[data-testid="assessment-session"][data-phase="question"] > main > section > div:last-child > button:last-child > span:last-child,
-[data-testid="assessment-session"][data-phase="submitting"] > main > section > div:last-child > button:last-child > span:last-child {
-  display: none !important;
+[data-testid="assessment-session"][data-phase="question"] > main > section > div:last-child > button:last-child > span,
+[data-testid="assessment-session"][data-phase="submitting"] > main > section > div:last-child > button:last-child > span {
+  display: inline !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Completion/review actions belong to the assessment visual system too. */
