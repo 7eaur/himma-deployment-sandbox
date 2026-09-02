@@ -31,6 +31,15 @@ L1_SINGLE_VISIBLE_STIMULUS = {
     "L1-REIN-09",
 }
 
+# Hints guide the learner without directly printing one of the answer choices.
+# These overrides replace legacy hints that literally contained the correct
+# classification/direction option and therefore leaked the answer after error.
+SAFE_HINT_OVERRIDES = {
+    "L1-CORE-07": "انظر إلى مقدار النص: هل هو رمز واحد، أم مجموعة أحرف، أم أكثر من كلمة؟",
+    "L1-CORE-09": "تذكّر جهة البداية في السطر العربي، ثم فكّر في اتجاه متابعة القراءة.",
+    "L1-REIN-11": "تذكّر جهة بداية السطر العربي، ثم اختر الاتجاه المناسب دون استعجال.",
+}
+
 
 def _strip_serialized_choices(text: str) -> str:
     value = text.strip().replace("التعليمات:", "").strip()
@@ -99,12 +108,13 @@ def _learning_round(item: ContentItem, step, total: int) -> dict[str, Any]:
     question = override.get("question") or base.generic_question(interaction, raw_instruction, raw_prompt)
     instruction = override.get("instruction") or base.generic_instruction(interaction, question)
     title = str((item.template_data or {}).get("title") or item.stable_key)
+    hint = SAFE_HINT_OVERRIDES.get(key) or override.get("hint") or base.generic_hint(interaction, question)
     return {
         "round_number": int(step.order_index),
         "round_total": total,
         "skill": override.get("skill") or title,
         "encouragement": base.encouragement(int(step.order_index), total),
-        "hint": override.get("hint") or base.generic_hint(interaction, question),
+        "hint": hint,
         "question_text": question,
         "instruction_text": instruction,
         "stimulus_text": _clean_stimulus(item, step, interaction),
