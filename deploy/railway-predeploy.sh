@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Optional one-time migration/audit hook used while moving the sandbox database
-# from the legacy external PostgreSQL service to Railway Postgres.  The helper is
-# conservative: audit is read-only; migrate refuses a non-empty target and
-# verifies row counts before success.  Leave MIGRATION_MODE empty during normal
+# Optional one-time migration/audit hooks used while moving the sandbox from
+# external Supabase services to Railway-managed resources.  Audit modes are
+# read-only.  Migration helpers never delete source data and verify the target
+# before reporting success.  Leave both mode variables empty during normal
 # deployments.
 if [[ -n "${MIGRATION_MODE:-}" ]]; then
   case "${MIGRATION_MODE}" in
@@ -14,6 +14,19 @@ if [[ -n "${MIGRATION_MODE:-}" ]]; then
       ;;
     *)
       printf '%s\n' "[himma-sandbox] unsupported MIGRATION_MODE=${MIGRATION_MODE}" >&2
+      exit 2
+      ;;
+  esac
+fi
+
+if [[ -n "${STORAGE_MIGRATION_MODE:-}" ]]; then
+  case "${STORAGE_MIGRATION_MODE}" in
+    audit|migrate)
+      printf '%s\n' "[himma-sandbox] storage ${STORAGE_MIGRATION_MODE} step..."
+      python /app/deploy/migrate_storage_to_railway.py
+      ;;
+    *)
+      printf '%s\n' "[himma-sandbox] unsupported STORAGE_MIGRATION_MODE=${STORAGE_MIGRATION_MODE}" >&2
       exit 2
       ;;
   esac
