@@ -7,6 +7,8 @@ on:
   push:
     branches: ['recovery/*']
     paths:
+      # Student visuals are driven by both frontend code and API/content/media
+      # projection. Runtime-only fixes must therefore regenerate screenshots.
       - 'apps/web/**'
       - 'services/api/**'
       - 'packages/content/**'
