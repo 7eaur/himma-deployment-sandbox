@@ -9,6 +9,7 @@ from assessment_view import router as assessment_view_router
 from assessment_retake import router as assessment_retake_router
 from review import router as review_router
 from recordings import router as recordings_router
+from audio_review_navigation import router as audio_review_navigation_router
 from activity_runtime import router as activities_router
 from learning_experience import router as learning_experience_router
 from adaptation import router as adaptation_router
@@ -44,8 +45,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Critical assessment/activity URLs each have one mounted owner; helper modules
-# may be reused as services but never decide behavior by router registration order.
+# Critical assessment/activity URLs each have one mounted owner; the async audio
+# navigation overlay is intentionally registered before the historical activity
+# runtime for the GET status/progress/next routes. Submission remains owned by
+# activity_runtime, while review-pending navigation is non-blocking.
 app.include_router(auth_router)
 app.include_router(protected_router)
 app.include_router(journey_router)
@@ -54,6 +57,7 @@ app.include_router(assessment_completion_router)
 app.include_router(assessment_router)
 app.include_router(assessment_view_router)
 app.include_router(learning_experience_router)
+app.include_router(audio_review_navigation_router)
 app.include_router(activities_router)
 app.include_router(adaptation_router)
 app.include_router(adaptation_runtime_router)

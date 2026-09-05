@@ -43,6 +43,7 @@ describe("Student page", () => {
         posttest_completed: false,
         posttest_ready: false,
       }))
+      .mockResolvedValueOnce(response([]))
       .mockResolvedValueOnce(response([]));
 
     render(<StudentPage />);
@@ -86,6 +87,7 @@ describe("Student page", () => {
         posttest_completed: false,
         posttest_ready: false,
       }))
+      .mockResolvedValueOnce(response([]))
       .mockResolvedValueOnce(response([]));
 
     render(<StudentPage />);
@@ -97,7 +99,7 @@ describe("Student page", () => {
     expect(screen.getByText("4 من 10 أنشطة أساسية")).toBeInTheDocument();
   });
 
-  it("shows pending audio review and never resumes the assessment", async () => {
+  it("shows pending assessment audio review and never resumes the assessment", async () => {
     global.fetch = jest
       .fn()
       .mockResolvedValueOnce(response({
@@ -119,6 +121,7 @@ describe("Student page", () => {
         posttest_completed: false,
         posttest_ready: false,
       }))
+      .mockResolvedValueOnce(response([]))
       .mockResolvedValueOnce(response([]));
 
     render(<StudentPage />);
@@ -130,6 +133,52 @@ describe("Student page", () => {
     expect(action).toBeDisabled();
     fireEvent.click(action);
     expect(push).not.toHaveBeenCalled();
-    expect(global.fetch).toHaveBeenCalledTimes(3);
+    expect(global.fetch).toHaveBeenCalledTimes(4);
+  });
+
+  it("keeps the learning CTA enabled while core audio is under review", async () => {
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce(response({
+        id: 1,
+        full_name: "طالب تجريبي",
+        grade_level: 3,
+        current_level: 1,
+        posttest_enabled: false,
+        next_action: "learning",
+        active_session: { id: 44, session_type: "core", status: "in_progress" },
+      }))
+      .mockResolvedValueOnce(response({
+        available: true,
+        level_id: 1,
+        completed_items: 4,
+        total_items: 10,
+        completed: false,
+        session_id: 44,
+        pending_count: 1,
+        rerecord_required_count: 0,
+        unresolved_count: 1,
+        audio_review_pending: true,
+      }))
+      .mockResolvedValueOnce(response({
+        pretest_completed: true,
+        starting_level: 1,
+        current_level: 1,
+        levels: [{ level_id: 1, name: "الاستعداد للقراءة", state: "active", completed_items: 4, total_items: 10, session_id: 44 }],
+        learning_journey_completed: false,
+        posttest_enabled: false,
+        posttest_completed: false,
+        posttest_ready: false,
+      }))
+      .mockResolvedValueOnce(response([]))
+      .mockResolvedValueOnce(response([{ id: 9, status: "uploaded", submitted_at: "2026-09-05T22:00:00Z", session_id: 44, session_type: "core", level_id: 1, item_id: 3, step_id: 3, can_rerecord: false }]));
+
+    render(<StudentPage />);
+
+    expect(await screen.findByRole("heading", { name: "تسجيلك تحت المراجعة" })).toBeInTheDocument();
+    const action = screen.getByRole("button", { name: "متابعة الأنشطة" });
+    expect(action).toBeEnabled();
+    fireEvent.click(action);
+    expect(push).toHaveBeenCalledWith("/student/activity/44");
   });
 });

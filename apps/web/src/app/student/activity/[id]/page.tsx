@@ -16,7 +16,15 @@ type ViewPayload = {
   step: { id: number; expected_reading_text?: string | null; required_selection_count: number; options: Option[]; assets: Asset[]; media_gaps: Array<{ status?: string; semantic_text?: string }> };
   assets: Asset[];
 };
-type Progress = { completed_items: number; total_items: number; level_id: number; status: string };
+type Progress = {
+  completed_items: number;
+  total_items: number;
+  level_id: number;
+  status: string;
+  audio_review_pending?: boolean;
+  pending_count?: number;
+  rerecord_required_count?: number;
+};
 type SubmitResult = { is_correct: boolean; step_complete: boolean; activity_complete: boolean; learning_complete: boolean; detail?: string };
 
 const SINGLE = new Set<Interaction>(["choose_one", "listen_choose_one", "choose_image", "listen_choose_image"]);
@@ -196,6 +204,7 @@ export default function StudentActivityPage() {
         {!hasMediaGap && interaction !== "memory_sequence" && !ORDER.has(interaction) && !READ.has(interaction) && optionButtons(isImageChoice)}
         {!hasMediaGap && READ.has(interaction) && <div className={styles.recordPanel}>{!audioBlob ? <><button className={`${styles.recordButton} ${isRecording ? styles.recordButtonRecording : ""}`} type="button" onClick={isRecording ? stopRecording : () => void startRecording()} aria-label={isRecording ? "إيقاف التسجيل" : "بدء التسجيل"} data-testid="record-reading">{isRecording ? <MicOff size={30}/> : <Mic size={30}/>}</button><p className={styles.recordLabel}>{isRecording ? "جاري التسجيل... اضغط للإيقاف" : "اضغط لبدء التسجيل"}</p>{isRecording && <p className={styles.timer}>{String(Math.floor(recordingSeconds/60)).padStart(2,"0")}:{String(recordingSeconds%60).padStart(2,"0")}</p>}</> : <>{audioUrl && <audio className={styles.audioPreview} src={audioUrl} controls/>}<div className={styles.inlineActions}><button className={styles.secondary} type="button" onClick={resetRoundState}><RotateCcw size={17}/> إعادة التسجيل</button><button className={styles.primary} type="button" onClick={()=>void uploadReading()} disabled={submitting}>{submitting ? "جاري الحفظ..." : "إرسال التسجيل للمراجعة"}</button></div><p className={styles.recordLabel}>يراجع المشرف التسجيل ويعتمده أو يطلب إعادة التسجيل.</p></>}</div>}
       </div>
+      {progress?.audio_review_pending && <div className={styles.notice} data-testid="student-audio-review-hold"><h2>تسجيلك عند المشرف للمراجعة</h2><p>تابع أنشطتك بشكل طبيعي؛ المراجعة تعمل في الخلفية، ولن تنتقل إلى المستوى التالي حتى تُحسم.</p></div>}
       <aside className={styles.coach} aria-label="نصيحة هِمّة"><div className={styles.tip}><span>{message}</span></div><Image className={styles.character} src={view.retry ? "/characters/girl/encourage.png" : "/characters/girl/explain.png"} alt="شخصية هِمّة" width={150} height={205}/></aside>
       {error && <div className={styles.error} role="alert">{error}</div>}
       {!hasMediaGap && !READ.has(interaction) && !(interaction === "memory_sequence" && memoryPreview) && <div className={styles.bottomActions}>{ORDER.has(interaction) && selected.length > 0 && <button className={styles.secondary} type="button" onClick={()=>setSelected([])} disabled={submitting}><RotateCcw size={17}/> إعادة الترتيب</button>}<button className={styles.primaryWide} type="button" onClick={()=>void submitStructured()} disabled={submitting || !canSubmit}>{submitting ? "جاري الحفظ..." : "تأكيد والمتابعة"}</button></div>}

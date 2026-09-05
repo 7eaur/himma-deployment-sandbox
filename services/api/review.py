@@ -3,7 +3,8 @@ from decimal import Decimal
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from dependencies import get_db, get_current_user
+from audio_review_policy import has_unresolved_audio, student_review_tasks
+from dependencies import get_db, get_current_student, get_current_user
 from db.models import (
     AssessmentSession,
     Attempt,
@@ -21,6 +22,16 @@ import schemas
 router = APIRouter(prefix="/review", tags=["Review"])
 
 
+def _submission_context(db: Session, submission: AudioSubmission):
+    response = db.query(AttemptResponse).filter(AttemptResponse.id == submission.response_id).first()
+    attempt = db.query(Attempt).filter(Attempt.id == response.attempt_id).first() if response else None
+    session = db.query(AssessmentSession).filter(AssessmentSession.id == attempt.session_id).first() if attempt else None
+    student = db.query(Student).filter(Student.id == session.student_id).first() if session else None
+    item = db.query(ContentItem).filter(ContentItem.id == attempt.item_id).first() if attempt else None
+    step = db.query(ContentStep).filter(ContentStep.id == response.step_id).first() if response else None
+    return response, attempt, session, student, item, step
+
+
 @router.get("/pending-audio")
 def get_pending_audio(
     db: Session = Depends(get_db),
@@ -33,16 +44,7 @@ def get_pending_audio(
 
     payload: list[dict] = []
     for submission in submissions:
-        response = db.query(AttemptResponse).filter(
-            AttemptResponse.id == submission.response_id
-        ).first()
-        attempt = db.query(Attempt).filter(Attempt.id == response.attempt_id).first() if response else None
-        session = db.query(AssessmentSession).filter(
-            AssessmentSession.id == attempt.session_id
-        ).first() if attempt else None
-        student = db.query(Student).filter(Student.id == session.student_id).first() if session else None
-        item = db.query(ContentItem).filter(ContentItem.id == attempt.item_id).first() if attempt else None
-        step = db.query(ContentStep).filter(ContentStep.id == response.step_id).first() if response else None
+        response, attempt, session, student, item, step = _submission_context(db, submission)
         payload.append({
             "id": submission.id,
             "storage_key": submission.storage_key,
@@ -57,6 +59,76 @@ def get_pending_audio(
     return payload
 
 
+@router.get("/student-audio")
+def get_student_audio_reviews(
+    db: Session = Depends(get_db),
+    student: Student = Depends(get_current_student),
+):
+    """Show unresolved recordings on the learner dashboard without blocking work."""
+    return student_review_tasks(db, student_id=student.id)
+
+
+@router.post("/student-audio/{submission_id}/begin-rerecord")
+def begin_student_rerecord(
+    submission_id: int,
+    db: Session = Depends(get_db),
+    student: Student = Depends(get_current_student),
+):
+    """Open exactly the reviewer-requested learning recording from the dashboard.
+
+    Learning/core review requests stay queued on the dashboard so the reviewer
+    does not interrupt the learner's current work. Assessments preserve their
+    established resume behavior because the learner is still inside that test.
+    """
+    submission = db.query(AudioSubmission).filter(AudioSubmission.id == submission_id).with_for_update().first()
+    if not submission:
+        raise HTTPException(status_code=404, detail="التسجيل غير موجود")
+    response, attempt, session, owner, item, step = _submission_context(db, submission)
+    if not response or not attempt or not session or not owner or owner.id != student.id:
+        raise HTTPException(status_code=404, detail="طلب إعادة التسجيل غير موجود لهذا الطالب")
+    if submission.status != "rerecord_required":
+        raise HTTPException(status_code=409, detail="هذا التسجيل لا يحتاج إلى إعادة حاليًا")
+    if session.session_type != "core":
+        raise HTTPException(status_code=409, detail="إعادة تسجيل الاختبار تُستأنف من شاشة الاختبار نفسها")
+    if session.status != "in_progress":
+        raise HTTPException(status_code=409, detail="لا يمكن إعادة فتح تسجيل من مرحلة منتهية")
+
+    attempt.status = "in_progress"
+    attempt.completed_at = None
+    db.add(AuditLog(
+        actor_role="student",
+        actor_id=student.id,
+        action="student.audio.rerecord.begin",
+        entity_type="AudioSubmission",
+        entity_id=str(submission.id),
+        details="Student explicitly opened reviewer-requested learning rerecord task from dashboard",
+    ))
+    db.commit()
+    return {
+        "status": "ok",
+        "submission_id": submission.id,
+        "session_id": session.id,
+        "session_type": session.session_type,
+        "item_id": attempt.item_id,
+        "step_id": response.step_id,
+    }
+
+
+def _try_finalize_reviewed_assessment(db: Session, session: AssessmentSession | None) -> dict | None:
+    if not session or session.session_type not in {"pretest", "posttest"} or session.status != "in_progress":
+        return None
+    attempts = db.query(Attempt).filter(Attempt.session_id == session.id).all()
+    if len(attempts) != 30 or any(attempt.status != "completed" for attempt in attempts):
+        return None
+    if has_unresolved_audio(db, student_id=session.student_id, session_id=session.id):
+        return None
+    student = db.query(Student).filter(Student.id == session.student_id).first()
+    if not student:
+        return None
+    from assessment_completion import finish_session
+    return finish_session(db, student, session)
+
+
 @router.post("/audio/{submission_id}/grade")
 def grade_audio_submission(
     submission_id: int,
@@ -64,13 +136,13 @@ def grade_audio_submission(
     db: Session = Depends(get_db),
     supervisor: User = Depends(get_current_user),
 ):
-    """Grade an audio submission and preserve the manual review trail."""
+    """Grade audio while preserving the correct journey behavior for each phase."""
     submission = db.query(AudioSubmission).filter(AudioSubmission.id == submission_id).first()
     if not submission:
         raise HTTPException(status_code=404, detail="التسجيل غير موجود")
 
-    response = db.query(AttemptResponse).filter(AttemptResponse.id == submission.response_id).first()
-    if not response:
+    response, attempt, session, student, item, step = _submission_context(db, submission)
+    if not response or not attempt:
         raise HTTPException(status_code=404, detail="إجابة الطالب المرتبطة بالتسجيل غير موجودة")
 
     if submission.status != "uploaded":
@@ -79,21 +151,35 @@ def grade_audio_submission(
     if not request.is_valid:
         submission.status = "rerecord_required"
         response.is_correct = None
-        attempt = db.query(Attempt).filter(Attempt.id == response.attempt_id).first()
-        if not attempt:
-            raise HTTPException(status_code=404, detail="محاولة الطالب غير موجودة")
-        attempt.status = "in_progress"
-        attempt.completed_at = None
+
+        # Assessments are a bounded test flow: preserve the established behavior
+        # and reopen the exact attempt immediately so the learner resumes it.
+        # Learning/core sessions are different: queue the request on the dashboard
+        # and let the learner continue remaining activities until they choose it.
+        is_assessment = bool(session and session.session_type in {"pretest", "posttest"})
+        if is_assessment:
+            attempt.status = "in_progress"
+            attempt.completed_at = None
+
         db.add(AuditLog(
             actor_role="researcher",
             actor_id=supervisor.id,
             action="request_audio_rerecord",
             entity_type="AudioSubmission",
             entity_id=str(submission.id),
-            details="Recording marked invalid; student attempt reopened",
+            details=(
+                "Assessment recording marked invalid and exact attempt reopened"
+                if is_assessment
+                else "Learning recording marked invalid; rerecord queued for student dashboard without interrupting current flow"
+            ),
         ))
         db.commit()
-        return {"status": "ok", "message": "تم طلب إعادة التسجيل"}
+        return {
+            "status": "ok",
+            "message": "تم طلب إعادة التسجيل",
+            "rerecord_queued": not is_assessment,
+            "assessment_attempt_reopened": is_assessment,
+        }
 
     if not request.target_units or request.target_units <= 0:
         raise HTTPException(status_code=400, detail="أدخل عدد الوحدات أو الكلمات المستهدفة")
@@ -138,5 +224,15 @@ def grade_audio_submission(
         details=f"Graded score={rubric_score}",
     ))
 
-    db.commit()
-    return {"status": "ok", "rubric_score": float(rubric_score)}
+    db.flush()
+    finalized = _try_finalize_reviewed_assessment(db, session)
+    if finalized is None:
+        db.commit()
+
+    return {
+        "status": "ok",
+        "rubric_score": float(rubric_score),
+        "assessment_finalized": finalized is not None,
+        "final_score": float(finalized["final_score"]) if finalized else None,
+        "assigned_level": finalized.get("assigned_level") if finalized else None,
+    }

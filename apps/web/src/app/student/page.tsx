@@ -28,6 +28,10 @@ interface LearningStatus {
   total_items: number;
   completed: boolean;
   session_id: number | null;
+  pending_count?: number;
+  rerecord_required_count?: number;
+  unresolved_count?: number;
+  audio_review_pending?: boolean;
 }
 
 interface RewardEvent {
@@ -35,6 +39,20 @@ interface RewardEvent {
   type: string;
   stars: number;
   label: string;
+}
+
+interface AudioReviewTask {
+  id: number;
+  status: "uploaded" | "pending" | "rerecord_required" | string;
+  submitted_at: string;
+  session_id: number;
+  session_type: "pretest" | "posttest" | "core";
+  level_id?: number | null;
+  item_id: number;
+  step_id: number;
+  item_title?: string | null;
+  expected_reading_text?: string | null;
+  can_rerecord: boolean;
 }
 
 interface JourneyLevel {
@@ -77,6 +95,7 @@ export default function StudentHomePage() {
   const [learning, setLearning] = useState<LearningStatus | null>(null);
   const [journey, setJourney] = useState<JourneySummary | null>(null);
   const [rewards, setRewards] = useState<RewardEvent[]>([]);
+  const [audioReviews, setAudioReviews] = useState<AudioReviewTask[]>([]);
   const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState("");
@@ -108,6 +127,11 @@ export default function StudentHomePage() {
             if (response.ok) setRewards(await response.json());
           }),
         );
+        requests.push(
+          fetch("/api/review/student-audio", { cache: "no-store" }).then(async (response) => {
+            if (response.ok) setAudioReviews(await response.json());
+          }),
+        );
         await Promise.all(requests);
       } catch (err) {
         setError(err instanceof Error ? err.message : "تعذر تحميل بياناتك. حدّث الصفحة وحاول مرة أخرى.");
@@ -119,6 +143,8 @@ export default function StudentHomePage() {
   }, []);
 
   const waitingForAudioReview = student?.active_session?.status === "waiting_audio_review";
+  const rerecordTasks = audioReviews.filter((task) => task.status === "rerecord_required");
+  const pendingReviewTasks = audioReviews.filter((task) => task.status === "uploaded" || task.status === "pending");
 
   const handlePrimaryAction = async () => {
     if (!student || waitingForAudioReview) return;
@@ -157,6 +183,25 @@ export default function StudentHomePage() {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "تعذر الاتصال بالخادم");
+      setStarting(false);
+    }
+  };
+
+  const handleRerecord = async (task: AudioReviewTask) => {
+    if (starting) return;
+    setStarting(true);
+    setError("");
+    try {
+      const response = await fetch(`/api/review/student-audio/${task.id}/begin-rerecord`, { method: "POST" });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.detail || "تعذر فتح إعادة التسجيل");
+      if (data.session_type === "core") {
+        router.push(`/student/activity/${data.session_id}`);
+      } else {
+        router.push(`/student/session/${data.session_id}`);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "تعذر فتح إعادة التسجيل");
       setStarting(false);
     }
   };
@@ -302,6 +347,46 @@ export default function StudentHomePage() {
             </div>
           </aside>
         </div>
+
+        {audioReviews.length > 0 && (
+          <section className={styles.levelJourney} aria-label="حالة مراجعة التسجيلات" data-testid="audio-review-status">
+            <div className={styles.journeyHeader}>
+              <div>
+                <h3>{rerecordTasks.length > 0 ? "يوجد تسجيل يحتاج إعادة" : "تسجيلك تحت المراجعة"}</h3>
+                <p>
+                  {rerecordTasks.length > 0
+                    ? "المشرف طلب إعادة تسجيل محدد. افتحه من هنا، وبعد الإرسال ارجع وكمل من مكانك."
+                    : "كمل أنشطتك بشكل طبيعي. المراجعة تعمل في الخلفية، ولن تنتقل إلى المستوى التالي حتى يعتمد المشرف التسجيل."}
+                </p>
+              </div>
+              <span>{rerecordTasks.length > 0 ? `${rerecordTasks.length} إعادة مطلوبة` : `${pendingReviewTasks.length} تحت المراجعة`}</span>
+            </div>
+            <div className={styles.levelCards}>
+              {rerecordTasks.length > 0 ? rerecordTasks.map((task) => (
+                <article key={task.id} className={styles.levelCard}>
+                  <div className={styles.levelTopline}>
+                    <div className={styles.levelNumber}><Headphones size={20} /></div>
+                    <span>إعادة التسجيل</span>
+                  </div>
+                  <h4>{task.item_title || "مهمة القراءة"}</h4>
+                  <p>{task.expected_reading_text ? `النص: ${task.expected_reading_text}` : "أعد التسجيل المطلوب من المشرف فقط."}</p>
+                  <button className={styles.button} disabled={starting} onClick={() => void handleRerecord(task)}>
+                    {starting && <span className="spinner w-5 h-5" />} إعادة التسجيل الآن
+                  </button>
+                </article>
+              )) : (
+                <article className={styles.levelCard}>
+                  <div className={styles.levelTopline}>
+                    <div className={styles.levelNumber}><Headphones size={20} /></div>
+                    <span>لا يوقفك</span>
+                  </div>
+                  <h4>المراجعة جارية في الخلفية</h4>
+                  <p>تابع أنشطتك الحالية؛ هِمّة ستحجز الانتقال للمستوى التالي فقط إلى أن تنتهي المراجعة.</p>
+                </article>
+              )}
+            </div>
+          </section>
+        )}
 
         {journey?.pretest_completed && (
           <section className={styles.levelJourney} aria-label="مستويات رحلة التعلم" data-testid="level-journey">
