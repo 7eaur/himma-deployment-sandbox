@@ -16,6 +16,7 @@ from pathlib import Path
 
 import redis
 from sqlalchemy import text
+from sqlalchemy.orm import selectinload
 
 from db.database import SessionLocal, engine
 from db.models import ContentItem
@@ -67,7 +68,9 @@ def _content_ready() -> bool:
     """Fail closed when PostgreSQL contains a stale/incomplete projection."""
     db = SessionLocal()
     try:
-        items = db.query(ContentItem).all()
+        # Eager-load steps in one additional query instead of issuing one remote
+        # PostgreSQL query per learning item during every readiness probe.
+        items = db.query(ContentItem).options(selectinload(ContentItem.steps)).all()
         if len(items) != _EXPECTED_TOTAL_ITEMS:
             return False
         if sum(item.kind == "reinforcement_activity" for item in items) != _EXPECTED_REINFORCEMENT_ITEMS:
