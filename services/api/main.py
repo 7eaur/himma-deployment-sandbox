@@ -72,11 +72,66 @@ def health_check():
     return {"status": "ok", "service": "himma-api"}
 
 
+def _sandbox_content_diagnostics() -> None:
+    """Temporary sanitized diagnostics for the disposable deployment sandbox."""
+    try:
+        from db.database import SessionLocal
+        from db.models import ContentItem
+
+        db = SessionLocal()
+        try:
+            items = db.query(ContentItem).all()
+            pretest = [item for item in items if item.kind == "pretest_question"]
+            learning = [item for item in items if item.kind in {"core_activity", "reinforcement_activity"}]
+            posttest = [item for item in items if item.kind == "posttest_question"]
+            diagnostics = {
+                "total": len(items),
+                "reinforcement": sum(item.kind == "reinforcement_activity" for item in items),
+                "pretest": len(pretest),
+                "learning": len(learning),
+                "posttest": len(posttest),
+                "student_v2_mismatch": sum(
+                    (item.template_data or {}).get("student_experience_version") != "HIMMA-STUDENT-EXPERIENCE-2.0"
+                    for item in items
+                ),
+                "db_runtime_mismatch": sum(
+                    ((item.template_data or {}).get("db_runtime") or {}).get("version") != "HIMMA-DB-RUNTIME-1.0"
+                    for item in items
+                ),
+                "pretest_version_mismatch": sum(
+                    (item.template_data or {}).get("pretest_experience_version") != "HIMMA-PRETEST-2026-09-01"
+                    or ((item.template_data or {}).get("pretest_experience") or {}).get("version") != "HIMMA-PRETEST-2026-09-01"
+                    for item in pretest
+                ),
+                "learning_version_mismatch": sum(
+                    (item.template_data or {}).get("learning_experience_version") != "HIMMA-LEARNING-2026-09-01-R2"
+                    or ((item.template_data or {}).get("learning_experience") or {}).get("version") != "HIMMA-LEARNING-2026-09-01-R2"
+                    for item in learning
+                ),
+                "posttest_version_mismatch": sum(
+                    (item.template_data or {}).get("posttest_experience_version") != "HIMMA-POSTTEST-2026-09-01"
+                    or ((item.template_data or {}).get("posttest_experience") or {}).get("version") != "HIMMA-POSTTEST-2026-09-01"
+                    for item in posttest
+                ),
+                "learning_round_mismatch": sum(
+                    len(((item.template_data or {}).get("learning_experience") or {}).get("rounds") or []) != len(item.steps)
+                    for item in learning
+                ),
+            }
+            print(f"Sandbox content diagnostics: {diagnostics}", flush=True)
+        finally:
+            db.close()
+    except Exception as exc:
+        print(f"Sandbox content diagnostics failed: {type(exc).__name__}", flush=True)
+
+
 @app.get("/ready")
 def readiness_check(response: Response):
     report = readiness_report()
     if report["status"] != "ready":
         if os.environ.get("ENV", "").strip().lower() == "sandbox":
             print(f"Sandbox readiness diagnostics: {report['checks']}", flush=True)
+            if report.get("checks", {}).get("content") != "ok":
+                _sandbox_content_diagnostics()
         response.status_code = 503
     return report
