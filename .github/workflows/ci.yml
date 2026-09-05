@@ -10,6 +10,90 @@ on:
     branches: [main]
 
 jobs:
+  security:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit Python dependencies
+        run: |
+          python -m pip install --disable-pip-version-check pip-audit==2.10.1
+          pip-audit -r services/api/requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Audit frontend dependencies
+        working-directory: apps/web
+        run: npm audit --audit-level=high
+      - name: Scan current tree for committed secrets
+        shell: bash
+        run: |
+          set -uo pipefail
+          curl -fsSLo /tmp/gitleaks.tar.gz \
+            https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  /tmp/gitleaks.tar.gz" | sha256sum --check -
+          tar -xzf /tmp/gitleaks.tar.gz -C /tmp gitleaks
+          status=0
+          /tmp/gitleaks dir --redact --no-banner --exit-code 1 --report-format json --report-path /tmp/gitleaks-report.json . || status=$?
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('/tmp/gitleaks-report.json')
+          findings = json.loads(path.read_text(encoding='utf-8')) if path.exists() else []
+          print(f'gitleaks findings: {len(findings)}')
+          for row in findings:
+              print(f"{row.get('RuleID', 'unknown')}: {row.get('File', '?')}:{row.get('StartLine', '?')}")
+          PY
+          exit "$status"
+      - name: Guard production paths from unfinished placeholders
+        shell: bash
+        run: |
+          set -euo pipefail
+          production_paths=(apps/web/src services/api packages/content/scripts)
+          grep_excludes=(
+            --exclude='test_*.py'
+            --exclude='*.test.ts'
+            --exclude='*.test.tsx'
+            --exclude='*.spec.ts'
+            --exclude='*.spec.tsx'
+            --exclude-dir='tests'
+            --exclude-dir='__tests__'
+          )
+          if grep -RInE '(TODO|FIXME)' "${production_paths[@]}" \
+            --include='*.py' --include='*.ts' --include='*.tsx' --include='*.js' --include='*.mjs' \
+            "${grep_excludes[@]}"; then
+            echo 'Unresolved TODO/FIXME marker found in production paths.' >&2
+            exit 1
+          fi
+          if grep -RInEi '(^|[^[:alnum:]_])(mock|demo)([^[:alnum:]_]|$)' "${production_paths[@]}" \
+            --include='*.py' --include='*.ts' --include='*.tsx' --include='*.js' --include='*.mjs' \
+            "${grep_excludes[@]}"; then
+            echo 'Mock/demo marker found in production paths.' >&2
+            exit 1
+          fi
+          if grep -RInE 'time\.sleep\([[:space:]]*[0-9]+([.][0-9]+)?[[:space:]]*\)|await[[:space:]]+new[[:space:]]+Promise\([^\n]*setTimeout' "${production_paths[@]}" \
+            --include='*.py' --include='*.ts' --include='*.tsx' --include='*.js' --include='*.mjs' \
+            "${grep_excludes[@]}"; then
+            echo 'Possible hard-coded fake delay found in production paths.' >&2
+            exit 1
+          fi
+      - name: Guard disabled or skipped tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RInE 'pytest\.skip|pytest\.mark\.skip|@unittest\.skip|(^|[^[:alnum:]_])(test|describe)\.skip\(' services/api apps/web/src apps/web/tests \
+            --include='*.py' --include='*.ts' --include='*.tsx'; then
+            echo 'Disabled/skipped test found; document and remove the skip before closing the stage.' >&2
+            exit 1
+          fi
+
   backend:
     runs-on: ubuntu-24.04
     services:
@@ -93,7 +177,7 @@ jobs:
 
   integration:
     runs-on: ubuntu-24.04
-    needs: [backend, frontend]
+    needs: [security, backend, frontend]
     services:
       postgres:
         image: postgres:16-alpine
@@ -219,5 +303,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
-          path: apps/web/playwright-report/
+          path: |
+            apps/web/playwright-report/
+            apps/web/test-results/
           retention-days: 7
