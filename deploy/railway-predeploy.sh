@@ -28,7 +28,7 @@ if [[ -n "${MIGRATION_MODE:-}" ]]; then
 fi
 
 if [[ -n "${STORAGE_MIGRATION_MODE:-}" ]]; then
-  case "${STORAGE_MIGRATION_MODE" in
+  case "${STORAGE_MIGRATION_MODE}" in
     audit|migrate)
       printf '%s\n' "[himma-sandbox] storage ${STORAGE_MIGRATION_MODE} step..."
       python /app/deploy/migrate_storage_to_railway.py
