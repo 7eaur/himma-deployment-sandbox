@@ -32,6 +32,19 @@ if [[ -n "${STORAGE_MIGRATION_MODE:-}" ]]; then
   esac
 fi
 
+if [[ -n "${BUCKET_CORS_MODE:-}" ]]; then
+  case "${BUCKET_CORS_MODE}" in
+    apply)
+      printf '%s\n' '[himma-sandbox] applying Railway bucket CORS...'
+      python /app/deploy/configure_railway_bucket_cors.py
+      ;;
+    *)
+      printf '%s\n' "[himma-sandbox] unsupported BUCKET_CORS_MODE=${BUCKET_CORS_MODE}" >&2
+      exit 2
+      ;;
+  esac
+fi
+
 # Maintenance mode is used only while migrating the sandbox infrastructure.
 # After any requested migration/audit hook completes, it deliberately skips
 # the normal schema/content seed so diagnostic/copy runs finish quickly while
