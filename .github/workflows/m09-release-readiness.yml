@@ -8,6 +8,8 @@ on:
     branches: ['recovery/*']
     paths:
       - 'services/api/**'
+      - 'apps/web/src/app/student/activity/**'
+      - 'apps/web/tests/e2e/vertical-slice.spec.ts'
       - 'scripts/ops/**'
       - 'docs/ops/M09_RELEASE_UAT_RUNBOOK.md'
       - '.github/workflows/m09-release-readiness.yml'
@@ -40,7 +42,7 @@ jobs:
     env:
       DATABASE_URL: postgresql://himma_test:himma_test_pass@localhost:5432/himma_test_db
       RESTORE_DATABASE_URL: postgresql://himma_test:himma_test_pass@localhost:5432/himma_restore_db
-      API_SECRET_KEY: m09-ci-test-secret-at-least-32-characters
+      API_SECRET_KEY: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
       ADMIN_USERNAME: admin
       ADMIN_PASSWORD: m09-ci-only-researcher-password
       SEED_DEMO_STUDENTS: 'false'
@@ -51,7 +53,6 @@ jobs:
       RESTORE_S3_BUCKET_NAME: himma-audio-m09-restore
       REDIS_URL: redis://localhost:6379/0
       ENV: trial
-      HIMMA_TEMP_AUDIO_SKIP: 'false'
     steps:
       - uses: actions/checkout@v4
 
@@ -100,14 +101,16 @@ jobs:
           print('MinIO test bucket ready')
           PY
 
-      - name: Verify trial startup fails closed with temporary audio bypass
+      - name: Verify deleted student audio bypass cannot be reached
         working-directory: services/api
         run: |
-          if HIMMA_TEMP_AUDIO_SKIP=true ENV=trial python -c "import main"; then
-            echo "Unsafe trial startup unexpectedly succeeded" >&2
-            exit 1
-          fi
-          echo "Unsafe trial startup correctly rejected"
+          python - <<'PY'
+          import main
+          paths = {getattr(route, 'path', '') for route in main.app.routes}
+          forbidden = sorted(path for path in paths if 'temporary-audio' in path)
+          assert forbidden == [], forbidden
+          print('Student audio bypass route is absent')
+          PY
 
       - name: Verify live readiness against PostgreSQL, Redis and MinIO
         working-directory: services/api
