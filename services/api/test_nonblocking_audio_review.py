@@ -1,6 +1,7 @@
 """Regression coverage for the learner's asynchronous audio-review workflow."""
 
 import schemas
+import audio_review_navigation as navigation
 from audio_review_navigation import next_activity_step
 from conftest import TestingSessionLocal
 from db.models import (
@@ -67,6 +68,32 @@ def _content(db):
     db.add_all([audio_step, next_step])
     db.flush()
     return audio_item, audio_step, next_item
+
+
+def _pending_submission(db, student, session, audio_item, audio_step):
+    audio_attempt = Attempt(session_id=session.id, item_id=audio_item.id, status="completed")
+    db.add(audio_attempt)
+    db.flush()
+    response = AttemptResponse(
+        attempt_id=audio_attempt.id,
+        step_id=audio_step.id,
+        selected_option_id=None,
+        is_correct=None,
+        elapsed_seconds=2,
+    )
+    db.add(response)
+    db.flush()
+    submission = AudioSubmission(
+        response_id=response.id,
+        storage_key=f"audio/{student.id}/test.webm",
+        file_size=100,
+        mime_type="audio/webm",
+        duration_seconds=2,
+        status="uploaded",
+    )
+    db.add(submission)
+    db.flush()
+    return audio_attempt, submission
 
 
 def test_uploaded_audio_does_not_stop_learning_and_rerecord_waits_for_dashboard_open():
@@ -152,5 +179,52 @@ def test_uploaded_audio_does_not_stop_learning_and_rerecord_waits_for_dashboard_
         assert rerecord_payload["item"]["id"] == audio_item.id
         assert rerecord_payload["rerecord_required"] is True
         assert rerecord_payload["retry"] is True
+    finally:
+        db.close()
+
+
+def test_pending_audio_holds_level_promotion(monkeypatch):
+    db = TestingSessionLocal()
+    try:
+        student = db.query(Student).filter(Student.access_code == "STU001").one()
+        audio_item, audio_step, _ = _content(db)
+        session = AssessmentSession(
+            student_id=student.id,
+            session_type="core",
+            status="in_progress",
+            assigned_level=1,
+        )
+        db.add(session)
+        db.flush()
+        _pending_submission(db, student, session, audio_item, audio_step)
+        db.commit()
+
+        monkeypatch.setattr(
+            navigation,
+            "evaluate_student",
+            lambda *_args, **_kwargs: {
+                "ready": True,
+                "decision_id": 999,
+                "action": "promote",
+                "previous_level": 1,
+                "new_level": 2,
+                "explanation": {"reason": "promotion_threshold_met"},
+            },
+        )
+        monkeypatch.setattr(
+            navigation,
+            "prepare_next_for_student",
+            lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("promotion runtime must not execute while audio is unresolved")),
+        )
+
+        result = navigation._prepare_without_crossing_pending_audio(db, student, session)
+        assert result["audio_review_pending"] is True
+        assert result["level_transitioned"] is False
+        assert result["decision"]["action"] == "hold"
+        db.refresh(student)
+        db.refresh(session)
+        assert student.current_level == 1
+        assert session.assigned_level == 1
+        assert session.status == "in_progress"
     finally:
         db.close()
