@@ -23,12 +23,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p /tmp/himma-sandbox-preserve/deploy /tmp/himma-sandbox-preserve/apps/web
+          mkdir -p /tmp/himma-sandbox-preserve/deploy /tmp/himma-sandbox-preserve/apps/web /tmp/himma-sandbox-preserve/.github
           for file in DEPLOYMENT_ARCHITECTURE.md DEPLOYMENT_STATUS.md ENVIRONMENT_VARIABLES.md; do
             if [ -f "$file" ]; then cp "$file" "/tmp/himma-sandbox-preserve/$file"; fi
           done
           if [ -f deploy/railway-api.Dockerfile ]; then cp deploy/railway-api.Dockerfile /tmp/himma-sandbox-preserve/deploy/railway-api.Dockerfile; fi
           if [ -f apps/web/.env.production ]; then cp apps/web/.env.production /tmp/himma-sandbox-preserve/apps/web/.env.production; fi
+          if [ -d .github/workflows ]; then cp -a .github/workflows /tmp/himma-sandbox-preserve/.github/workflows; fi
 
       - name: Fetch pinned official Himma source
         shell: bash
@@ -51,9 +52,11 @@ jobs:
           cp /tmp/himma-sandbox-preserve/DEPLOYMENT_ARCHITECTURE.md ./DEPLOYMENT_ARCHITECTURE.md
           cp /tmp/himma-sandbox-preserve/DEPLOYMENT_STATUS.md ./DEPLOYMENT_STATUS.md
           cp /tmp/himma-sandbox-preserve/ENVIRONMENT_VARIABLES.md ./ENVIRONMENT_VARIABLES.md
-          mkdir -p deploy apps/web
+          mkdir -p deploy apps/web .github
           cp /tmp/himma-sandbox-preserve/deploy/railway-api.Dockerfile deploy/railway-api.Dockerfile
           cp /tmp/himma-sandbox-preserve/apps/web/.env.production apps/web/.env.production
+          rm -rf .github/workflows
+          cp -a /tmp/himma-sandbox-preserve/.github/workflows .github/workflows
           cat > SANDBOX_SOURCE.md <<'EOF'
           # Himma Deployment Sandbox Source
 
@@ -72,6 +75,7 @@ jobs:
           - `DEPLOYMENT_ARCHITECTURE.md`
           - `DEPLOYMENT_STATUS.md`
           - `ENVIRONMENT_VARIABLES.md`
+          - `.github/workflows/` temporarily retained from the sandbox because the Actions token cannot rewrite workflow files during the mirror job; workflow parity is reconciled separately through the GitHub connector.
 
           The previous sandbox main is preserved at branch `archive/pre-official-sync-2026-09-05`.
           EOF
