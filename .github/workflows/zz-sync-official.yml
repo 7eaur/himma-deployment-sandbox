@@ -1,0 +1,87 @@
+name: One-shot sync latest official Himma into sandbox main
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/zz-sync-official.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sandbox
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Preserve sandbox-only deployment integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/himma-sandbox-preserve/deploy /tmp/himma-sandbox-preserve/apps/web
+          for file in DEPLOYMENT_ARCHITECTURE.md DEPLOYMENT_STATUS.md ENVIRONMENT_VARIABLES.md; do
+            if [ -f "$file" ]; then cp "$file" "/tmp/himma-sandbox-preserve/$file"; fi
+          done
+          if [ -f deploy/railway-api.Dockerfile ]; then cp deploy/railway-api.Dockerfile /tmp/himma-sandbox-preserve/deploy/railway-api.Dockerfile; fi
+          if [ -f apps/web/.env.production ]; then cp apps/web/.env.production /tmp/himma-sandbox-preserve/apps/web/.env.production; fi
+
+      - name: Fetch pinned official Himma source
+        shell: bash
+        env:
+          SOURCE_SHA: e1cb0bb3ec10087a4032d189cf1d2bbf54c47163
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --branch recovery/ui-media-admin-overhaul https://github.com/7eaur/himma-.git /tmp/himma-official
+          actual="$(git -C /tmp/himma-official rev-parse HEAD)"
+          if [ "$actual" != "$SOURCE_SHA" ]; then
+            echo "Official source moved: expected $SOURCE_SHA, got $actual" >&2
+            exit 1
+          fi
+
+      - name: Replace sandbox application tree with official source
+        shell: bash
+        run: |
+          set -euo pipefail
+          rsync -a --delete --exclude='.git/' /tmp/himma-official/ ./
+          cp /tmp/himma-sandbox-preserve/DEPLOYMENT_ARCHITECTURE.md ./DEPLOYMENT_ARCHITECTURE.md
+          cp /tmp/himma-sandbox-preserve/DEPLOYMENT_STATUS.md ./DEPLOYMENT_STATUS.md
+          cp /tmp/himma-sandbox-preserve/ENVIRONMENT_VARIABLES.md ./ENVIRONMENT_VARIABLES.md
+          mkdir -p deploy apps/web
+          cp /tmp/himma-sandbox-preserve/deploy/railway-api.Dockerfile deploy/railway-api.Dockerfile
+          cp /tmp/himma-sandbox-preserve/apps/web/.env.production apps/web/.env.production
+          cat > SANDBOX_SOURCE.md <<'EOF'
+          # Himma Deployment Sandbox Source
+
+          This sandbox `main` mirrors the current approved development state from:
+
+          - Source repository: `7eaur/himma-`
+          - Source branch: `recovery/ui-media-admin-overhaul`
+          - Source commit: `e1cb0bb3ec10087a4032d189cf1d2bbf54c47163`
+          - Source Quality Gate: GitHub Actions run `33980741084` — SUCCESS
+          - Synced on: 2026-09-05
+
+          Sandbox-only deployment integration files are intentionally retained:
+
+          - `deploy/railway-api.Dockerfile`
+          - `apps/web/.env.production`
+          - `DEPLOYMENT_ARCHITECTURE.md`
+          - `DEPLOYMENT_STATUS.md`
+          - `ENVIRONMENT_VARIABLES.md`
+
+          The previous sandbox main is preserved at branch `archive/pre-official-sync-2026-09-05`.
+          EOF
+
+      - name: Commit synchronized sandbox snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "sync(sandbox): mirror official Himma e1cb0bb3"
+          git push origin HEAD:main
