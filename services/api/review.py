@@ -74,11 +74,11 @@ def begin_student_rerecord(
     db: Session = Depends(get_db),
     student: Student = Depends(get_current_student),
 ):
-    """Open exactly the reviewer-requested recording when the learner chooses it.
+    """Open exactly the reviewer-requested learning recording from the dashboard.
 
-    The reviewer never reopens an old attempt automatically. Until this endpoint
-    is called, the learner continues the current flow and the request remains a
-    dashboard task.
+    Learning/core review requests stay queued on the dashboard so the reviewer
+    does not interrupt the learner's current work. Assessments preserve their
+    established resume behavior because the learner is still inside that test.
     """
     submission = db.query(AudioSubmission).filter(AudioSubmission.id == submission_id).with_for_update().first()
     if not submission:
@@ -88,6 +88,8 @@ def begin_student_rerecord(
         raise HTTPException(status_code=404, detail="طلب إعادة التسجيل غير موجود لهذا الطالب")
     if submission.status != "rerecord_required":
         raise HTTPException(status_code=409, detail="هذا التسجيل لا يحتاج إلى إعادة حاليًا")
+    if session.session_type != "core":
+        raise HTTPException(status_code=409, detail="إعادة تسجيل الاختبار تُستأنف من شاشة الاختبار نفسها")
     if session.status != "in_progress":
         raise HTTPException(status_code=409, detail="لا يمكن إعادة فتح تسجيل من مرحلة منتهية")
 
@@ -99,7 +101,7 @@ def begin_student_rerecord(
         action="student.audio.rerecord.begin",
         entity_type="AudioSubmission",
         entity_id=str(submission.id),
-        details="Student explicitly opened reviewer-requested rerecord task from dashboard",
+        details="Student explicitly opened reviewer-requested learning rerecord task from dashboard",
     ))
     db.commit()
     return {
@@ -134,7 +136,7 @@ def grade_audio_submission(
     db: Session = Depends(get_db),
     supervisor: User = Depends(get_current_user),
 ):
-    """Grade audio without interrupting the learner's current activity flow."""
+    """Grade audio while preserving the correct journey behavior for each phase."""
     submission = db.query(AudioSubmission).filter(AudioSubmission.id == submission_id).first()
     if not submission:
         raise HTTPException(status_code=404, detail="التسجيل غير موجود")
@@ -147,20 +149,37 @@ def grade_audio_submission(
         raise HTTPException(status_code=409, detail="تمت معالجة هذا التسجيل مسبقًا")
 
     if not request.is_valid:
-        # Important: do not reopen the old attempt here. The learner receives a
-        # dashboard task and chooses when to enter the exact rerecord screen.
         submission.status = "rerecord_required"
         response.is_correct = None
+
+        # Assessments are a bounded test flow: preserve the established behavior
+        # and reopen the exact attempt immediately so the learner resumes it.
+        # Learning/core sessions are different: queue the request on the dashboard
+        # and let the learner continue remaining activities until they choose it.
+        is_assessment = bool(session and session.session_type in {"pretest", "posttest"})
+        if is_assessment:
+            attempt.status = "in_progress"
+            attempt.completed_at = None
+
         db.add(AuditLog(
             actor_role="researcher",
             actor_id=supervisor.id,
             action="request_audio_rerecord",
             entity_type="AudioSubmission",
             entity_id=str(submission.id),
-            details="Recording marked invalid; rerecord queued for student dashboard without interrupting current flow",
+            details=(
+                "Assessment recording marked invalid and exact attempt reopened"
+                if is_assessment
+                else "Learning recording marked invalid; rerecord queued for student dashboard without interrupting current flow"
+            ),
         ))
         db.commit()
-        return {"status": "ok", "message": "تم طلب إعادة التسجيل", "rerecord_queued": True}
+        return {
+            "status": "ok",
+            "message": "تم طلب إعادة التسجيل",
+            "rerecord_queued": not is_assessment,
+            "assessment_attempt_reopened": is_assessment,
+        }
 
     if not request.target_units or request.target_units <= 0:
         raise HTTPException(status_code=400, detail="أدخل عدد الوحدات أو الكلمات المستهدفة")
