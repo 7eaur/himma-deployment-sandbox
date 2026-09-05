@@ -19,6 +19,9 @@ python -m db.seed
 if [[ "${STUDENT_QA_MODE:-}" == "smoke" || "${STUDENT_QA_MODE:-}" == "deep" ]]; then
   printf '%s\n' "[himma-sandbox] running hosted student journey ${STUDENT_QA_MODE} checks..."
   PYTHONPATH=/app/services/api python /app/deploy/student_smoke.py
+elif [[ "${STUDENT_QA_MODE:-}" == "full" ]]; then
+  printf '%s\n' '[himma-sandbox] running isolated full student E2E...'
+  PYTHONPATH=/app/services/api python /app/deploy/student_full_e2e.py
 fi
 
 printf '%s\n' '[himma-sandbox] pre-deploy database preparation complete.'
