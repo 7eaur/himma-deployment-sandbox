@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Sandbox deployment preparation: keep schema and approved runtime projection aligned.
 cd /app/services/api
 
 printf '%s\n' '[himma-sandbox] applying Alembic migrations...'
