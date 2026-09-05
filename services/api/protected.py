@@ -192,12 +192,6 @@ def _assessment_display_status(db: Session, session: AssessmentSession | None) -
     if not session or session.session_type not in {"pretest", "posttest"}:
         return None
 
-    required_kind = "pretest_question" if session.session_type == "pretest" else "posttest_question"
-    required_items = db.query(ContentItem.id).filter(ContentItem.kind == required_kind).count()
-    attempts = db.query(Attempt).filter(Attempt.session_id == session.id).all()
-    if required_items != 30 or len(attempts) != required_items or any(attempt.status != "completed" for attempt in attempts):
-        return "answering"
-
     submissions = (
         db.query(AudioSubmission)
         .join(AttemptResponse, AttemptResponse.id == AudioSubmission.response_id)
@@ -209,6 +203,12 @@ def _assessment_display_status(db: Session, session: AssessmentSession | None) -
         return "rerecord_required"
     if any(submission.status == "uploaded" for submission in submissions):
         return "waiting_audio_review"
+
+    required_kind = "pretest_question" if session.session_type == "pretest" else "posttest_question"
+    required_items = db.query(ContentItem.id).filter(ContentItem.kind == required_kind).count()
+    attempts = db.query(Attempt).filter(Attempt.session_id == session.id).all()
+    if required_items != 30 or len(attempts) != required_items or any(attempt.status != "completed" for attempt in attempts):
+        return "answering"
     return "ready_to_finalize"
 
 

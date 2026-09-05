@@ -1,12 +1,15 @@
 """Dependency injection for FastAPI endpoints."""
 
 import os
-from fastapi import Depends, HTTPException, status, Request
+
+from fastapi import Depends, HTTPException, Request, status
+from joserfc import jwk, jwt
+from joserfc.errors import JoseError
+from joserfc.jwt import JWTClaimsRegistry
 from sqlalchemy.orm import Session
-from jose import JWTError, jwt
 
 from db.database import SessionLocal
-from db.models import User, Student
+from db.models import Student, User
 
 API_SECRET_KEY = os.environ.get("API_SECRET_KEY")
 if not API_SECRET_KEY:
@@ -14,7 +17,16 @@ if not API_SECRET_KEY:
         "API_SECRET_KEY environment variable is required. "
         "Set it before starting the application."
     )
+if len(API_SECRET_KEY.encode("utf-8")) < 32:
+    raise RuntimeError("API_SECRET_KEY must contain at least 32 UTF-8 bytes for HS256.")
+
 ALGORITHM = "HS256"
+JWT_KEY = jwk.import_key(API_SECRET_KEY, "oct")
+JWT_CLAIMS = JWTClaimsRegistry(
+    sub={"essential": True},
+    role={"essential": True},
+    exp={"essential": True},
+)
 
 
 def get_db():
@@ -33,13 +45,14 @@ def _decode_token(request: Request) -> dict:
             detail="يرجى تسجيل الدخول أولًا",
         )
     try:
-        payload = jwt.decode(token, API_SECRET_KEY, algorithms=[ALGORITHM])
-    except JWTError:
+        decoded = jwt.decode(token, JWT_KEY, algorithms=[ALGORITHM])
+        JWT_CLAIMS.validate(decoded.claims)
+    except (JoseError, TypeError, ValueError):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="انتهت جلسة الدخول أو أصبحت غير صالحة، سجّل الدخول مرة أخرى",
         )
-    return payload
+    return decoded.claims
 
 
 def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:

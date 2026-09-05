@@ -3,19 +3,19 @@
 from datetime import datetime, timedelta, timezone
 import os
 
-from fastapi import APIRouter, Depends, HTTPException, status, Response
-from sqlalchemy.orm import Session
 import bcrypt
-from jose import jwt
+from fastapi import APIRouter, Depends, HTTPException, Response, status
+from joserfc import jwt
+from sqlalchemy.orm import Session
 
-from db.models import User, Student, AuditLog
-from schemas import ResearcherLogin, StudentLogin, MeResponse
+from db.models import AuditLog, Student, User
 from dependencies import (
-    get_db,
-    get_any_authenticated,
-    API_SECRET_KEY,
     ALGORITHM,
+    JWT_KEY,
+    get_any_authenticated,
+    get_db,
 )
+from schemas import MeResponse, ResearcherLogin, StudentLogin
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -44,11 +44,13 @@ def _set_token_cookie(response: Response, token: str) -> None:
 
 
 def _create_access_token(*, sub: int, role: str) -> str:
-    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    now = datetime.now(timezone.utc)
+    expire = now + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     return jwt.encode(
-        {"sub": str(sub), "role": role, "exp": expire},
-        API_SECRET_KEY,
-        algorithm=ALGORITHM,
+        {"alg": ALGORITHM},
+        {"sub": str(sub), "role": role, "iat": now, "exp": expire},
+        JWT_KEY,
+        algorithms=[ALGORITHM],
     )
 
 

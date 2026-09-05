@@ -1,6 +1,6 @@
 import StudentExperienceEffects from "@/components/StudentExperienceEffects";
-import "./student-experience.css";
 
+// Student routes render explicit state; this layout adds effects only and never patches task DOM.
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
   return (
     <>

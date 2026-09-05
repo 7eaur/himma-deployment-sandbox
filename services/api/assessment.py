@@ -23,7 +23,6 @@ from content_runtime import (
 from dependencies import get_db, get_current_student
 from db.activity_models import ActivityStepResponse
 from db.models import (
-    AudioReview,
     AudioSubmission,
     AssessmentSession,
     Attempt,
@@ -201,6 +200,26 @@ def _structured_response_exists(db: Session, attempt_id: int, step_id: int) -> b
     ).first() is not None
 
 
+def _attempt_ids_with_audio_status(
+    db: Session,
+    session_id: int,
+    statuses: set[str],
+) -> set[int]:
+    if not statuses:
+        return set()
+    return {
+        row[0]
+        for row in db.query(Attempt.id)
+        .join(AttemptResponse, AttemptResponse.attempt_id == Attempt.id)
+        .join(AudioSubmission, AudioSubmission.response_id == AttemptResponse.id)
+        .filter(
+            Attempt.session_id == session_id,
+            AudioSubmission.status.in_(tuple(statuses)),
+        )
+        .all()
+    }
+
+
 def _answered_step_ids(db: Session, attempt_id: int) -> set[int]:
     classic = {
         row.step_id
@@ -209,7 +228,7 @@ def _answered_step_ids(db: Session, attempt_id: int) -> set[int]:
             AudioSubmission.response_id == AttemptResponse.id,
         ).filter(
             AttemptResponse.attempt_id == attempt_id,
-            or_(AudioSubmission.id.is_(None), AudioSubmission.status != "rerecord_required"),
+            or_(AudioSubmission.id.is_(None), AudioSubmission.status == "graded"),
         ).all()
     }
     structured = {
@@ -223,9 +242,7 @@ def _answered_step_ids(db: Session, attempt_id: int) -> set[int]:
 
 def _completed_response_count(db: Session, attempt_id: int) -> int:
     classic = db.query(AttemptResponse.id).filter(AttemptResponse.attempt_id == attempt_id).count()
-    structured = db.query(ActivityStepResponse.id).filter(
-        ActivityStepResponse.attempt_id == attempt_id,
-    ).count()
+    structured = db.query(ActivityStepResponse.id).filter(ActivityStepResponse.attempt_id == attempt_id).count()
     return classic + structured
 
 
@@ -346,9 +363,10 @@ def get_next_item(
     db: Session = Depends(get_db),
     student: Student = Depends(get_current_student),
 ):
-    session = _session_for_student(db, session_id, student.id, require_active=False)
-    if session.status == "completed":
-        return None
+    session = _session_for_student(db, session_id, student.id)
+
+    if _attempt_ids_with_audio_status(db, session_id, {"uploaded"}):
+        raise HTTPException(status_code=409, detail="يوجد تسجيل صوتي في انتظار المراجعة")
 
     pending_attempt = db.query(Attempt).filter(
         Attempt.session_id == session_id,
@@ -407,11 +425,19 @@ def get_session_progress(
     student: Student = Depends(get_current_student),
 ):
     session = _session_for_student(db, session_id, student.id)
-    completed_items = db.query(Attempt).filter(
+    blocked_attempt_ids = _attempt_ids_with_audio_status(
+        db,
+        session_id,
+        {"uploaded", "rerecord_required"},
+    )
+    completed_query = db.query(Attempt).filter(
         Attempt.session_id == session_id,
         Attempt.status == "completed",
-    ).count()
-    has_pending_item = db.query(Attempt.id).filter(
+    )
+    if blocked_attempt_ids:
+        completed_query = completed_query.filter(Attempt.id.notin_(blocked_attempt_ids))
+    completed_items = completed_query.count()
+    has_pending_item = bool(blocked_attempt_ids) or db.query(Attempt.id).filter(
         Attempt.session_id == session_id,
         Attempt.status == "in_progress",
     ).first() is not None
@@ -420,7 +446,13 @@ def get_session_progress(
     ).count()
     classic_steps = db.query(AttemptResponse.id).join(
         Attempt, Attempt.id == AttemptResponse.attempt_id,
-    ).filter(Attempt.session_id == session_id).count()
+    ).outerjoin(
+        AudioSubmission,
+        AudioSubmission.response_id == AttemptResponse.id,
+    ).filter(
+        Attempt.session_id == session_id,
+        or_(AudioSubmission.id.is_(None), AudioSubmission.status == "graded"),
+    ).count()
     structured_steps = db.query(ActivityStepResponse.id).join(
         Attempt, Attempt.id == ActivityStepResponse.attempt_id,
     ).filter(Attempt.session_id == session_id).count()
@@ -578,91 +610,6 @@ def submit_attempt(
     response_json = {"status": "ok", "is_correct": is_correct}
     _store_idempotency(db, student.id, operation, idempotency_key, request_hash, response_json)
     return _commit_idempotent(db, student.id, operation, idempotency_key, request_hash, response_json)
-
-
-@router.post("/session/{session_id}/finish", response_model=schemas.SessionFinishResponse)
-def finish_session(
-    session_id: int,
-    db: Session = Depends(get_db),
-    student: Student = Depends(get_current_student),
-):
-    session = db.query(AssessmentSession).filter(
-        AssessmentSession.id == session_id,
-        AssessmentSession.student_id == student.id,
-    ).first()
-    if not session:
-        raise HTTPException(status_code=400, detail="الجلسة غير صالحة أو مكتملة")
-    if session.status == "completed":
-        if session.final_score is None or session.assigned_level is None:
-            raise HTTPException(status_code=409, detail="نتيجة الجلسة المكتملة غير متاحة")
-        return {
-            "id": session.id,
-            "final_score": session.final_score,
-            "assigned_level": session.assigned_level,
-        }
-    if session.status != "in_progress":
-        raise HTTPException(status_code=400, detail="الجلسة غير صالحة أو مكتملة")
-
-    rerecord_exists = db.query(AudioSubmission).join(
-        AttemptResponse, AttemptResponse.id == AudioSubmission.response_id,
-    ).join(Attempt, Attempt.id == AttemptResponse.attempt_id).filter(
-        Attempt.session_id == session_id,
-        AudioSubmission.status == "rerecord_required",
-    ).first()
-    if rerecord_exists:
-        raise HTTPException(status_code=409, detail="يوجد تسجيل يحتاج إلى إعادة قبل إنهاء الاختبار")
-
-    if session.session_type in ["pretest", "posttest"]:
-        required_items = db.query(ContentItem).filter(
-            ContentItem.kind == KIND_BY_SESSION_TYPE[session.session_type],
-        ).count()
-        attempts = db.query(Attempt).filter(Attempt.session_id == session_id).all()
-        if required_items != 30 or len(attempts) != required_items or any(attempt.status != "completed" for attempt in attempts):
-            raise HTTPException(status_code=400, detail="أكمل الأسئلة الثلاثين قبل إنهاء الاختبار")
-
-    total_score = Decimal("0.0")
-    attempts = db.query(Attempt).filter(Attempt.session_id == session_id).all()
-    for attempt in attempts:
-        responses = db.query(AttemptResponse).filter(AttemptResponse.attempt_id == attempt.id).all()
-        for response in responses:
-            audio_sub = db.query(AudioSubmission).filter(AudioSubmission.response_id == response.id).first()
-            if audio_sub:
-                if audio_sub.status == "uploaded":
-                    raise HTTPException(status_code=409, detail="يوجد تسجيل صوتي في انتظار المراجعة")
-                if audio_sub.status == "graded":
-                    review = db.query(AudioReview).filter(
-                        AudioReview.submission_id == audio_sub.id,
-                    ).order_by(AudioReview.id.desc()).first()
-                    if review:
-                        total_score += review.rubric_score
-            elif response.is_correct:
-                total_score += Decimal("1.0")
-        structured = db.query(ActivityStepResponse).filter(
-            ActivityStepResponse.attempt_id == attempt.id,
-        ).all()
-        total_score += sum((Decimal("1.0") for response in structured if response.is_correct), Decimal("0.0"))
-
-    final_percentage = (total_score / Decimal("30.0")) * Decimal("100.0")
-    if final_percentage < Decimal("50.0"):
-        assigned_level = 1
-    elif final_percentage < Decimal("80.0"):
-        assigned_level = 2
-    else:
-        assigned_level = 3
-
-    session.final_score = final_percentage
-    session.assigned_level = assigned_level
-    session.status = "completed"
-    session.completed_at = datetime.now(timezone.utc)
-    session.updated_at = datetime.now(timezone.utc)
-    if session.session_type in ["pretest", "posttest"]:
-        student.current_level = assigned_level
-    if session.session_type == "posttest":
-        student.posttest_enabled = False
-        student.posttest_enabled_at = None
-        student.posttest_enabled_by = None
-    db.commit()
-    return {"id": session.id, "final_score": final_percentage, "assigned_level": assigned_level}
 
 
 @router.post("/session/{session_id}/upload-audio")

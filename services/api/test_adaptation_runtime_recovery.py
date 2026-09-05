@@ -78,12 +78,13 @@ def test_completed_reinforcement_is_fulfilled_not_a_new_mapping_gap(monkeypatch)
     monkeypatch.setattr(
         adaptation_runtime,
         "evaluate_student",
-        lambda _db, _student: {
+        lambda _db, _student, session_id=None: {
             "ready": True,
             "decision_id": decision.id,
             "action": "support",
             "recommended_item_id": reinforcement.id,
             "explanation": decision.explanation,
+            "evidence_scope_session_id": session_id,
         },
     )
 

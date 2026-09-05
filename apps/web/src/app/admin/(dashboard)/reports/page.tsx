@@ -3,100 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowUpLeft, BarChart3, CheckCircle2, Clock3, FileSpreadsheet, FileText, RefreshCw, Sparkles, Users } from "lucide-react";
-import {
-  AdminAction,
-  AdminEmptyState,
-  AdminMobileCard,
-  AdminPage,
-  AdminPageHeader,
-  AdminPanel,
-  AdminResponsiveTable,
-  AdminStat,
-  AdminStatGrid,
-} from "@/components/admin/AdminUI";
+import { AdminAction, AdminEmptyState, AdminMobileCard, AdminPage, AdminPageHeader, AdminPanel, AdminResponsiveTable, AdminStat, AdminStatGrid } from "@/components/admin/AdminUI";
 
-interface ResearchStudentReport {
-  student_id: number;
-  student_name: string;
-  status: "active" | "inactive";
-  starting_level: number | null;
-  current_level: number;
-  final_level: number | null;
-  completed_core_levels: number[];
-  pretest: { status: string; score: number | null; elapsed_seconds: number };
-  posttest: { status: string; score: number | null; elapsed_seconds: number };
-  improvement: { absolute_percentage_points: number | null; relative_percent: number | null; relative_percent_defined: boolean };
-  engagement: { assessment_seconds: number; learning_seconds: number; attempts: number; completed_attempts: number };
-  reinforcement: { total: number; verified: number; escalated: number; active: number };
-  speech_evidence: { calibrated: boolean; error_categories: unknown | null; note: string };
-}
-
-interface ResearchSummary {
-  cohort: {
-    students: number; active_students: number; completed_pretests: number; completed_posttests: number; paired_pre_post: number;
-    average_pretest_score: number | null; average_posttest_score: number | null; average_absolute_improvement_points: number | null;
-    reinforcement_cycles: number; verified_reinforcement_cycles: number; escalated_reinforcement_cycles: number;
-  };
-  students: ResearchStudentReport[];
-  reporting_notes: { score_source: string; relative_improvement: string; speech_metrics: string };
-}
-
-function formatScore(value: number | null) { return value == null ? "—" : `${Math.round(value * 10) / 10}%`; }
-function formatSeconds(value: number) { if (value <= 0) return "—"; const minutes = Math.floor(value / 60); const seconds = value % 60; return minutes ? `${minutes} د ${seconds ? `${seconds} ث` : ""}`.trim() : `${seconds} ث`; }
-function improvementLabel(report: ResearchStudentReport) { const value = report.improvement.absolute_percentage_points; if (value == null) return { text: "بانتظار البعدي", className: "badge-gray" }; if (value > 0) return { text: `+${Math.round(value * 10) / 10} نقطة`, className: "badge-green" }; if (value < 0) return { text: `${Math.round(value * 10) / 10} نقطة`, className: "badge-yellow" }; return { text: "دون تغير", className: "badge-gray" }; }
-
-async function fetchResearchSummary(): Promise<ResearchSummary> {
-  const response = await fetch("/api/researcher/reports/summary", { cache: "no-store" });
-  const payload = await response.json().catch(() => null);
-  if (!response.ok || !payload) throw new Error(payload?.detail || "تعذر تحميل التقرير البحثي");
-  return payload as ResearchSummary;
-}
-
-export default function ReportsPage() {
-  const [data, setData] = useState<ResearchSummary | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const refresh = async () => { setLoading(true); setError(""); try { setData(await fetchResearchSummary()); } catch (caught: unknown) { setError(caught instanceof Error ? caught.message : "تعذر تحميل التقرير البحثي"); } finally { setLoading(false); } };
-
-  useEffect(() => { let cancelled = false; fetchResearchSummary().then((payload) => { if (!cancelled) setData(payload); }).catch((caught: unknown) => { if (!cancelled) setError(caught instanceof Error ? caught.message : "تعذر تحميل التقرير البحثي"); }).finally(() => { if (!cancelled) setLoading(false); }); return () => { cancelled = true; }; }, []);
-
-  return (
-    <AdminPage>
-      <AdminPageHeader
-        eyebrow="بيانات البحث الفعلية"
-        icon={BarChart3}
-        title="التقارير والإحصائيات"
-        description="مقارنة القبلي والبعدي والزمن والتقوية من القيم المحفوظة في قاعدة البيانات، دون إعادة احتساب التصنيف أو اختراع مؤشرات صوتية غير معايرة."
-        actions={<><AdminAction href="/api/researcher/reports/exports/cohort.xlsx" icon={FileSpreadsheet}>Excel</AdminAction><AdminAction href="/api/researcher/reports/exports/cohort.pdf" icon={FileText}>PDF إجمالي</AdminAction><AdminAction icon={RefreshCw} disabled={loading} onClick={() => void refresh()}>تحديث</AdminAction></>}
-      />
-
-      {error && <div className="alert-error flex items-center justify-between gap-3 flex-wrap"><span>{error}</span><AdminAction onClick={() => void refresh()}>إعادة المحاولة</AdminAction></div>}
-
-      {loading ? (
-        <div aria-label="جاري تجهيز التقرير" className="space-y-5"><div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">{[0,1,2,3].map((item) => <div key={item} className="card min-h-28 animate-pulse bg-slate-50" />)}</div><div className="card min-h-72 animate-pulse bg-slate-50" /></div>
-      ) : data ? (
-        <>
-          <AdminStatGrid>
-            <AdminStat icon={Users} value={data.cohort.students} label="إجمالي الطلاب" />
-            <AdminStat icon={CheckCircle2} value={data.cohort.paired_pre_post} label="مقارنات قبلي/بعدي مكتملة" />
-            <AdminStat icon={BarChart3} value={formatScore(data.cohort.average_absolute_improvement_points)} label="متوسط التحسن بالنقاط" />
-            <AdminStat icon={Sparkles} value={`${data.cohort.verified_reinforcement_cycles}/${data.cohort.reinforcement_cycles}`} label="دورات تقوية متحققة" />
-          </AdminStatGrid>
-
-          <AdminPanel title="ملخص الاختبارات" description="القيم التالية مأخوذة من جلسات الاختبار المكتملة والمحفوظة." actions={<div className="flex gap-2 flex-wrap"><span className="badge badge-gray">قبلي مكتمل: {data.cohort.completed_pretests}</span><span className="badge badge-gray">بعدي مكتمل: {data.cohort.completed_posttests}</span></div>}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4"><div className="rounded-2xl border border-slate-200 p-4"><p className="text-sm text-muted">متوسط القبلي</p><strong className="text-2xl text-navy">{formatScore(data.cohort.average_pretest_score)}</strong></div><div className="rounded-2xl border border-slate-200 p-4"><p className="text-sm text-muted">متوسط البعدي</p><strong className="text-2xl text-navy">{formatScore(data.cohort.average_posttest_score)}</strong></div><div className="rounded-2xl border border-slate-200 p-4"><p className="text-sm text-muted">متوسط التحسن المطلق</p><strong className="text-2xl text-navy">{data.cohort.average_absolute_improvement_points == null ? "—" : `${data.cohort.average_absolute_improvement_points > 0 ? "+" : ""}${Math.round(data.cohort.average_absolute_improvement_points * 10) / 10} نقطة`}</strong></div></div>
-          </AdminPanel>
-
-          <AdminPanel title="نتائج الطلاب" description="المستوى الابتدائي والنهائي والنتائج والزمن والتقوية لكل طالب." actions={<Link href="/admin/students" className="text-primary text-sm font-semibold inline-flex items-center gap-1">إدارة الطلاب <ArrowUpLeft size={15} /></Link>}>
-            {data.students.length === 0 ? <AdminEmptyState title="لا توجد بيانات بعد" description="أضف الطلاب وابدأ الاختبار القبلي لتظهر بيانات البحث هنا." action={<AdminAction href="/admin/students/new" tone="primary">إضافة أول طالب</AdminAction>} /> : <AdminResponsiveTable
-              table={<table className="data-table"><thead><tr><th>الطالب</th><th>المستوى</th><th>القبلي</th><th>البعدي</th><th>التحسن</th><th>الزمن</th><th>التقوية</th><th>تقرير</th></tr></thead><tbody>{data.students.map((student) => { const improvement = improvementLabel(student); return <tr key={student.student_id}><td><Link href={`/admin/students/${student.student_id}`} className="font-semibold text-navy hover:text-primary">{student.student_name}</Link></td><td><span className="whitespace-nowrap">{student.starting_level ? `L${student.starting_level}` : "—"} ← {student.final_level ? `L${student.final_level}` : `L${student.current_level}`}</span></td><td>{formatScore(student.pretest.score)}</td><td>{formatScore(student.posttest.score)}</td><td><span className={`badge ${improvement.className}`}>{improvement.text}</span></td><td><span className="inline-flex items-center gap-1 whitespace-nowrap"><Clock3 size={14} className="text-muted" />{formatSeconds(student.engagement.assessment_seconds + student.engagement.learning_seconds)}</span></td><td>{student.reinforcement.verified}/{student.reinforcement.total}</td><td><a className="text-primary text-sm font-semibold whitespace-nowrap" href={`/api/researcher/reports/students/${student.student_id}/export.pdf`}>PDF فردي</a></td></tr>; })}</tbody></table>}
-              cards={data.students.map((student) => { const improvement = improvementLabel(student); return <AdminMobileCard key={student.student_id} title={<Link href={`/admin/students/${student.student_id}`}>{student.student_name}</Link>}><span><strong>المستوى:</strong> {student.starting_level ? `L${student.starting_level}` : "—"} ← {student.final_level ? `L${student.final_level}` : `L${student.current_level}`}</span><span><strong>القبلي:</strong> {formatScore(student.pretest.score)}</span><span><strong>البعدي:</strong> {formatScore(student.posttest.score)}</span><span><strong>التحسن:</strong> {improvement.text}</span><span><strong>الزمن:</strong> {formatSeconds(student.engagement.assessment_seconds + student.engagement.learning_seconds)}</span><span><strong>التقوية:</strong> {student.reinforcement.verified}/{student.reinforcement.total}</span><span><AdminAction href={`/api/researcher/reports/students/${student.student_id}/export.pdf`} icon={FileText}>PDF فردي</AdminAction></span></AdminMobileCard>; })}
-            />}
-          </AdminPanel>
-
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-muted leading-7"><strong className="text-navy">ملاحظة منهجية:</strong> التحسن النسبي لا يُحسب عندما تكون نتيجة القبلي صفرًا. كما تبقى مؤشرات أخطاء النطق الآلية غير معروضة حتى اعتماد دليل صوتي معاير. جميع عمليات تصدير Excel وPDF تُسجل في سجل العمليات.</div>
-        </>
-      ) : null}
-    </AdminPage>
-  );
-}
+interface ResearchStudentReport { student_id:number; student_name:string; status:"active"|"inactive"; starting_level:number|null; current_level:number; final_level:number|null; completed_core_levels:number[]; pretest:{status:string;score:number|null;elapsed_seconds:number}; posttest:{status:string;score:number|null;elapsed_seconds:number}; improvement:{absolute_percentage_points:number|null;relative_percent:number|null;relative_percent_defined:boolean}; engagement:{assessment_seconds:number;learning_seconds:number;attempts:number;completed_attempts:number}; reinforcement:{total:number;verified:number;escalated:number;active:number}; speech_evidence:{calibrated:boolean;error_categories:unknown|null;note:string}; }
+interface ResearchSummary { cohort:{students:number;active_students:number;completed_pretests:number;completed_posttests:number;paired_pre_post:number;average_pretest_score:number|null;average_posttest_score:number|null;average_absolute_improvement_points:number|null;reinforcement_cycles:number;verified_reinforcement_cycles:number;escalated_reinforcement_cycles:number}; students:ResearchStudentReport[]; reporting_notes:{score_source:string;relative_improvement:string;speech_metrics:string}; }
+function formatScore(value:number|null){return value==null?"—":`${Math.round(value*10)/10}%`;} function formatSeconds(value:number){if(value<=0)return"—";const minutes=Math.floor(value/60),seconds=value%60;return minutes?`${minutes} د ${seconds?`${seconds} ث`:""}`.trim():`${seconds} ث`;} function improvementLabel(report:ResearchStudentReport){const value=report.improvement.absolute_percentage_points;if(value==null)return{text:"بانتظار البعدي",className:"badge-gray"};if(value>0)return{text:`+${Math.round(value*10)/10} نقطة`,className:"badge-green"};if(value<0)return{text:`${Math.round(value*10)/10} نقطة`,className:"badge-yellow"};return{text:"دون تغير",className:"badge-gray"};}
+async function fetchResearchSummary():Promise<ResearchSummary>{const response=await fetch("/api/researcher/reports/summary",{cache:"no-store"});const payload=await response.json().catch(()=>null);if(!response.ok||!payload)throw new Error(payload?.detail||"تعذر تحميل التقرير البحثي");return payload as ResearchSummary;}
+export default function ReportsPage(){const[data,setData]=useState<ResearchSummary|null>(null);const[loading,setLoading]=useState(true);const[error,setError]=useState("");const refresh=async()=>{setLoading(true);setError("");try{setData(await fetchResearchSummary());}catch(caught:unknown){setError(caught instanceof Error?caught.message:"تعذر تحميل التقرير البحثي");}finally{setLoading(false);}};useEffect(()=>{let cancelled=false;fetchResearchSummary().then(payload=>{if(!cancelled)setData(payload);}).catch((caught:unknown)=>{if(!cancelled)setError(caught instanceof Error?caught.message:"تعذر تحميل التقرير البحثي");}).finally(()=>{if(!cancelled)setLoading(false);});return()=>{cancelled=true;};},[]);return <AdminPage><AdminPageHeader eyebrow="بيانات البحث الفعلية" icon={BarChart3} title="التقارير والإحصائيات" description="مقارنة القبلي والبعدي والزمن والتقوية من القيم المحفوظة في قاعدة البيانات، دون إعادة احتساب التصنيف أو اختراع مؤشرات صوتية غير معايرة." actions={<><AdminAction href="/api/researcher/reports/exports/cohort.xlsx" icon={FileSpreadsheet}>Excel</AdminAction><AdminAction href="/api/researcher/reports/exports/cohort.pdf" icon={FileText}>PDF إجمالي</AdminAction><AdminAction icon={RefreshCw} disabled={loading} onClick={()=>void refresh()}>تحديث</AdminAction></>}/>{error&&<div className="alert-error flex items-center justify-between gap-3 flex-wrap"><span>{error}</span><AdminAction onClick={()=>void refresh()}>إعادة المحاولة</AdminAction></div>}{loading?<div aria-label="جاري تجهيز التقرير" className="space-y-5"><div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">{[0,1,2,3].map(item=><div key={item} className="card min-h-28 animate-pulse bg-slate-50"/>)}</div><div className="card min-h-72 animate-pulse bg-slate-50"/></div>:data?<><AdminStatGrid><AdminStat icon={Users} value={data.cohort.students} label="إجمالي الطلاب"/><AdminStat icon={CheckCircle2} value={data.cohort.paired_pre_post} label="مقارنات قبلي/بعدي مكتملة"/><AdminStat icon={BarChart3} value={formatScore(data.cohort.average_absolute_improvement_points)} label="متوسط التحسن بالنقاط"/><AdminStat icon={Sparkles} value={`${data.cohort.verified_reinforcement_cycles}/${data.cohort.reinforcement_cycles}`} label="دورات تقوية متحققة"/></AdminStatGrid><AdminPanel title="ملخص الاختبارات" description="القيم التالية مأخوذة من جلسات الاختبار المكتملة والمحفوظة."><div className="grid grid-cols-1 md:grid-cols-3 gap-4"><div className="rounded-2xl border border-slate-200 p-4"><p className="text-sm text-muted">متوسط القبلي</p><strong className="text-2xl text-navy">{formatScore(data.cohort.average_pretest_score)}</strong></div><div className="rounded-2xl border border-slate-200 p-4"><p className="text-sm text-muted">متوسط البعدي</p><strong className="text-2xl text-navy">{formatScore(data.cohort.average_posttest_score)}</strong></div><div className="rounded-2xl border border-slate-200 p-4"><p className="text-sm text-muted">متوسط التحسن المطلق</p><strong className="text-2xl text-navy">{data.cohort.average_absolute_improvement_points==null?"—":`${data.cohort.average_absolute_improvement_points>0?"+":""}${Math.round(data.cohort.average_absolute_improvement_points*10)/10} نقطة`}</strong></div></div></AdminPanel><AdminPanel title="نتائج الطلاب" description="المستوى الابتدائي والنهائي والنتائج والزمن والتقوية لكل طالب." actions={<Link href="/admin/students" className="text-primary text-sm font-semibold inline-flex items-center gap-1">إدارة الطلاب <ArrowUpLeft size={15}/></Link>}>{data.students.length===0?<AdminEmptyState title="لا توجد بيانات بعد" description="أضف الطلاب وابدأ الاختبار القبلي لتظهر بيانات البحث هنا."/>:<AdminResponsiveTable table={<table className="data-table"><thead><tr><th>الطالب</th><th>المستوى</th><th>القبلي</th><th>البعدي</th><th>التحسن</th><th>الزمن</th><th>التقوية</th><th>تقرير</th></tr></thead><tbody>{data.students.map(student=>{const improvement=improvementLabel(student);return <tr key={student.student_id}><td><Link href={`/admin/students/${student.student_id}`} className="font-semibold text-navy hover:text-primary">{student.student_name}</Link></td><td>{student.starting_level?`L${student.starting_level}`:"—"} ← {student.final_level?`L${student.final_level}`:`L${student.current_level}`}</td><td>{formatScore(student.pretest.score)}</td><td>{formatScore(student.posttest.score)}</td><td><span className={`badge ${improvement.className}`}>{improvement.text}</span></td><td><span className="inline-flex items-center gap-1"><Clock3 size={14}/>{formatSeconds(student.engagement.assessment_seconds+student.engagement.learning_seconds)}</span></td><td>{student.reinforcement.verified}/{student.reinforcement.total}</td><td><a className="text-primary text-sm font-semibold" href={`/api/researcher/reports/students/${student.student_id}/export.pdf`}>PDF فردي</a></td></tr>;})}</tbody></table>} cards={data.students.map(student=>{const improvement=improvementLabel(student);return <AdminMobileCard key={student.student_id} title={<Link href={`/admin/students/${student.student_id}`}>{student.student_name}</Link>}><span><strong>المستوى:</strong> {student.starting_level?`L${student.starting_level}`:"—"} ← {student.final_level?`L${student.final_level}`:`L${student.current_level}`}</span><span><strong>القبلي:</strong> {formatScore(student.pretest.score)}</span><span><strong>البعدي:</strong> {formatScore(student.posttest.score)}</span><span><strong>التحسن:</strong> {improvement.text}</span><span><strong>الزمن:</strong> {formatSeconds(student.engagement.assessment_seconds+student.engagement.learning_seconds)}</span><span><strong>التقوية:</strong> {student.reinforcement.verified}/{student.reinforcement.total}</span><span><AdminAction href={`/api/researcher/reports/students/${student.student_id}/export.pdf`} icon={FileText}>PDF فردي</AdminAction></span></AdminMobileCard>;})}/>}</AdminPanel><div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-muted leading-7"><strong className="text-navy">ملاحظة منهجية:</strong> التحسن النسبي لا يُحسب عندما تكون نتيجة القبلي صفرًا. كما تبقى مؤشرات أخطاء النطق الآلية غير معروضة حتى اعتماد دليل صوتي معاير.</div></>:null}</AdminPage>;}

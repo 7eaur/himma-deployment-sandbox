@@ -30,7 +30,12 @@ def test_first_core_targets_first_configured_critical_skill_when_candidate_exist
             Skill.canonical_skill_id == first_code,
         ).one()
 
-        assert _preferred_core_skill_id(db, student_id=student.id, level_id=1) == expected_skill.id
+        assert _preferred_core_skill_id(
+            db,
+            student_id=student.id,
+            session_id=session.id,
+            level_id=1,
+        ) == expected_skill.id
         item = _next_unused_core_item(
             db,
             student_id=student.id,
@@ -62,7 +67,12 @@ def test_selection_fails_safe_to_deterministic_approved_order_when_policy_has_no
 
         # Level 99 has no policy and no content; no cross-level/random item may
         # be returned as a fallback.
-        assert _preferred_core_skill_id(db, student_id=student.id, level_id=99) is None
+        assert _preferred_core_skill_id(
+            db,
+            student_id=student.id,
+            session_id=session.id,
+            level_id=99,
+        ) is None
         assert _next_unused_core_item(
             db,
             student_id=student.id,

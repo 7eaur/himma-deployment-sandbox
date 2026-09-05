@@ -184,7 +184,12 @@ export default function SessionPage() {
     try {
       const response = await fetch(`/api/assessment-view/session/${sessionId}/next`, { cache: "no-store" });
       const data = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(data?.detail || "تعذر تحميل السؤال");
+      const detail = typeof data?.detail === "string" ? data.detail : "";
+      if (response.status === 409 && detail.includes("انتظار المراجعة")) {
+        setPhase("waiting");
+        return;
+      }
+      if (!response.ok) throw new Error(detail || "تعذر تحميل السؤال");
       if (!data) {
         await finishSession();
         return;
@@ -376,9 +381,9 @@ export default function SessionPage() {
       <div className={styles.resultPage} dir="rtl" data-testid="assessment-session" data-phase="waiting_audio_review">
         <div className={styles.resultCard}>
           <div className={styles.resultContent}>
-            <span className={styles.resultBadge}>تم حفظ إجاباتك</span>
+            <span className={styles.resultBadge}>تم حفظ تسجيلك</span>
             <h1 className={styles.resultTitle}>عمل رائع</h1>
-            <p className={styles.resultText}>أنهيت الأسئلة. سيُراجع المشرف تسجيلات القراءة، وبعدها تظهر النتيجة بشكل صحيح.</p>
+            <p className={styles.resultText}>تم حفظ تسجيلك. سيُراجع المشرف القراءة، وبعد اعتمادها يمكنك متابعة الاختبار من نفس المكان.</p>
             <button className={styles.primary} onClick={() => router.push("/student")}>العودة إلى مساري</button>
           </div>
           <div className={styles.resultVisual}><Image src="/characters/girl/encourage.png" alt="شخصية هِمّة تشجع الطالب" width={330} height={400} /></div>

@@ -60,7 +60,7 @@
         "reinforcement": 5
       }
     },
-    "declared_media_gap_count": 2
+    "declared_media_gap_count": 0
   },
   "levels": [
     {
@@ -399,28 +399,7 @@
       "name": "قراءة وحدات المعنى"
     }
   ],
-  "media_gaps": [
-    {
-      "item_id": "L1-CORE-06",
-      "round_id": "L1-CORE-06-R01",
-      "asset_type": "audio",
-      "usage": "prompt",
-      "semantic_text": "موز",
-      "status": "declared_missing",
-      "reason": "No semantically matching approved asset exists in the current V1 manifest.",
-      "impact": "The round must not be activated until an approved asset release supplies this target."
-    },
-    {
-      "item_id": "L2-CORE-06",
-      "round_id": "L2-CORE-06-R04",
-      "asset_type": "audio",
-      "usage": "prompt",
-      "semantic_text": "سَا",
-      "status": "declared_missing",
-      "reason": "No semantically matching approved asset exists in the current V1 manifest.",
-      "impact": "The round must not be activated until an approved asset release supplies this target."
-    }
-  ],
+  "media_gaps": [],
   "items": [
     {
       "canonical_id": "PRE-Q01",
@@ -1850,22 +1829,19 @@
           "source_text": "موز/ماء: نفسه",
           "media": [
             {
+              "asset_id": "WRD-29",
+              "asset_type": "audio",
+              "usage": "prompt",
+              "semantic_text": "موز"
+            },
+            {
               "asset_id": "WRD-11",
               "asset_type": "audio",
               "usage": "prompt",
               "semantic_text": "ماء"
             }
           ],
-          "media_gaps": [
-            {
-              "asset_type": "audio",
-              "usage": "prompt",
-              "semantic_text": "موز",
-              "status": "declared_missing",
-              "reason": "No semantically matching approved asset exists in the current V1 manifest.",
-              "impact": "The round must not be activated until an approved asset release supplies this target."
-            }
-          ]
+          "media_gaps": []
         },
         {
           "round_id": "L1-CORE-06-R02",
@@ -1948,7 +1924,7 @@
           "media_gaps": []
         }
       ],
-      "checksum": "08654bcf983796b807f79d452ea19e8368312c4dd040d718e702bf1c2f8bbe70"
+      "checksum": "3f4bd3d8af921312a36554eb4b79f307e00f9070ff5d3e84034f5ca1ecac781c"
     },
     {
       "canonical_id": "L1-CORE-07",
@@ -3084,17 +3060,15 @@
           "round_id": "L2-CORE-06-R04",
           "order_index": 4,
           "source_text": "سَا: سَ/سَا/سِي",
-          "media": [],
-          "media_gaps": [
+          "media": [
             {
+              "asset_id": "SYL-13",
               "asset_type": "audio",
               "usage": "prompt",
-              "semantic_text": "سَا",
-              "status": "declared_missing",
-              "reason": "No semantically matching approved asset exists in the current V1 manifest.",
-              "impact": "The round must not be activated until an approved asset release supplies this target."
+              "semantic_text": "سَا"
             }
-          ]
+          ],
+          "media_gaps": []
         },
         {
           "round_id": "L2-CORE-06-R05",
@@ -3111,7 +3085,7 @@
           "media_gaps": []
         }
       ],
-      "checksum": "f037a047b64bd113fa04bf70e42774cd495715411d624244dcf800d9afd322a3"
+      "checksum": "4117665d12bdafa4081d3937af5dfa3aec17e7cf7a07211951236664d3177305"
     },
     {
       "canonical_id": "L2-CORE-07",
@@ -5525,6 +5499,8 @@
       "FB-02",
       "FB-03",
       "FB-04",
+      "INS-01",
+      "INS-02",
       "LET-01",
       "LET-02",
       "LET-03",
@@ -5543,6 +5519,7 @@
       "SYL-10",
       "SYL-11",
       "SYL-12",
+      "SYL-13",
       "WRD-01",
       "WRD-02",
       "WRD-03",
@@ -5570,7 +5547,8 @@
       "WRD-25",
       "WRD-26",
       "WRD-27",
-      "WRD-28"
+      "WRD-28",
+      "WRD-29"
     ],
     "image_asset_ids": [
       "SEN-01",

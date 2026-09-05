@@ -14,8 +14,9 @@ def _load() -> dict:
     return json.loads(MAP_PATH.read_text(encoding="utf-8"))
 
 
-def test_mapping_covers_all_44_canonical_skills_once():
+def test_mapping_covers_all_44_current_canonical_skills_once():
     data = _load()
+    assert data["map_version"] == "HIMMA-REINFORCEMENT-MAP-1.2"
     skills = data["skills"]
     assert len(skills) == 44
     keys = [(row["level"], row["skill_code"]) for row in skills]
@@ -31,13 +32,24 @@ def test_mapping_never_allows_random_or_cross_level_fallback():
     assert rules["verification_after_reinforcement"] is True
 
 
-def test_approved_2026_08_29_gap_closure_leaves_no_uncovered_skills():
+def test_approved_gap_closure_leaves_no_uncovered_skills():
     uncovered = [
         (row["level"], row["skill_code"], row["skill_name"])
         for row in _load()["skills"]
         if row["coverage"] == "uncovered"
     ]
     assert uncovered == []
+
+
+def test_auditory_story_replacement_has_direct_auditory_candidate():
+    rows = _load()["skills"]
+    assert not [row for row in rows if row["skill_code"] == "visual_motor_direction"]
+    row = next(row for row in rows if row["skill_code"] == "auditory_literal_comprehension")
+    assert row["level"] == 1
+    assert row["skill_name"] == "الفهم السمعي المباشر"
+    assert row["family"] == "auditory_comprehension"
+    assert row["coverage"] == "direct"
+    assert row["candidates"] == ["L1-REIN-11"]
 
 
 def test_shadda_has_a_direct_dedicated_candidate():

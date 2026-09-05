@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "map_version": "HIMMA-REINFORCEMENT-MAP-1.1",
-  "status": "user_approved_2026_08_29",
+  "map_version": "HIMMA-REINFORCEMENT-MAP-1.2",
+  "status": "user_approved_reconciled_2026_09_04",
   "rules": {
     "same_level_only": true,
     "approved_candidates_only": true,
@@ -10,7 +10,7 @@
     "uncovered_skill_action": "supervisor_hold"
   },
   "skills": [
-    {"level":1,"skill_code":"visual_motor_direction","skill_name":"التآزر البصري واتجاه القراءة","family":"reading_direction_visual_motor","candidates":["L1-REIN-11"],"coverage":"direct"},
+    {"level":1,"skill_code":"auditory_literal_comprehension","skill_name":"الفهم السمعي المباشر","family":"auditory_comprehension","candidates":["L1-REIN-11"],"coverage":"direct","note":"يحل محل ربط اتجاه القراءة المتقاعد بعد اعتماد الاستبدال السمعي L1-CORE-09/L1-REIN-11."},
     {"level":1,"skill_code":"logical_sequence","skill_name":"التسلسل المنطقي","family":"logical_sequence","candidates":["L1-REIN-12"],"coverage":"direct"},
     {"level":1,"skill_code":"letter_form_recognition","skill_name":"التعرف إلى أشكال الحرف","family":"letter_forms","candidates":["L1-REIN-07"],"coverage":"direct"},
     {"level":1,"skill_code":"visual_memory","skill_name":"الذاكرة البصرية","family":"visual_memory","candidates":["L1-REIN-10"],"coverage":"direct"},

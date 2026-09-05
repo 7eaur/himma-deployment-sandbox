@@ -2,8 +2,13 @@
 
 This module is presentation-oriented: it exposes the already-persisted academic
 state without mutating placement, adaptation, reinforcement, or assessment
-rules.  The frontend can therefore render L1 -> L2 -> L3 accurately instead of
+rules. The frontend can therefore render L1 -> L2 -> L3 accurately instead of
 inferring completion from the latest session only.
+
+An active Core session always takes precedence over older completed evidence at
+the same level. This matters when a supervisor deliberately reopens learning:
+historical achievements stay visible in storage, but they must not make the
+current journey or posttest look complete while remediation is active.
 """
 
 from __future__ import annotations
@@ -26,7 +31,6 @@ LEVEL_NAMES = {
 
 
 def _completed_core_count(db: Session, session_id: int, level_id: int) -> int:
-    """Count distinct completed approved core activities in one level session."""
     rows = (
         db.query(ContentItem.id)
         .join(Attempt, Attempt.item_id == ContentItem.id)
@@ -74,9 +78,9 @@ def _promotion_closed_session_ids(db: Session, student_id: int) -> set[int]:
     """Return sessions closed by a persisted one-level automatic promotion.
 
     L1/L2 may legitimately close after the V4 early-promotion gate (six or more
-    Core activities).  Presentation must use that persisted transition evidence
-    rather than re-imposing the legacy ten-Core requirement.  L3 is deliberately
-    excluded because journey completion still requires all ten Core activities.
+    Core activities). Presentation uses that persisted transition evidence
+    rather than re-imposing the legacy ten-Core requirement. L3 is excluded
+    because journey completion still requires all ten Core activities.
     """
     session_ids: set[int] = set()
     decisions = (
@@ -119,8 +123,10 @@ def build_journey_summary(db: Session, student: Student) -> dict:
         if session.assigned_level in by_level:
             by_level[int(session.assigned_level)].append(session)
 
+    active_core_exists = any(session.status == "in_progress" for session in sessions)
     levels: list[dict] = []
     level3_completed = False
+
     for level_id in (1, 2, 3):
         candidates = by_level[level_id]
         active = next((session for session in reversed(candidates) if session.status == "in_progress"), None)
@@ -137,24 +143,27 @@ def build_journey_summary(db: Session, student: Student) -> dict:
                 completed_candidates.append((session, count))
 
         completed_entry = completed_candidates[-1] if completed_candidates else None
+
         if not pretest_completed:
             state = "locked"
             completed_items = 0
             session_id = None
-        elif starting_level is not None and level_id < starting_level:
-            # Placement legitimately skips earlier levels; skipped is distinct
-            # from completed so the UI never claims work the student did not do.
-            state = "skipped"
-            completed_items = 0
-            session_id = None
+        elif active:
+            # A supervisor-reopened/remedial session is the current truth even
+            # when an older session at this level was previously completed.
+            state = "active"
+            completed_items = _completed_core_count(db, active.id, level_id)
+            session_id = active.id
         elif completed_entry:
             state = "completed"
             completed_items = completed_entry[1]
             session_id = completed_entry[0].id
-        elif active:
-            state = "active"
-            completed_items = _completed_core_count(db, active.id, level_id)
-            session_id = active.id
+        elif starting_level is not None and level_id < starting_level and not candidates:
+            # Placement legitimately skipped this level and no later manual
+            # intervention ever created real learning evidence here.
+            state = "skipped"
+            completed_items = 0
+            session_id = None
         elif level_id == student.current_level:
             state = "ready"
             completed_items = latest_count
@@ -179,15 +188,16 @@ def build_journey_summary(db: Session, student: Student) -> dict:
         )
 
     posttest_completed = _posttest_completed(db, student.id)
+    learning_journey_completed = level3_completed and not active_core_exists
     return {
         "pretest_completed": pretest_completed,
         "starting_level": starting_level,
         "current_level": student.current_level,
         "levels": levels,
-        "learning_journey_completed": level3_completed,
+        "learning_journey_completed": learning_journey_completed,
         "posttest_enabled": bool(student.posttest_enabled),
         "posttest_completed": posttest_completed,
-        "posttest_ready": level3_completed and bool(student.posttest_enabled) and not posttest_completed,
+        "posttest_ready": learning_journey_completed and bool(student.posttest_enabled) and not posttest_completed,
     }
 
 

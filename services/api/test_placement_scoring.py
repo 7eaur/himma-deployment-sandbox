@@ -1,5 +1,7 @@
 from decimal import Decimal
 
+import pytest
+
 from placement_scoring import (
     AssessmentEvidence,
     L3GateConfig,
@@ -30,23 +32,34 @@ def test_section_weights_are_20_40_40():
     assert score.provisional is False
 
 
-def test_readiness_below_12_of_20_forces_level_one_even_with_high_total():
-    # 55% readiness = 11/20, while the other two sections are perfect.
+@pytest.mark.parametrize(
+    ("total_score", "expected_level"),
+    [
+        ("0", 1),
+        ("49.99", 1),
+        ("50", 2),
+        ("79.99", 2),
+        ("80", 3),
+        ("100", 3),
+    ],
+)
+def test_initial_placement_boundary_matrix(total_score, expected_level):
+    ratio = str(Decimal(total_score) / Decimal("100"))
+    score = _score(ratio, ratio, ratio)
+    decision = decide_initial_placement(score)
+    assert decision.assigned_level == expected_level
+    assert decision.status == "final"
+
+
+def test_low_readiness_does_not_override_latest_total_score_policy():
+    # 55% readiness = 11/20 while the other sections are perfect => 91 total.
+    # The 2026-09-05 decision supersedes the older 12/20 readiness override.
     score = _score("0.55", "1", "1")
     assert score.total_points == Decimal("91.00")
     decision = decide_initial_placement(score)
-    assert decision.assigned_level == 1
+    assert decision.assigned_level == 3
     assert decision.status == "final"
-    assert decision.reason == "readiness_below_12_of_20"
-
-
-def test_readiness_exactly_12_does_not_trigger_l1_gate():
-    score = _score("0.60", "0.50", "0.50")
-    assert score.sections[1].points == Decimal("12.00")
-    assert score.total_points == Decimal("52.00")
-    decision = decide_initial_placement(score)
-    assert decision.assigned_level == 2
-    assert decision.status == "final"
+    assert decision.reason == "total_at_or_above_80"
 
 
 def test_total_below_50_is_level_one():
@@ -65,48 +78,29 @@ def test_total_50_to_below_80_is_level_two():
     assert decision.status == "final"
 
 
-def test_high_total_does_not_invent_missing_l3_thresholds():
+def test_high_total_is_level_three_without_superseded_extra_gates():
     score = _score("1", "1", "1")
     decision = decide_initial_placement(score)
-    assert decision.assigned_level == 2
-    assert decision.status == "provisional"
-    assert decision.reason == "l3_gate_thresholds_not_approved_or_configured"
+    assert decision.assigned_level == 3
+    assert decision.status == "final"
+    assert decision.reason == "total_at_or_above_80"
 
 
-def test_configured_l3_gates_can_make_final_level_three_decision():
+def test_legacy_l3_gate_arguments_cannot_change_current_placement():
     score = _score("1", "1", "1")
     decision = decide_initial_placement(
         score,
         gate_config=L3GateConfig(
-            word_reading_min_accuracy=Decimal("0.80"),
-            text_accuracy_min=Decimal("0.80"),
+            word_reading_min_accuracy=Decimal("0.99"),
+            text_accuracy_min=Decimal("0.99"),
         ),
         gate_evidence=PlacementEvidence(
-            word_reading_accuracy=Decimal("0.90"),
-            text_accuracy=Decimal("0.85"),
+            word_reading_accuracy=Decimal("0.10"),
+            text_accuracy=Decimal("0.10"),
         ),
     )
     assert decision.assigned_level == 3
     assert decision.status == "final"
-    assert decision.reason == "total_and_approved_l3_gates_met"
-
-
-def test_configured_l3_gate_failure_keeps_level_two():
-    score = _score("1", "1", "1")
-    decision = decide_initial_placement(
-        score,
-        gate_config=L3GateConfig(
-            word_reading_min_accuracy=Decimal("0.80"),
-            text_accuracy_min=Decimal("0.80"),
-        ),
-        gate_evidence=PlacementEvidence(
-            word_reading_accuracy=Decimal("0.75"),
-            text_accuracy=Decimal("0.95"),
-        ),
-    )
-    assert decision.assigned_level == 2
-    assert decision.status == "final"
-    assert decision.reason == "word_reading_gate_not_met"
 
 
 def test_neutral_evidence_is_excluded_not_scored_as_wrong_and_marks_provisional():
@@ -122,6 +116,9 @@ def test_neutral_evidence_is_excluded_not_scored_as_wrong_and_marks_provisional(
     assert score.total_points == Decimal("100.00")
     assert score.provisional is True
     assert "section_1_neutral_evidence_1" in score.provisional_reasons
+    placement = decide_initial_placement(score)
+    assert placement.assigned_level == 3
+    assert placement.status == "provisional"
 
 
 def test_missing_item_count_marks_score_provisional():

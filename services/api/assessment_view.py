@@ -26,10 +26,7 @@ def _presentation(item: ContentItem) -> dict:
     data = item.template_data or {}
     key = "pretest_experience" if item.kind == "pretest_question" else "posttest_experience" if item.kind == "posttest_question" else ""
     value = dict(data.get(key) or {}) if key else {}
-    required = {
-        "version", "question_number", "section", "skill", "encouragement",
-        "question_text", "instruction_text", "interaction_type",
-    }
+    required = {"version", "question_number", "section", "skill", "encouragement", "question_text", "instruction_text", "interaction_type"}
     missing = sorted(name for name in required if value.get(name) in {None, ""})
     if missing:
         raise HTTPException(status_code=409, detail=f"بيانات عرض السؤال غير مكتملة: {', '.join(missing)}")

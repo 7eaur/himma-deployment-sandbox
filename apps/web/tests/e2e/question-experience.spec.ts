@@ -19,7 +19,7 @@ async function createStudent(page: Page, request: APIRequestContext, context: Br
   await loginSupervisor(request, context);
   await page.goto("/admin/students/new");
   await expect(page.getByTestId("input-student-name")).toBeVisible({ timeout: 10000 });
-  await page.getByTestId("input-student-name").fill(`طالب تجربة القبلي ${Date.now()}`);
+  await page.getByTestId("input-student-name").fill(`طالب تجربة الأسئلة ${Date.now()}`);
   await page.getByTestId("submit-create-student").click();
   const code = page.getByTestId("student-access-code");
   await expect(code).toBeVisible({ timeout: 10000 });
@@ -44,7 +44,7 @@ async function visibleAnswerButtons(page: Page) {
     const button = buttons.nth(index);
     const text = ((await button.textContent()) ?? "").trim();
     if (!(await button.isVisible()) || !(await button.isEnabled())) continue;
-    if (/^(استمع|استمع\.\.\.|تأكيد والمتابعة|إعادة الترتيب|إعادة التسجيل|إرسال التسجيل)$/u.test(text)) continue;
+    if (/^(استمع|تأكيد والمتابعة|إعادة الترتيب|إعادة التسجيل|إرسال التسجيل)$/u.test(text)) continue;
     visible.push(button);
   }
   return visible;
@@ -74,16 +74,24 @@ async function answerVisibleChoice(page: Page) {
 async function assertQuestionHierarchy(page: Page) {
   const root = page.getByTestId("assessment-session");
   await expect(root).toHaveAttribute("data-phase", /^(question|submitting)$/);
-  const heading = root.getByTestId("question-title");
+  await expect(root.getByText("مهمة واحدة في كل مرة", { exact: true })).toHaveCount(0);
+
+  const heading = root.locator("main section h1").first();
   await expect(heading).toBeVisible();
-  expect(((await heading.textContent()) ?? "").trim().length).toBeGreaterThan(10);
+  const instruction = (await heading.textContent())?.trim() ?? "";
+  expect(instruction.length).toBeGreaterThan(12);
+  expect(instruction).not.toBe("اختر الإجابة الصحيحة.");
+  expect(instruction).not.toBe("استمع جيدًا، ثم اختر الإجابة الصحيحة.");
+
   const headingBox = await heading.boundingBox();
   const imageGroup = page.getByTestId("image-options");
   const pressedOptions = page.locator('button[aria-pressed="false"]');
   let firstAnswer;
-  if (await imageGroup.count()) firstAnswer = imageGroup.getByRole("button").first();
-  else if (await pressedOptions.count()) firstAnswer = pressedOptions.first();
-  else {
+  if (await imageGroup.count()) {
+    firstAnswer = imageGroup.getByRole("button").first();
+  } else if (await pressedOptions.count()) {
+    firstAnswer = pressedOptions.first();
+  } else {
     const candidates = await visibleAnswerButtons(page);
     expect(candidates.length).toBeGreaterThan(0);
     firstAnswer = candidates[0];
@@ -95,11 +103,19 @@ async function assertQuestionHierarchy(page: Page) {
   if (headingBox && answerBox) expect(answerBox.y).toBeGreaterThan(headingBox.y + headingBox.height - 2);
 }
 
-test.describe("approved pretest question experience", () => {
-  test("first readiness questions use the approved copy and responsive template", async ({ page, context, request }) => {
-    test.setTimeout(140000);
+async function displayedQuestionCopy(page: Page) {
+  const root = page.getByTestId("assessment-session");
+  const heading = ((await root.locator("main section h1").first().textContent()) ?? "").trim();
+  const instruction = ((await root.locator("main section p").first().textContent()) ?? "").trim();
+  return `${heading} ${instruction}`.trim();
+}
+
+test.describe("student question experience", () => {
+  test("first readiness questions are explicit, complete, and visually ordered", async ({ page, context, request }) => {
+    test.setTimeout(120000);
     const accessCode = await createStudent(page, request, context);
     await loginStudent(request, context, accessCode);
+
     const start = await request.post(`${API_URL}/assessment/start`, { data: { session_type: "pretest" } });
     expect([200, 409]).toContain(start.status());
     const startPayload = await start.json().catch(() => null);
@@ -113,39 +129,29 @@ test.describe("approved pretest question experience", () => {
     }
     expect(sessionId).toBeTruthy();
 
-    await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`/student/session/${sessionId}`);
     for (let index = 0; index < 10; index += 1) {
       const root = page.getByTestId("assessment-session");
       await expect(root).toHaveAttribute("data-phase", "question", { timeout: 15000 });
       await assertQuestionHierarchy(page);
 
-      if (index === 0) {
-        await expect(root.getByTestId("question-title")).toHaveText("اضغط على الحرف التالي.");
-        await expect(root.getByTestId("question-stimulus")).toHaveText("ب");
-        await expect(root.getByText("تمييز الحرف بصريًا", { exact: true })).toBeVisible();
-        await page.screenshot({ path: "playwright-report/screenshots/pretest-q1-desktop.png", fullPage: true });
-        await page.setViewportSize({ width: 390, height: 844 });
-        await expect(root.getByTestId("question-title")).toBeVisible();
-        await expect(root.getByRole("button", { name: "تأكيد والمتابعة" })).toBeVisible();
-        await page.screenshot({ path: "playwright-report/screenshots/pretest-q1-mobile.png", fullPage: true });
-        await page.setViewportSize({ width: 1440, height: 900 });
-      }
       if (index === 2) {
-        await expect(root.getByTestId("question-title")).toHaveText("انظر إلى الحرف، ثم اختر الشكل الآخر للحرف نفسه.");
-        await expect(root.getByTestId("question-stimulus")).toHaveText("م");
-        expect(await page.locator('button[aria-pressed="false"]').count()).toBeGreaterThanOrEqual(4);
-        await expect(root.getByText("مـ", { exact: true })).toBeVisible();
+        const optionButtons = page.locator('button[aria-pressed="false"]');
+        expect(await optionButtons.count()).toBeGreaterThanOrEqual(4);
+        await page.screenshot({ path: "playwright-report/screenshots/qx-letter-form-options.png", fullPage: true });
       }
       if (index === 4) {
-        const text = (await root.getByTestId("question-title").textContent()) ?? "";
-        expect(text).toContain("الصورة");
-        expect(text).toContain("يبدأ اسمها");
+        const copy = await displayedQuestionCopy(page);
+        expect(copy).toContain("الصورة");
+        expect(copy).toContain("يبدأ اسمها");
+        await page.screenshot({ path: "playwright-report/screenshots/qx-listen-starting-image.png", fullPage: true });
       }
       if (index === 6) {
-        const text = (await root.getByTestId("question-title").textContent()) ?? "";
-        expect(text).toContain("تنتهي به");
+        const copy = await displayedQuestionCopy(page);
+        expect(copy).toMatch(/آخرها|نهايتها|تنتهي به|آخر صوت/u);
+        await page.screenshot({ path: "playwright-report/screenshots/qx-final-sound.png", fullPage: true });
       }
+
       await answerVisibleChoice(page);
     }
   });

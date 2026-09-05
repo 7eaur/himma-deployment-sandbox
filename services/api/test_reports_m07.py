@@ -1,7 +1,9 @@
 from decimal import Decimal
 
 from conftest import TestingSessionLocal
-from db.models import AssessmentSession, Student
+from db.adaptation_models import AdaptationDecision
+from db.models import AssessmentSession, Attempt, AuditLog, Student
+from db.reinforcement_models import ReinforcementCycle
 
 
 def _student(db):
@@ -129,3 +131,59 @@ def test_student_report_requires_existing_student(researcher_client):
     response = researcher_client.get("/researcher/reports/students/99999")
     assert response.status_code == 404
     assert response.json()["detail"] == "الطالب غير موجود"
+
+
+def _academic_state_snapshot(db):
+    return {
+        "students": db.query(
+            Student.id,
+            Student.current_level,
+            Student.posttest_enabled,
+            Student.posttest_enabled_at,
+            Student.posttest_enabled_by,
+        ).order_by(Student.id).all(),
+        "sessions": db.query(
+            AssessmentSession.id,
+            AssessmentSession.status,
+            AssessmentSession.final_score,
+            AssessmentSession.assigned_level,
+            AssessmentSession.assessment_attempt_no,
+            AssessmentSession.official_for_reporting,
+        ).order_by(AssessmentSession.id).all(),
+        "attempts": db.query(
+            Attempt.id,
+            Attempt.session_id,
+            Attempt.item_id,
+            Attempt.status,
+            Attempt.elapsed_seconds,
+        ).order_by(Attempt.id).all(),
+        "adaptation_decisions": db.query(AdaptationDecision.id).count(),
+        "reinforcement_cycles": db.query(ReinforcementCycle.id).count(),
+    }
+
+
+def test_report_reads_and_exports_never_mutate_academic_state(researcher_client):
+    """Reports are read models; exports may add audit logs, never academic evidence."""
+    db = TestingSessionLocal()
+    before = _academic_state_snapshot(db)
+    audit_before = db.query(AuditLog.id).count()
+    db.close()
+
+    summary = researcher_client.get("/researcher/reports/summary")
+    assert summary.status_code == 200
+
+    export = researcher_client.get("/researcher/reports/exports/cohort.xlsx")
+    assert export.status_code == 200
+    assert export.headers["content-type"].startswith(
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+    db = TestingSessionLocal()
+    try:
+        after = _academic_state_snapshot(db)
+        audit_after = db.query(AuditLog.id).count()
+    finally:
+        db.close()
+
+    assert after == before
+    assert audit_after == audit_before + 1

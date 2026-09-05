@@ -53,18 +53,18 @@ def test_listen_reinforcement_reuses_approved_audio_manifest_asset():
         db.close()
 
 
-def test_missing_saa_audio_is_explicit_neutral_gap_not_fake_asset():
+def test_saa_reinforcement_uses_the_newly_approved_manifest_asset():
     _seed_full_catalog()
     db = SessionLocal()
     try:
         item = _item(db, "L2-REIN-08")
         step = item.steps[3]
-        assert step_assets(item, step) == []
-        gaps = media_gaps(item, step)
-        assert len(gaps) == 1
-        assert gaps[0]["asset_type"] == "audio"
-        assert gaps[0]["semantic_text"] == "سَا"
-        assert gaps[0]["status"] == "missing_approved_asset"
+        assets = step_assets(item, step)
+        assert len(assets) == 1
+        assert assets[0]["asset_id"] == "SYL-13"
+        assert assets[0]["asset_type"] == "audio"
+        assert assets[0]["semantic_text"] == "سَا"
+        assert media_gaps(item, step) == []
     finally:
         db.close()
 

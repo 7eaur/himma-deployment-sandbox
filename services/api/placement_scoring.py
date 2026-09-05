@@ -6,13 +6,21 @@ The approved Himma assessment has three sections:
 * word building and reading: 12 items / 40 points;
 * fluency and comprehension: 8 items / 40 points.
 
-The source explicitly fixes the L1 readiness gate at 12/20.  It does not fix
-numeric thresholds for the word-reading gate or text-accuracy gate required for
-L3 placement.  This module therefore never invents those values: L3 is only
-final when explicitly configured gates and their evidence are supplied.
+The latest accepted continuity decision (2026-09-05) resolves initial placement
+by the final pretest score only:
+
+* < 50 -> L1;
+* 50 .. < 80 -> L2;
+* 80 .. 100 -> L3.
+
+Older experiments added a 12/20 readiness override and extra numeric L3 gates.
+Those gates are retained only as compatibility data classes for historical
+callers; they are not part of the active placement decision. Continuous
+learning adaptation is a separate V4 policy and must not be mixed into initial
+placement.
 
 Neutral/unresolved evidence is excluded from the section average and marks the
-placement provisional.  It is never converted to an academic error.
+score provisional. It is never converted to an academic error.
 """
 
 from __future__ import annotations
@@ -28,7 +36,6 @@ SECTION_MAX_POINTS: Mapping[int, Decimal] = {
     2: Decimal("40"),
     3: Decimal("40"),
 }
-READINESS_GATE_POINTS = Decimal("12")
 TOTAL_L1_THRESHOLD = Decimal("50")
 TOTAL_L3_THRESHOLD = Decimal("80")
 SCORE_QUANT = Decimal("0.01")
@@ -39,7 +46,8 @@ class AssessmentEvidence:
     """One assessment item's normalized academic evidence.
 
     ``score`` is in [0, 1]. ``None`` means academically neutral evidence such
-    as an unresolved/invalid audio sample or an approved temporary media gap.
+    as an unresolved/invalid audio sample or an explicitly preserved historical
+    neutral marker.
     """
 
     section_id: int
@@ -67,11 +75,7 @@ class AssessmentScore:
 
 @dataclass(frozen=True)
 class L3GateConfig:
-    """Explicit, approved L3 gate thresholds.
-
-    ``None`` means the project has not yet approved/configured the numeric
-    threshold.  No default is intentionally provided.
-    """
+    """Deprecated compatibility shape from the superseded L3-gate experiment."""
 
     word_reading_min_accuracy: Optional[Decimal] = None
     text_accuracy_min: Optional[Decimal] = None
@@ -79,6 +83,8 @@ class L3GateConfig:
 
 @dataclass(frozen=True)
 class PlacementEvidence:
+    """Deprecated compatibility shape from the superseded L3-gate experiment."""
+
     word_reading_accuracy: Optional[Decimal] = None
     text_accuracy: Optional[Decimal] = None
 
@@ -98,7 +104,14 @@ def _normalise_score(value: Decimal) -> Decimal:
 
 
 def score_assessment(evidence: Sequence[AssessmentEvidence]) -> AssessmentScore:
-    """Calculate 20/40/40 section-normalised score without penalising neutral evidence."""
+    """Calculate 20/40/40 section-normalised score without penalising neutral evidence.
+
+    Section points are rounded to two decimals for presentation, but placement
+    must use the mathematically combined score rounded only once at the end.
+    Summing already-rounded section points can incorrectly turn 49.99 into
+    50.00 or 79.99 into 80.00 and therefore move a student across a placement
+    boundary.
+    """
 
     grouped: dict[int, list[Optional[Decimal]]] = {1: [], 2: [], 3: []}
     for signal in evidence:
@@ -110,7 +123,7 @@ def score_assessment(evidence: Sequence[AssessmentEvidence]) -> AssessmentScore:
 
     sections: dict[int, SectionResult] = {}
     reasons: list[str] = []
-    total = Decimal("0")
+    raw_total = Decimal("0")
 
     for section_id in (1, 2, 3):
         values = grouped[section_id]
@@ -129,11 +142,12 @@ def score_assessment(evidence: Sequence[AssessmentEvidence]) -> AssessmentScore:
 
         if valid:
             average = sum(valid, Decimal("0")) / Decimal(len(valid))
-            points = (average * max_points).quantize(SCORE_QUANT, rounding=ROUND_HALF_UP)
+            raw_points = average * max_points
         else:
-            points = Decimal("0.00")
+            raw_points = Decimal("0")
             reasons.append(f"section_{section_id}_has_no_valid_evidence")
 
+        points = raw_points.quantize(SCORE_QUANT, rounding=ROUND_HALF_UP)
         sections[section_id] = SectionResult(
             section_id=section_id,
             expected_items=expected,
@@ -143,9 +157,9 @@ def score_assessment(evidence: Sequence[AssessmentEvidence]) -> AssessmentScore:
             points=points,
             max_points=max_points,
         )
-        total += points
+        raw_total += raw_points
 
-    total = total.quantize(SCORE_QUANT, rounding=ROUND_HALF_UP)
+    total = raw_total.quantize(SCORE_QUANT, rounding=ROUND_HALF_UP)
     return AssessmentScore(
         total_points=total,
         sections=sections,
@@ -157,70 +171,35 @@ def score_assessment(evidence: Sequence[AssessmentEvidence]) -> AssessmentScore:
 def decide_initial_placement(
     score: AssessmentScore,
     *,
-    gate_config: L3GateConfig = L3GateConfig(),
-    gate_evidence: PlacementEvidence = PlacementEvidence(),
+    gate_config: L3GateConfig | None = None,
+    gate_evidence: PlacementEvidence | None = None,
 ) -> PlacementDecision:
-    """Apply approved placement rules without manufacturing missing L3 thresholds."""
+    """Apply the 2026-09-05 accepted 50/80 starting-level boundaries.
 
-    readiness = score.sections[1].points
+    ``gate_config`` and ``gate_evidence`` are accepted only so historical code
+    importing the old signature does not break. They deliberately do not change
+    the active decision.
+    """
 
-    if score.total_points < TOTAL_L1_THRESHOLD or readiness < READINESS_GATE_POINTS:
+    _ = (gate_config, gate_evidence)
+    status = "provisional" if score.provisional else "final"
+
+    if score.total_points < TOTAL_L1_THRESHOLD:
         return PlacementDecision(
             assigned_level=1,
-            status="provisional" if score.provisional else "final",
-            reason=(
-                "readiness_below_12_of_20"
-                if readiness < READINESS_GATE_POINTS
-                else "total_below_50"
-            ),
+            status=status,
+            reason="total_below_50",
         )
 
     if score.total_points < TOTAL_L3_THRESHOLD:
         return PlacementDecision(
             assigned_level=2,
-            status="provisional" if score.provisional else "final",
+            status=status,
             reason="total_between_50_and_79_99",
-        )
-
-    # The approved source requires word-reading and text-accuracy gates for L3,
-    # but does not define their numeric thresholds.  Missing configuration is a
-    # real project blocker, not permission to invent a value.
-    if (
-        gate_config.word_reading_min_accuracy is None
-        or gate_config.text_accuracy_min is None
-    ):
-        return PlacementDecision(
-            assigned_level=2,
-            status="provisional",
-            reason="l3_gate_thresholds_not_approved_or_configured",
-        )
-
-    if (
-        gate_evidence.word_reading_accuracy is None
-        or gate_evidence.text_accuracy is None
-    ):
-        return PlacementDecision(
-            assigned_level=2,
-            status="provisional",
-            reason="l3_gate_evidence_missing_or_neutral",
-        )
-
-    if gate_evidence.word_reading_accuracy < gate_config.word_reading_min_accuracy:
-        return PlacementDecision(
-            assigned_level=2,
-            status="provisional" if score.provisional else "final",
-            reason="word_reading_gate_not_met",
-        )
-
-    if gate_evidence.text_accuracy < gate_config.text_accuracy_min:
-        return PlacementDecision(
-            assigned_level=2,
-            status="provisional" if score.provisional else "final",
-            reason="text_accuracy_gate_not_met",
         )
 
     return PlacementDecision(
         assigned_level=3,
-        status="provisional" if score.provisional else "final",
-        reason="total_and_approved_l3_gates_met",
+        status=status,
+        reason="total_at_or_above_80",
     )

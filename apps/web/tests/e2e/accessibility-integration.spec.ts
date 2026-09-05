@@ -35,6 +35,7 @@ async function expectNoHorizontalOverflow(page: Page) {
 
 async function expectDashboardReady(page: Page) {
   await expect(page.getByRole("heading", { name: /مرحبًا،/ })).toBeVisible({ timeout: 10000 });
+  // The contract is the attention section itself, not one exact marketing/copy variant.
   await expect(page.getByRole("heading", { name: /ما الذي يحتاج انتباهك/ })).toBeVisible();
 }
 
@@ -132,6 +133,7 @@ test.describe("M06 responsive and accessibility integration", () => {
 
   test("200 percent zoom equivalent width remains usable", async ({ page, context, request }) => {
     await loginAsSupervisor(request, context);
+    // 1440px desktop at 200% browser zoom exposes roughly 720 CSS px of layout width.
     await page.setViewportSize({ width: 720, height: 900 });
     await page.goto("/admin");
     await expectDashboardReady(page);

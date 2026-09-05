@@ -37,10 +37,6 @@ def _upsert_notification(
         "created_at": datetime.now(timezone.utc),
         "read_at": None,
     }
-
-    # The dashboard and the notification bell can request the inbox at nearly
-    # the same time. PostgreSQL must arbitrate that race at the unique index,
-    # rather than relying on a query-then-insert window in application code.
     if db.bind is not None and db.bind.dialect.name == "postgresql":
         statement = (
             pg_insert(ResearcherNotification)
@@ -50,7 +46,6 @@ def _upsert_notification(
         db.execute(statement)
         return
 
-    # Test/development fallback for non-PostgreSQL engines.
     existing = db.query(ResearcherNotification).filter(
         ResearcherNotification.dedupe_key == dedupe_key,
     ).first()
@@ -60,10 +55,9 @@ def _upsert_notification(
 
 
 def _sync_actionable_notifications(db: Session) -> None:
-    """Materialize current action-required domain states into a durable inbox.
+    """Materialize current action-required states into a durable supervisor inbox.
 
-    Domain tables remain authoritative. The notification table only stores the
-    supervisor attention/read model and never drives academic decisions.
+    Domain tables remain authoritative. Notifications never drive academic state.
     """
     pending_audio = (
         db.query(AudioSubmission, AssessmentSession, Student)
@@ -89,10 +83,7 @@ def _sync_actionable_notifications(db: Session) -> None:
             entity_id=str(submission.id),
         )
 
-    # Flush conflict-safe inserts before evaluating stale unread rows so this
-    # same transaction sees the materialized attention state consistently.
     db.flush()
-
     stale_audio = db.query(ResearcherNotification).filter(
         ResearcherNotification.notification_type == "audio_review_required",
         ResearcherNotification.is_read.is_(False),

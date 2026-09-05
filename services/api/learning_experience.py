@@ -1,16 +1,18 @@
 """Authoritative student-facing learning view payload.
 
 This endpoint is the single read source for the learning screen. Academic scoring
-and adaptive execution remain owned by activities.py; this endpoint exposes only
-approved structured presentation data plus the exact options/media needed to
-render the current round. The client must never parse legacy prompt_text.
+and adaptive execution remain owned by the canonical activity runtime; this
+endpoint exposes only approved structured presentation data plus the exact
+options/media needed to render the current round. The client must never parse
+legacy prompt_text.
 """
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
 
-from activities import _activity_session_or_404, _step_state
+from activities import _activity_session_or_404
+from activity_runtime import effective_step_state
 from content_runtime import canonical_interaction, item_assets, media_gaps, step_assets
 from db.models import Attempt, ContentItem, ContentStep, Student
 from dependencies import get_current_student, get_db
@@ -63,7 +65,7 @@ def current_learning_experience(
         raise HTTPException(status_code=409, detail="تعذر تحميل بيانات عرض النشاط")
 
     steps = sorted(item.steps, key=lambda value: value.order_index)
-    step = next((value for value in steps if not _step_state(db, attempt, value)["done"]), None)
+    step = next((value for value in steps if not effective_step_state(db, attempt, value)["done"]), None)
     if step is None:
         return None
 
@@ -82,8 +84,10 @@ def current_learning_experience(
     if not round_data:
         raise HTTPException(status_code=409, detail="تعذر العثور على بيانات الجولة الحالية")
 
-    state = _step_state(db, attempt, step)
+    state = effective_step_state(db, attempt, step)
     interaction = canonical_interaction(item)
+    awaiting_audio_review = bool(state.get("awaiting_audio_review"))
+    audio_review_status = state.get("audio_review_status")
     return {
         "version": VERSION,
         "session_id": session.id,
@@ -93,9 +97,11 @@ def current_learning_experience(
         "kind": item.kind,
         "interaction_type": interaction,
         "round": round_data,
-        "retry": state["attempts_used"] > 0 and not state["done"],
+        "retry": state["attempts_used"] > 0 and not state["done"] and not awaiting_audio_review,
         "attempts_used": state["attempts_used"],
         "max_attempts": MAX_STEP_ATTEMPTS,
+        "audio_review_status": audio_review_status,
+        "awaiting_audio_review": awaiting_audio_review,
         "step": {
             "id": step.id,
             "order_index": step.order_index,

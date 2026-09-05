@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import StudentPage from "./page";
 
 const push = jest.fn();
@@ -62,7 +62,7 @@ describe("Student page", () => {
         current_level: 3,
         posttest_enabled: false,
         next_action: "learning",
-        active_session: { id: 33, session_type: "core" },
+        active_session: { id: 33, session_type: "core", status: "in_progress" },
       }))
       .mockResolvedValueOnce(response({
         available: true,
@@ -95,5 +95,41 @@ describe("Student page", () => {
     expect(screen.getByText("أنت هنا")).toBeInTheDocument();
     expect(screen.getByText("10 من 10 أنشطة أساسية")).toBeInTheDocument();
     expect(screen.getByText("4 من 10 أنشطة أساسية")).toBeInTheDocument();
+  });
+
+  it("shows pending audio review and never resumes the assessment", async () => {
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce(response({
+        id: 1,
+        full_name: "طالب تجريبي",
+        grade_level: 3,
+        current_level: 1,
+        posttest_enabled: false,
+        next_action: "resume",
+        active_session: { id: 77, session_type: "pretest", status: "waiting_audio_review" },
+      }))
+      .mockResolvedValueOnce(response({
+        pretest_completed: false,
+        starting_level: null,
+        current_level: 1,
+        levels: [],
+        learning_journey_completed: false,
+        posttest_enabled: false,
+        posttest_completed: false,
+        posttest_ready: false,
+      }))
+      .mockResolvedValueOnce(response([]));
+
+    render(<StudentPage />);
+
+    expect(await screen.findByRole("heading", { name: "بانتظار مراجعة التسجيلات" })).toBeInTheDocument();
+    expect(screen.getByText("بانتظار التقييم الصوتي")).toBeInTheDocument();
+    expect(screen.getByText("اكتملت الأسئلة، والمتبقي مراجعة التسجيلات فقط.")).toBeInTheDocument();
+    const action = screen.getByRole("button", { name: "تم إرسال التسجيلات للمراجعة" });
+    expect(action).toBeDisabled();
+    fireEvent.click(action);
+    expect(push).not.toHaveBeenCalled();
+    expect(global.fetch).toHaveBeenCalledTimes(3);
   });
 });

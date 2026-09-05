@@ -1,0 +1,13 @@
+title = "Himma Gitleaks configuration"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-api-key"
+
+[[rules.allowlists]]
+description = "Approved content catalog stable_key UUIDs are deterministic identifiers, not credentials"
+paths = [
+  '''^packages/content/src/catalog\.json$'''
+]

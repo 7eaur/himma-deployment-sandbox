@@ -1,155 +1,105 @@
 {
-  "schema_version": 4,
-  "plan_version": "HIMMA-FULL-MAINTENANCE-2026-08-31",
+  "schema_version": 7,
+  "plan_version": "HIMMA-FULL-MAINTENANCE-2026-09-05",
   "repository": "7eaur/himma-",
   "branch": "recovery/ui-media-admin-overhaul",
   "phase": "FULL_MAINTENANCE_AND_RELEASE_READINESS",
-  "slice": "M09_FULL_JOURNEY_UAT_NEXT",
-  "gate_status": "M09_INFRA_READINESS_GREEN_FULL_UAT_OPEN",
-  "last_verified": "2026-08-31",
-  "latest_verified_executable_head": "9f4389d83f751910daf605e1c37b4232b5b3ae93",
-  "continuity_handoff": "docs/ops/HIMMA_MASTER_CONTINUITY_HANDOFF_2026-08-31_AR.md",
-  "quality_gate": {
-    "number": 496,
-    "id": 33344517705,
-    "head_sha": "9f4389d83f751910daf605e1c37b4232b5b3ae93",
-    "backend": "SUCCESS",
-    "frontend": "SUCCESS",
-    "integration": "SUCCESS",
-    "playwright": "SUCCESS"
-  },
-  "responsive_visual_gate": {
-    "number": 95,
-    "id": 33344062713,
-    "head_sha": "a5545a1425cc99891972e2ec55b290198cb98034",
-    "status": "SUCCESS",
-    "viewports": ["360x800", "390x844", "768x1024", "1024x768", "1440x900"],
-    "note": "No UI files changed in the subsequent 9f4389d M09 backup/runbook commit."
-  },
-  "m09_release_readiness_gate": {
-    "number": 1,
-    "id": 33344517713,
-    "head_sha": "9f4389d83f751910daf605e1c37b4232b5b3ae93",
-    "status": "SUCCESS",
-    "checks": [
-      "TRIAL_FAILS_CLOSED_WITH_TEMP_AUDIO_SKIP",
-      "READY_POSTGRES_REDIS_MINIO",
-      "POSTGRES_BACKUP_RESTORE_VERIFIED",
-      "PRIVATE_OBJECT_STORE_BACKUP_RESTORE_VERIFIED",
-      "CI_BACKUPS_EPHEMERAL_NOT_UPLOADED"
-    ]
-  },
-  "stages": {
-    "M00": "CLOSED",
-    "M01": "CLOSED_BASELINE",
-    "M02": "CLOSED_BASELINE_REFINED_BY_R1",
-    "M03": "CLOSED_WITH_RUNTIME_GAP_CLOSURE",
-    "M04": "CLOSED_STUDENT_UI_AND_QX_BASELINE",
-    "M05": "CLOSED_SUPERVISOR_UX_BASELINE",
-    "M06": "CLOSED_RESPONSIVE_ACCESSIBILITY_BASELINE",
-    "M07": "CLOSED_REPORTING_BASELINE",
-    "M08": "PENDING_EXTERNAL_GATES",
-    "M09": "IN_PROGRESS_INFRA_GREEN_FULL_JOURNEY_UAT_NEXT"
-  },
-  "corrections": {
-    "R1": "EARLY_PROMOTION_POLICY_IMPLEMENTED_AND_TESTED",
-    "R2": "PROMOTION_SESSION_HANDOFF_FIXED",
-    "R3": "SUPERVISOR_AUTHORIZED_RETAKE_HISTORY_INDEXES_ALIGNED",
-    "R4": "RESPONSIVE_PRIMARY_STUDENT_CTA_REGRESSION_COVERAGE_ADDED"
-  },
-  "content": {
+  "slice": "PHASE_I_FINAL_SINGLE_CANDIDATE_CLOSURE",
+  "status": "AWAITING_USER_DECISION",
+  "last_verified": "2026-09-05",
+  "current_executable_candidate_before_docs": "976b7c2ed8b9c6f1535a22a0b3a94b2c233f75eb",
+  "continuity_handoff": "docs/ops/HIMMA_MASTER_CONTINUITY_HANDOFF_2026-09-05_AR.md",
+  "closure_report": "docs/ops/HIMMA_PHASE_F_I_CLOSURE_2026-09-05_AR.md",
+  "evidence_index": "docs/ops/EVIDENCE_INDEX.md",
+  "runtime": {
     "original_items": 105,
-    "skills": 44,
-    "reinforcement_original": 15,
-    "reinforcement_additions_total": 20,
-    "reinforcement_total": 35,
     "runtime_total": 125,
-    "residual_reinforcement_mapping_gaps": []
+    "pretest_total": 30,
+    "learning_total": 65,
+    "posttest_total": 30,
+    "reinforcement_total": 35,
+    "skills": 44,
+    "projection_contract": "structured_db_runtime_v1"
   },
-  "academic_contract": {
-    "placement_is_starting_level_only": true,
-    "pretest_weights": [20, 40, 40],
-    "readiness_force_L1_below": 12,
-    "activity_pass": ">=80",
-    "activity_guided_retry": "70..<80",
-    "activity_reinforcement": "<70",
-    "skill_mastery_weights_newest_to_oldest": [50, 30, 20],
-    "early_promotion_min_core_L1_L2": 6,
-    "early_promotion_mastery_threshold": 85,
+  "phases": {
+    "A": "CLOSED",
+    "B": "CLOSED",
+    "C": "CLOSED",
+    "D": "CLOSED",
+    "E": "CLOSED",
+    "F": "CLOSED",
+    "G": "CLOSED",
+    "H": "CLOSED_CONSERVATIVELY",
+    "I": "CLOSED_EXACT_SHA_GREEN"
+  },
+  "exact_sha_evidence": {
+    "sha": "976b7c2ed8b9c6f1535a22a0b3a94b2c233f75eb",
+    "quality_gate_run": 33979846641,
+    "m04_run": 33979846639,
+    "m09_run": 33979846640,
+    "all_success": true,
+    "backend_tests_passed": 755,
+    "backend_deprecation_warnings": 2
+  },
+  "placement": {
+    "contract": "ADR-014",
+    "level_1": "score < 50",
+    "level_2": "50 <= score < 80",
+    "level_3": "80 <= score <= 100",
+    "legacy_readiness_gate_active": false,
+    "extra_l3_numeric_gates_active": false
+  },
+  "adaptation": {
+    "activity_pass_threshold": 80,
+    "guided_retry_threshold": 70,
+    "early_promotion_min_core": 6,
+    "early_promotion_mastery": 85,
     "critical_skill_floor": 70,
-    "critical_skill_coverage_required": true,
-    "unresolved_reinforcement_blocks_promotion": true,
-    "promotion_step_levels": 1,
-    "level_3_requires_full_evidence_before_journey_completion": true,
-    "journey_ends_at_L3_before_posttest": true,
-    "automatic_demotion": "DISABLED_OPEN_POLICY_DECISION"
-  },
-  "reinforcement": {
-    "targeted_only": true,
-    "random_fallback": false,
-    "cross_level_fallback": false,
-    "source_core_verification_required": true,
-    "bounded_verification_default_rounds": 2,
-    "escalates_to_supervisor": true
-  },
-  "student_experience": {
-    "qx_closed": true,
-    "formal_assessment_per_item_feedback": false,
-    "contextual_learning_feedback": true,
-    "sound_effects_with_mute": true,
-    "reduced_motion": true,
-    "primary_touch_target_min_px": 44,
-    "responsive_gate_required_for_ui_changes": true
-  },
-  "media": {
-    "generated_sequence_assets": 10,
-    "generated_ids_range": "HIMMA-GEN-SEQ-001..010",
-    "visual_plan_generate_remaining": 0,
-    "browser_media_fidelity_covered": true
+    "automatic_demotion": false,
+    "level_3_completion_core": 10,
+    "evidence_weights_newest_first": [50, 30, 20]
   },
   "audio": {
-    "fixed_existing": 50,
-    "missing": ["موز", "سَا"],
-    "target": 52,
-    "temporary_skip_flag": "HIMMA_TEMP_AUDIO_SKIP",
-    "temporary_skip_neutral": true,
-    "trial_production_fail_closed_if_skip_enabled": true
+    "fixed_assets_status": "CLOSED",
+    "fixed_approved_assets": 54,
+    "wav_binaries": 54,
+    "mp3_binaries": 54,
+    "pending_review_status": "uploaded",
+    "valid_review_status": "graded",
+    "rerecord_status": "rerecord_required",
+    "supervisor_review_authoritative": true,
+    "active_student_audio_bypass": false
+  },
+  "security": {
+    "jwt_library": "joserfc==1.7.5",
+    "python_dependency_audit": "PASS_NO_KNOWN_VULNERABILITIES",
+    "frontend_dependency_audit": "PASS_NO_KNOWN_VULNERABILITIES_AT_HIGH_THRESHOLD",
+    "gitleaks_current_tree": "PASS",
+    "production_placeholder_guard": "PASS",
+    "fake_delay_guard": "PASS",
+    "disabled_skipped_test_guard": "PASS"
   },
   "asr": {
     "architecture": "Reference-Guided Arabic Reading Analysis",
-    "alignment_cdsi_scaffold": true,
-    "provider_connected_for_production": false,
-    "calibration_complete": false,
-    "privacy_retention_policy_complete": false,
-    "status": "M08_EXTERNAL_GATED"
+    "status": "FUTURE_PRODUCTION_GATE_NOT_REQUIRED_FOR_RECOVERY_CLOSURE",
+    "current_academic_authority": "SUPERVISOR_HUMAN_REVIEW"
   },
-  "reports": {
-    "persisted_pre_post": true,
-    "cohort": true,
-    "xlsx": true,
-    "pdf": true,
-    "audit_logging": true,
-    "per_skill_descriptive_evidence": true,
-    "per_skill_is_mastery_rule": false
-  },
-  "m09": {
-    "readiness_endpoint": true,
-    "trial_runtime_safety_guard": true,
-    "postgres_backup_restore_verified": true,
-    "object_store_backup_restore_verified": true,
-    "release_runbook": "docs/ops/M09_RELEASE_UAT_RUNBOOK.md",
-    "evidence": "docs/ops/M09_RELEASE_READINESS_EVIDENCE_2026-08-31.md",
-    "full_single_candidate_uat_complete": false,
-    "monitoring_support_release_closure_complete": false,
-    "privacy_retention_final_approval_complete": false
+  "verification_policy": {
+    "pass_requires_exact_sha_evidence": true,
+    "documentation_only_sha_may_be_distinguished_from_executable_candidate": true,
+    "no_merge_without_explicit_user_authorization": true,
+    "no_release_without_explicit_user_authorization": true,
+    "no_deploy_without_explicit_user_authorization": true
   },
   "open_work": [
-    "M09 full single-candidate journey UAT through pretest, learning/reinforcement, L3 completion, posttest, reports and exports",
-    "M09 monitoring/request correlation/support and final rollback/release checklist",
-    "M09 final privacy/data-retention approval for real study data",
-    "M08 real speech provider and calibration/privacy gates",
-    "Acquire approved exact static audio for موز and سَا",
-    "Final visual review after substantial UI/runtime changes"
+    "User decision on next integration/release step",
+    "OI-02 production ASR provider/module contract if P07 automatic analysis is pursued",
+    "OI-03 calibrated confidence threshold/version before automatic speech decisions",
+    "OI-04 intervention/session duration before study activation",
+    "OI-05 child-recording retention policy before real-child production data",
+    "OI-06 domain/hosting before deployment",
+    "OI-07 supervising organization details/logo before final report signoff",
+    "OI-08 credential rotation before production/deployment"
   ],
-  "next_step": "Inspect the current docs-only HEAD and Actions, then extend same-SHA UAT evidence only for the still-missing complete single-candidate journey. Do not redo already-green M09 readiness/backup work or accepted M00-M07 behavior."
+  "next_step": "Wait for explicit owner decision. Do not merge, release, or deploy automatically."
 }

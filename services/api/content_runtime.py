@@ -18,9 +18,6 @@ READ = {"read_aloud", "timed_read_aloud"}
 LISTEN = {"listen_choose_one", "listen_choose_image", "listen_choose_many"}
 ORDER = {"sequence", "memory_sequence", "path_sequence", "build_word"}
 
-# Compatibility labels for approved item-level context assets when a development
-# database has only the relational base seed and not the full DB runtime snapshot.
-# This is DB/runtime metadata only; no repository files are opened at request time.
 ITEM_ASSET_SEMANTIC_FALLBACKS = {
     ("PRE-Q24", "STY-01"): "نص الاختبار القبلي",
 }
@@ -55,7 +52,6 @@ def _db_runtime(item: ContentItem) -> dict[str, Any]:
 
 
 def catalog_item(item: ContentItem) -> dict[str, Any]:
-    """Historical/import source snapshot persisted in DB; never read from disk."""
     return dict(_db_runtime(item).get("source_item") or {})
 
 
@@ -67,7 +63,6 @@ def _runtime_round(item: ContentItem, step: ContentStep) -> dict[str, Any]:
 
 
 def round_data(item: ContentItem, step: ContentStep) -> dict[str, Any]:
-    """Compatibility view backed only by the persisted DB runtime snapshot."""
     runtime = _runtime_round(item, step)
     source = dict(runtime.get("source") or {})
     source["media"] = [
@@ -99,7 +94,6 @@ def _presentation(item: ContentItem, step: ContentStep) -> dict[str, Any]:
 
 
 def presentation_data(item: ContentItem, step: ContentStep) -> dict[str, Any]:
-    """Explicit student-facing display contract stored in PostgreSQL."""
     return _presentation(item, step)
 
 
@@ -118,7 +112,6 @@ def _fallback_instruction(interaction: str) -> str:
 
 
 def instruction_text(item: ContentItem, step: ContentStep) -> str:
-    """Return only an explicit DB presentation instruction; never parse prompt_text."""
     value = str(_presentation(item, step).get("instruction_text") or "").strip()
     return value or _fallback_instruction(canonical_interaction(item))
 
@@ -152,8 +145,6 @@ def step_assets(item: ContentItem, step: ContentStep) -> list[dict[str, Any]]:
             if value.get("asset_id") and value.get("asset_type")
         ]
 
-    # Defensive compatibility for a partially seeded development DB. This reads
-    # only relational DB links and never repository content files.
     result: list[dict[str, Any]] = []
     image_index = 0
     options = sorted(step.options, key=lambda value: value.order_index)

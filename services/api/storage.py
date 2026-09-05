@@ -78,8 +78,22 @@ def upload_audio(
     return key, file_size, digest
 
 
-def verify_audio(storage_key: str, expected_size: int, expected_mime: str) -> None:
-    """Verify client-submitted audio metadata against the private object store."""
+def verify_audio(
+    storage_key: str,
+    expected_size: int,
+    expected_mime: str | None = None,
+    *,
+    expected_content_type: str | None = None,
+) -> None:
+    """Verify client-submitted audio metadata against the private object store.
+
+    ``expected_mime`` is kept for existing callers; ``expected_content_type`` is
+    an explicit keyword alias for newer runtime code.
+    """
+    content_type = expected_content_type or expected_mime
+    if not content_type:
+        raise ValueError("Expected audio MIME type is required")
+
     try:
         response = s3_client.head_object(Bucket=S3_BUCKET_NAME, Key=storage_key)
     except ClientError as exc:
@@ -92,5 +106,5 @@ def verify_audio(storage_key: str, expected_size: int, expected_mime: str) -> No
 
     if response["ContentLength"] != expected_size:
         raise ValueError("Audio file size does not match the stored object")
-    if response.get("ContentType") != expected_mime:
+    if response.get("ContentType") != content_type:
         raise ValueError("Audio MIME type does not match the stored object")

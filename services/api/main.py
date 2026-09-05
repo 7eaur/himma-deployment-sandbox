@@ -1,17 +1,15 @@
 import os
-
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
-
 from auth import router as auth_router
 from protected import router as protected_router
 from assessment import router as assessment_router
+from assessment_completion import router as assessment_completion_router
 from assessment_view import router as assessment_view_router
 from assessment_retake import router as assessment_retake_router
-from temporary_audio_skip import router as temporary_audio_skip_router
 from review import router as review_router
 from recordings import router as recordings_router
-from activities_v4 import router as activities_router
+from activity_runtime import router as activities_router
 from learning_experience import router as learning_experience_router
 from adaptation import router as adaptation_router
 from adaptation_runtime import router as adaptation_runtime_router
@@ -24,9 +22,11 @@ from skill_reports import router as skill_reports_router
 from admin_notifications import router as admin_notifications_router
 from readiness import readiness_report
 from runtime_flags import validate_runtime_safety
-from db.sandbox_bootstrap import ensure_sandbox_runtime
 
 
+# Runtime configuration still fails closed for unsafe provider/test settings.
+# Student audio has no bypass path: submitted recordings are reviewed by the
+# supervisor until the approved automatic speech model is integrated.
 validate_runtime_safety()
 
 app = FastAPI(
@@ -34,12 +34,6 @@ app = FastAPI(
     description="API service for Himma Educational Platform",
     version="0.1.0",
 )
-
-
-@app.on_event("startup")
-def bootstrap_sandbox_runtime() -> None:
-    ensure_sandbox_runtime()
-
 
 _origins = os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(
@@ -50,11 +44,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Critical assessment/activity URLs each have one mounted owner; helper modules
+# may be reused as services but never decide behavior by router registration order.
 app.include_router(auth_router)
 app.include_router(protected_router)
 app.include_router(journey_router)
 app.include_router(assessment_retake_router)
-app.include_router(temporary_audio_skip_router)
+app.include_router(assessment_completion_router)
 app.include_router(assessment_router)
 app.include_router(assessment_view_router)
 app.include_router(learning_experience_router)

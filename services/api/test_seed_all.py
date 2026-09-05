@@ -15,7 +15,6 @@ def test_full_seed_creates_125_items_and_is_repeatable():
     assert first["v1_additions_created"] == 18
     assert first["v2_additions_created"] == 2
     assert first["additions_created"] == 20
-    assert first["pretest_experience_items"] == 30
 
     assert second["baseline_items"] == 105
     assert second["reinforcement_items"] == 35
@@ -23,8 +22,6 @@ def test_full_seed_creates_125_items_and_is_repeatable():
     assert second["v1_additions_created"] == 0
     assert second["v2_additions_created"] == 0
     assert second["additions_created"] == 0
-    assert second["pretest_experience_items"] == 30
-    assert second["pretest_experience_changes"] == 0
 
     db = SessionLocal()
     try:
@@ -32,12 +29,5 @@ def test_full_seed_creates_125_items_and_is_repeatable():
         assert db.query(ContentItem).filter(ContentItem.version == "HIMMA-CONTENT-1.0").count() == 105
         assert db.query(ContentItem).filter(ContentItem.version == "HIMMA-REINFORCEMENT-ADD-1.0").count() == 18
         assert db.query(ContentItem).filter(ContentItem.version == "HIMMA-REINFORCEMENT-ADD-2.0").count() == 2
-        pretest = db.query(ContentItem).filter(ContentItem.kind == "pretest_question").all()
-        assert len(pretest) == 30
-        assert all(
-            (item.template_data or {}).get("pretest_experience_version")
-            == "HIMMA-PRETEST-2026-09-01"
-            for item in pretest
-        )
     finally:
         db.close()

@@ -192,8 +192,6 @@ class ContentAssetResponse(BaseModel):
     option_id: Optional[int] = None
 
 
-# Legacy engine response retained for internal compatibility/tests. The student
-# web app no longer consumes this payload.
 class ContentStepResponse(BaseModel):
     id: int
     order_index: int
@@ -220,7 +218,6 @@ class ContentItemResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-# Clean student-view response. prompt_text/template_data are deliberately absent.
 class AssessmentStimulusResponse(BaseModel):
     kind: str = "none"
     text: Optional[str] = None

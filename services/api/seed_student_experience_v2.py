@@ -94,9 +94,6 @@ def _replace_onset_compare(db) -> None:
             second="صوتان مختلفان",
             answer=answer,
         )
-        # Remove the obsolete single-letter prompt links created by the older
-        # Student Experience contract. Approved pair audio is linked only from
-        # verified media; do not keep a wrong letter prompt merely to make audio play.
         for asset in list(step.assets):
             if asset.asset_type == "audio" and asset.usage_context == "prompt":
                 db.delete(asset)
@@ -138,8 +135,6 @@ def run_seed() -> int:
         _repair_post_q14(db)
         _mark_all_items(db)
         db.commit()
-        # CORE-09 and REIN-11 are intentionally not patched here. The later
-        # seed_l1_auditory_story_replacement overlay is their single authority.
         return 2
     except Exception:
         db.rollback()

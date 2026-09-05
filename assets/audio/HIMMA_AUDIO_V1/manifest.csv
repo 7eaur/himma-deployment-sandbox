@@ -3,7 +3,7 @@ B01,FB-01,feedback,أحسنت.,أحسنت.,FB-01.wav,FB-01.mp3,approved
 B01,FB-02,feedback,إجابة صحيحة.,إجابة صحيحة.,FB-02.wav,FB-02.mp3,approved
 B01,FB-03,feedback,حاول مرة أخرى.,حاول مرة أخرى.,FB-03.wav,FB-03.mp3,approved
 B01,FB-04,feedback,أكملت النشاط بنجاح.,أكملت النشاط بنجاح.,FB-04.wav,FB-04.mp3,approved
-B01,LET-01,letter-sound,م,مْ,LET-01.wav,LET-01.mp3,approved
+B01,LET-01,letter-sound,مَ,مَ,LET-01.wav,LET-01.mp3,approved
 B01,LET-02,letter-sound,ب,بْ,LET-02.wav,LET-02.mp3,approved
 B01,LET-03,letter-sound,س,سْ,LET-03.wav,LET-03.mp3,approved
 B01,LET-04,letter-sound,ق,قْ,LET-04.wav,LET-04.mp3,approved
@@ -21,6 +21,7 @@ B02,SYL-09,syllable,بَا,بَا,SYL-09.wav,SYL-09.mp3,approved
 B02,SYL-10,syllable,فِي,فِي,SYL-10.wav,SYL-10.mp3,approved
 B02,SYL-11,syllable,نُو,نُو,SYL-11.wav,SYL-11.mp3,approved
 B02,SYL-12,syllable,لِي,لِي,SYL-12.wav,SYL-12.mp3,approved
+B06,SYL-13,syllable,سَا,سَا,SYL-13.wav,SYL-13.mp3,approved
 B03,WRD-01,word,موزة,مَوْزَة,WRD-01.wav,WRD-01.mp3,approved
 B03,WRD-02,word,كتاب,كِتاب,WRD-02.wav,WRD-02.mp3,approved
 B03,WRD-03,word,باب,باب,WRD-03.wav,WRD-03.mp3,approved
@@ -49,3 +50,6 @@ B05,WRD-25,word,كِتَابًا,كِتَابًا,WRD-25.wav,WRD-25.mp3,approved
 B05,WRD-26,word,بَيْتٍ,بَيْتٍ,WRD-26.wav,WRD-26.mp3,approved
 B05,WRD-27,word,طِفْلٌ,طِفْلٌ,WRD-27.wav,WRD-27.mp3,approved
 B05,WRD-28,word,وَرْدَةً,وَرْدَةً,WRD-28.wav,WRD-28.mp3,approved
+B06,WRD-29,word,موز,موز,WRD-29.wav,WRD-29.mp3,approved
+B06,INS-01,auditory-story,قصة ليان في المزرعة,ذهبت ليان مع أبيها إلى المزرعة في الصباح. رأت أرنبًا أبيض قرب الشجرة، فأعطته جزرة. ثم ساعدت أباها في سقي النباتات. وقبل أن تعود إلى البيت، قطفت زهرة صفراء لأمها.,INS-01.wav,INS-01.mp3,approved
+B06,INS-02,auditory-story,قصة نادر في الشاطئ,ذهب نادر مع أخته إلى الشاطئ. بنيا قلعة من الرمل، ثم جمعا أصدافًا جميلة. وبعد اللعب جلسا تحت المظلة وشربا الماء، ثم عادا إلى البيت.,INS-02.wav,INS-02.mp3,approved

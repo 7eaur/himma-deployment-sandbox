@@ -28,7 +28,6 @@ def _insert_notification(dedupe_key: str = "test:notification:1") -> int:
 
 def test_notification_inbox_persists_unread_and_mark_read(researcher_client):
     notification_id = _insert_notification()
-
     response = researcher_client.get("/researcher/notifications")
     assert response.status_code == 200
     payload = response.json()
@@ -52,11 +51,9 @@ def test_notification_inbox_persists_unread_and_mark_read(researcher_client):
 def test_notification_read_all_is_idempotent(researcher_client):
     _insert_notification("test:notification:a")
     _insert_notification("test:notification:b")
-
     first = researcher_client.post("/researcher/notifications/read-all")
     assert first.status_code == 200
     assert first.json()["updated"] == 2
-
     second = researcher_client.post("/researcher/notifications/read-all")
     assert second.status_code == 200
     assert second.json()["updated"] == 0

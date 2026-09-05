@@ -113,7 +113,7 @@ def _transition_level_session(
     old_session.status = "completed"
     old_session.completed_at = old_session.completed_at or now
     old_session.updated_at = now
-    db.flush()  # release the partial unique active-session constraint
+    db.flush()
 
     active_target = (
         db.query(AssessmentSession)
@@ -189,12 +189,12 @@ def _existing_cycle_hold(db: Session, session: AssessmentSession) -> dict | None
 
 
 def prepare_next_for_student(db: Session, student: Student, session: AssessmentSession) -> dict:
-    """Evaluate the latest evidence and prepare the next safe learning action."""
+    """Evaluate only this active session and prepare the next safe learning action."""
     existing_hold = _existing_cycle_hold(db, session)
     if existing_hold is not None:
         return existing_hold
 
-    decision_payload = evaluate_student(db, student)
+    decision_payload = evaluate_student(db, student, session_id=session.id)
     if not decision_payload.get("ready"):
         return {
             "continue_learning": session.status == "in_progress",
@@ -233,9 +233,7 @@ def prepare_next_for_student(db: Session, student: Student, session: AssessmentS
             "transition_direction": "promotion",
         }
 
-    # Defensive handling for historical V3 demotion decisions: never mutate the
-    # current session/student level from them. Keep them auditable and force a
-    # same-level support/supervisor path instead of silently executing history.
+    # Historical V3 demotion decisions are audit-only and are never executed.
     if decision.action == "demote":
         return {
             "continue_learning": session.status == "in_progress",
@@ -254,8 +252,6 @@ def prepare_next_for_student(db: Session, student: Student, session: AssessmentS
             "level_transitioned": False,
         }
 
-    # A strong completed L3 flow ends the adaptive learning journey. Posttest
-    # availability is still controlled separately by supervisor/study policy.
     if (
         decision.previous_level == 3
         and decision.explanation.get("reason") == "top_level_mastery"
@@ -294,8 +290,6 @@ def prepare_next_for_student(db: Session, student: Student, session: AssessmentS
         reinforcement_attempt_id=reinforcement_attempt.id if reinforcement_attempt else attempt_id,
     )
 
-    # ADR-012 / M03: support with no approved mapping is a real safe hold. The
-    # supervisor chooses approved same-level content with a written reason.
     mapping_blocked = (
         decision.action == "support"
         and decision.recommended_item_id is None

@@ -1,0 +1,20 @@
+{
+  "version": "HIMMA-AUDIO-REQUIREMENTS-1.2",
+  "updated_at": "2026-09-04",
+  "policy": {
+    "substitution_allowed": false,
+    "placeholder_counts_as_approved": false,
+    "story_text_may_replace_audio_in_student_ui": false,
+    "one_asset_may_have_multiple_usages": true,
+    "student_audio_skip_allowed": false,
+    "speech_scoring_authority": "supervisor_review_until_model_integration"
+  },
+  "known_missing_required_assets": [],
+  "approved_assets": [
+    {"asset_id":"WRD-29","semantic_text":"موز","status":"approved","usages":[{"canonical_id":"L1-CORE-06","round":1}]},
+    {"asset_id":"SYL-13","semantic_text":"سَا","status":"approved","usages":[{"canonical_id":"L2-CORE-06","round":4},{"canonical_id":"L2-REIN-08","round":4}]},
+    {"asset_id":"INS-01","semantic_text":"قصة ليان في المزرعة","status":"approved","student_visible_text":false,"usages":[{"canonical_id":"L1-CORE-09","rounds":[1,2,3,4,5]}]},
+    {"asset_id":"INS-02","semantic_text":"قصة نادر في الشاطئ","status":"approved","student_visible_text":false,"usages":[{"canonical_id":"L1-REIN-11","rounds":[1,2,3,4,5]}]},
+    {"asset_id":"LET-01","semantic_text":"مَ","status":"approved_replacement","replaces_previous_semantic":"م","notes":"التسجيل المرفق لمقطع مَ هو الأصل المعتمد الجديد مع الحفاظ على المعرّف LET-01 لعدم كسر الاستدعاءات الحالية."}
+  ]
+}

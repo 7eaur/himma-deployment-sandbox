@@ -1,186 +1,148 @@
 # STATUS — Himma Platform
 
-**Last updated:** 2026-08-31  
+**Last updated:** 2026-09-05  
 **Repository:** `7eaur/himma-`  
-**Current branch:** `recovery/ui-media-admin-overhaul`  
-**Current program:** Full Maintenance / Recovery + R1→R4 corrections  
-**Current focus:** M09 full-journey UAT / release closure while M08 remains external-gated
+**Branch:** `recovery/ui-media-admin-overhaul`  
+**Program:** Full Maintenance / Recovery  
+**Current state:** `RECOVERY A–I CLOSED — READY_FOR_USER_DECISION`
 
-## Read this first
+## Final executable candidate
 
-Canonical continuity handoff:
+`976b7c2ed8b9c6f1535a22a0b3a94b2c233f75eb`
 
-`docs/ops/HIMMA_MASTER_CONTINUITY_HANDOFF_2026-08-31_AR.md`
+جميع بوابات الإغلاق المطلوبة نجحت على **هذا SHA نفسه**:
 
-The handoff is deliberately more detailed than this status file and must be read before continuing in a new conversation.
+- Himma CI — Quality Gate: run `33979846641` — **SUCCESS**.
+- Himma M04 — Responsive Visual Gate: run `33979846639` — **SUCCESS**.
+- Himma M09 — Release Readiness Gate: run `33979846640` — **SUCCESS**.
 
-## Latest verified executable baseline
+أي commits لاحقة لتحديث وثائق التشغيل هي docs-only ولا تستبدل مرشح التنفيذ المثبت أعلاه. إذا تغير الكود التنفيذي بعده، يجب اختيار SHA تنفيذي جديد وإعادة الإثبات على نفس SHA قبل إعلان PASS جديد.
 
-`9f4389d83f751910daf605e1c37b4232b5b3ae93`
+## Final quality evidence
 
-Commit:
+على المرشح النهائي:
 
-`feat(m09): add backup restore release gate`
+- Backend: **755 passed**؛ تحذيران deprecation من طبقة الاختبار فقط.
+- Approved content catalog: **PASS — 105 original items, 44 canonical skills, 0 explicit V1 media gaps**.
+- Alembic `upgrade -> downgrade -> upgrade`: SUCCESS.
+- Alembic model drift: لا توجد upgrade operations جديدة.
+- Seed idempotency: SUCCESS.
+- TypeScript: SUCCESS.
+- ESLint: SUCCESS.
+- Frontend unit tests: SUCCESS.
+- Next.js production build: SUCCESS.
+- PostgreSQL + Redis + pinned MinIO + FastAPI + Next.js integration: SUCCESS.
+- Playwright E2E: SUCCESS.
+- Python dependency audit: no known vulnerabilities.
+- npm audit عند مستوى high: no known vulnerabilities.
+- Gitleaks current-tree scan: SUCCESS.
+- Production placeholder/fake-delay guard: SUCCESS.
+- Disabled/skipped test guard: SUCCESS.
+- M09 live readiness + backup/restore PostgreSQL/Object Storage: SUCCESS.
 
-Evidence for this exact implementation SHA:
+## Phase status
 
-- Main Quality Gate #496 — run `33344517705`: backend ✅ frontend ✅ integration/Playwright ✅
-- M09 Release Readiness Gate #1 — run `33344517713`: ✅ SUCCESS
-- M09 evidence: `docs/ops/M09_RELEASE_READINESS_EVIDENCE_2026-08-31.md`
+- Phase A — Audio Review Vertical Slice Recovery: **CLOSED**.
+- Phase B — Runtime Bypass Closure Audit: **CLOSED**.
+- Phase C — Approved Audio Binary Contract: **CLOSED**.
+- Phase D — Deterministic Structured Projection: **CLOSED**.
+- Phase E — Runtime Readiness Hardening: **CLOSED**.
+- Phase F — Student Path Regression Closure: **CLOSED**.
+- Phase G — Supervisor Audio/Admin UX Closure: **CLOSED**.
+- Phase H — Proven-Dead Legacy Cleanup: **CLOSED CONSERVATIVELY**.
+- Phase I — Final Single-Candidate Closure: **CLOSED EXACT-SHA GREEN**.
 
-Relevant responsive evidence:
+تفاصيل إغلاق F–I:
 
-- Responsive Visual Gate #95 — run `33344062713` on `a5545a1425cc99891972e2ec55b290198cb98034`: ✅ SUCCESS
-- The following `9f4389d...` commit changes operational scripts/workflow/runbook only; no UI files changed.
+`docs/ops/HIMMA_PHASE_F_I_CLOSURE_2026-09-05_AR.md`
 
-Documentation-only commits after the verified executable SHA may move branch HEAD. Inspect the current HEAD and its Actions before starting new code.
+فهرس الأدلة:
 
-## Current runtime truth
+`docs/ops/EVIDENCE_INDEX.md`
 
-- Original approved catalog: 105 items.
-- Reinforcement additions: +20 total.
-- Runtime total: **125**.
-- Reinforcement total: **35**.
+## Active academic contract
+
+### Initial placement — ADR-014
+
+بعد اكتمال الاختبار القبلي:
+
+- أقل من 50% → المستوى الأول.
+- من 50% إلى أقل من 80% → المستوى الثاني.
+- من 80% إلى 100% → المستوى الثالث.
+
+بوابة readiness القديمة `12/20` والبوابات الرقمية الإضافية التجريبية لـL3 **ليست جزءًا من قرار التوزيع النشط**.
+
+### Learning/adaptation V4
+
+- Activity `>=80` → نجاح.
+- Activity `70..<80` → إعادة موجهة.
+- Activity `<70` → تقوية موجهة.
+- L1/L2 early promotion: >=6 Core + mastery >=85 + critical coverage + critical floor >=70 + no unresolved reinforcement/audio/supervisor blocker.
+- الترقية مستوى واحد فقط.
+- لا يوجد خفض تلقائي.
+- L3 لا يكتمل إلا بعد 10 Core، ولا يوجد L4.
+- أحدث ثلاثة أدلة Core صالحة من الجلسة النشطة فقط تدخل قرار mastery بأوزان 50/30/20.
+
+## Audio contract
+
+Static approved audio:
+
+- Approved IDs: **54**.
+- WAV: **54**.
+- MP3: **54**.
+- Required static audio gaps: **0**.
+
+Current student-reading authority:
+
+`record -> persist/upload -> supervisor review -> graded / rerecord_required -> continue`
+
+- `uploaded` = انتظار مراجعة، وليس نجاحًا أو درجة أو إتقانًا.
+- `rerecord_required` = إعادة فتح نفس موضع القراءة.
+- `graded` فقط يسمح باستكمال الدليل الأكاديمي.
+- لا يوجد learner audio bypass نشط.
+- ASR الحقيقي/التلقائي ما يزال مسارًا مستقبليًا مستقلًا ولا يملك سلطة أكاديمية حاليًا.
+
+Authoritative audio contract:
+
+`docs/maintenance/AUDIO_RUNTIME_AND_REVIEW_CONTRACT_2026-09-04_AR.md`
+
+## Architecture/runtime truth
+
+- Original approved content: 105 items.
+- Runtime total: 125.
+- Learning runtime: 65 items.
+- Reinforcement total: 35.
+- Pretest: 30.
+- Posttest: 30.
 - Skills: 44.
-- Original source semantics remain preserved.
+- Projection contract: `structured_db_runtime_v1`.
+- Runtime architecture: `approved_versioned_source -> deterministic_structured_projection -> postgres_runtime -> structured_api -> deterministic_renderer`.
+- Reports are descriptive read models and do not manufacture mastery evidence.
+- Seeds remain version-aware, idempotent and non-destructive.
 
-## Current academic/adaptive contract
+## Security hardening completed
 
-Placement:
+- Replaced vulnerable legacy `python-jose` dependency with maintained `joserfc==1.7.5`.
+- JWT signing/validation uses explicit HS256 allowlisting and expiry validation.
+- Tampered, malformed and non-allowlisted-algorithm tokens are regression tested.
+- CI now includes Python and Node dependency audits, Gitleaks, unfinished production marker guard, fake-delay guard and skipped-test guard.
+- Deterministic catalog `stable_key` UUIDs are the only narrow Gitleaks path/rule exception introduced for the known false-positive class.
 
-- 100 points = 20 readiness + 40 word building/reading + 40 fluency/comprehension.
-- readiness <12/20 forces L1.
-- total <50 → L1.
-- 50..<80 → L2 subject to reading gates.
-- L3 requires total/gates; do not invent an unresolved text-accuracy threshold.
+## Remaining external / production gates
 
-Learning activity bands:
+Recovery is closed, but production is not automatically authorized. `docs/ops/OPEN_ITEMS.md` remains authoritative for unresolved external items, especially:
 
-- >=80 PASS.
-- 70..<80 GUIDED_RETRY.
-- <70 WEAKNESS_EVENT / targeted reinforcement.
+- OI-02 / OI-03: production ASR provider and calibration before automatic speech decisions.
+- OI-04: intervention/session duration before study activation.
+- OI-05: child-recording retention policy — blocks real-child production data.
+- OI-06: domain/hosting — blocks deployment.
+- OI-07: supervising organization details/logo before final report signoff.
+- OI-08: rotate any real credentials that may have appeared historically — blocks production/deployment.
 
-Mastery evidence: newest three valid attempts only, weighted 50/30/20.
+OI-10 is **CLOSED**: approved `WRD-29`, `SYL-13`, `INS-01`, and `INS-02` are present in the active audio contract.
 
-### R1 current promotion policy
+## Decision boundary
 
-The current branch intentionally supports early promotion in L1/L2 when all current gates pass:
+No merge, release, or deployment has been performed.
 
-- minimum 6 completed Core activities;
-- mastery >=85;
-- critical-skill floor >=70;
-- required critical-skill coverage complete;
-- no unresolved reinforcement/review blockers;
-- promote by one level only.
-
-Automatic demotion remains disabled; repeated low evidence produces support on the same level.
-
-L3 still requires full evidence before journey completion/posttest readiness.
-
-This replaces older documentation that said all promotions must wait for 10/10 Core. Do not silently restore the old rule.
-
-## Reinforcement lifecycle
-
-Durable flow is implemented:
-
-`weakness → mapped reinforcement → reinforcement completion → reopen source core → verify failed source steps → verified/escalated → continue`.
-
-No random/cross-level reinforcement. Neutral media/audio skips are not failure evidence.
-
-## R2 active session transition
-
-`services/api/activities_v4.py` bridges `/activities/session/{id}/next` so early promotion cannot return an item bound to a just-closed session. The response’s active `session_id` is authoritative when a promotion creates a new level session.
-
-## R3 assessment retake history
-
-Supervisor-authorized pre/post retake history/index behavior is implemented on the current lineage. Recent commits scoped assessment uniqueness correctly while keeping Core sessions outside retake uniqueness, then aligned DB indexes with ORM. Regression coverage exists. Inspect migrations/models/tests before extending the behavior.
-
-## Student UX / QX
-
-Closed baseline:
-
-- child-clear non-generic instructions;
-- answers under the question;
-- contextual learning hints/success/error;
-- formal assessment neutral per item;
-- subtle student sound/reward effects with mute/reduced-motion;
-- no permanent side mascot rail;
-- responsive touch targets;
-- source-grounded option repairs;
-- browser E2E question-experience coverage.
-
-QX historical closure SHA: `d6bab135e46ed93de3ac98236c5aa78e804c27ab`.
-
-## Educational media
-
-- Ten generated sequence scenes are checked in and wired.
-- IDs: `HIMMA-GEN-SEQ-001..010`.
-- Visual plan `generate` list is empty.
-- Browser fidelity coverage requests assets through the real media route.
-
-## Audio / M08
-
-Static audio:
-
-- existing: 50;
-- missing: `موز`, `سَا`;
-- target: 52.
-
-`HIMMA_TEMP_AUDIO_SKIP` is testing-only and academically neutral. Trial/production startup now fails closed if that bypass is enabled.
-
-Target architecture: Reference-Guided Arabic Reading Analysis = ASR + reference alignment + C/D/I/S + phonemic helper evidence.
-
-M08 remains **PENDING / EXTERNAL-GATED** because provider, calibration, privacy/retention, and production policy are not complete. Do not claim production speech analysis complete.
-
-## Reports / M07
-
-Implemented:
-
-- persisted pre/post summaries and improvement metrics;
-- level/time/attempt/reinforcement summaries;
-- cohort reports;
-- XLSX/PDF exports + audit logging;
-- per-skill descriptive summary from persisted graded evidence;
-- supervisor UI wiring.
-
-Per-skill reporting remains descriptive and must not silently become a mastery/adaptation rule.
-
-## M09 Release / UAT
-
-Closed internal infrastructure slices:
-
-- `/health` retained as liveness and `/ready` added for critical configuration + PostgreSQL + Redis + private S3/MinIO readiness;
-- sanitized readiness output without raw dependency exceptions/secrets;
-- trial/production fail-closed guard for temporary audio bypass and short API secret;
-- executable PostgreSQL backup/restore + integrity/count verification;
-- executable private object-store backup/isolated restore + SHA-256 verification;
-- dedicated `Himma M09 — Release Readiness Gate` green on run `33344517713`;
-- release/UAT runbook added at `docs/ops/M09_RELEASE_UAT_RUNBOOK.md`.
-
-M09 is **not closed**. Remaining internal work centers on a complete single-candidate UAT journey, monitoring/request correlation/support readiness, final privacy/retention approval, rollback/release checklist, and final acceptance evidence.
-
-## Stage status
-
-- M00 Restore Green — CLOSED.
-- M01 Placement — CLOSED baseline.
-- M02 Adaptation state machine — CLOSED baseline, later refined by R1.
-- M03 Reinforcement — CLOSED baseline + gap closure.
-- M04 Student Product UI — CLOSED baseline + QX corrections.
-- M05 Supervisor Product UX — CLOSED baseline.
-- M06 Responsive/Accessibility/Design QA — CLOSED baseline.
-- M07 Research Reports — IMPLEMENTED/CLOSED baseline.
-- M08 Real Speech Analysis — PENDING / EXTERNAL-GATED.
-- M09 Release/UAT — IN PROGRESS; infrastructure readiness/backup slice GREEN, full-journey UAT NEXT.
-
-## Next action
-
-1. Inspect current branch HEAD and Actions after any documentation-only commit.
-2. Continue M09 with the first still-unproven internal requirement: full single-candidate journey UAT from supervisor/student setup through pretest, learning/reinforcement/level transitions, L3 completion, posttest, reports and exports.
-3. Do not duplicate scenarios already proved by the same-SHA Quality Gate; extend coverage only where the end-to-end transition is missing.
-4. Keep M08 separate until external provider/calibration/privacy decisions are available.
-5. Acquire/add only the exact missing static audio `موز` and `سَا` from an approved source; do not fake/substitute them.
-6. Run final visual review after substantial UI/runtime changes.
-
-## Governance reminder
-
-Do not modify accepted base branches directly, do not force/reset destructively, do not declare PASS without exact SHA/run evidence, and do not launch/merge production without explicit user approval.
+The next action requires explicit owner authorization. Until then, preserve `976b7c2ed8b9c6f1535a22a0b3a94b2c233f75eb` as the final executable Recovery evidence candidate.

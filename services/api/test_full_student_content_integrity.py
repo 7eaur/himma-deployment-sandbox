@@ -25,7 +25,6 @@ SERIALIZED_MARKERS = ("الخيارات:", "الصور:", "طريقة الإجا
 
 
 def _display_key(value: str) -> str:
-    """Normalize only invisible formatting; preserve pedagogical distinctions."""
     value = unicodedata.normalize("NFKC", value or "")
     return re.sub(r"\s+", " ", value).strip()
 
@@ -44,12 +43,7 @@ def test_complete_student_runtime_has_no_presentation_or_choice_overlap():
     errors: list[str] = []
     try:
         items = db.query(ContentItem).order_by(ContentItem.kind, ContentItem.level_id, ContentItem.order_index).all()
-        counts = {
-            "pretest_question": 0,
-            "posttest_question": 0,
-            "core_activity": 0,
-            "reinforcement_activity": 0,
-        }
+        counts = {"pretest_question": 0, "posttest_question": 0, "core_activity": 0, "reinforcement_activity": 0}
         order_groups: dict[tuple[str, int], list[int]] = {}
 
         for item in items:

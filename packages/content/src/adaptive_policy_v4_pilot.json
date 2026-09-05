@@ -1,8 +1,24 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "policy_version": "HIMMA_ADAPTIVE_V4_PILOT",
   "status": "pilot_configuration",
-  "note": "This is an operational pilot configuration derived from the approved Himma level objectives and the 2026-08-31 trial-readiness decision. It is not represented as an external diagnostic standard and must be calibrated after pilot evidence.",
+  "note": "Operational policy reconciled with the latest accepted Himma continuity decision on 2026-09-05. Initial placement and continuous adaptation are deliberately separate. This is a trial policy, not an external diagnostic standard.",
+  "initial_placement": {
+    "score_basis": "pretest_total_points_0_to_100",
+    "level_1": {
+      "min_inclusive": 0,
+      "max_exclusive": 50
+    },
+    "level_2": {
+      "min_inclusive": 50,
+      "max_exclusive": 80
+    },
+    "level_3": {
+      "min_inclusive": 80,
+      "max_inclusive": 100
+    },
+    "additional_l3_numeric_gate": false
+  },
   "activity_thresholds": {
     "pass_min": 80,
     "guided_retry_min": 70,
@@ -17,8 +33,10 @@
     "minimum_valid_core_activities": 6,
     "minimum_mastery": 85,
     "critical_skill_floor": 70,
+    "requires_full_critical_skill_coverage": true,
     "requires_no_unresolved_reinforcement": true,
-    "requires_no_supervisor_review": true
+    "requires_no_supervisor_review": true,
+    "maximum_level_jump": 1
   },
   "critical_skill_codes_by_level": {
     "1": [
@@ -46,18 +64,18 @@
   "level_three": {
     "early_promotion": false,
     "core_completion_required": 10,
-    "pretest_gate": {
-      "total_min": 80,
-      "word_reading_accuracy_min_when_trustworthy": 80,
-      "connected_text_accuracy_min_when_trustworthy": 85,
-      "comprehension_min": 70,
-      "critical_reading_skill_floor": 70,
-      "untrusted_audio_state": "L3_GATE_UNVERIFIED"
-    }
+    "no_level_four": true
   },
   "automatic_demotion": false,
   "reinforcement": {
     "random_fallback": false,
+    "cross_level_fallback": false,
     "maximum_intervention_verification_rounds_before_supervisor_review": 2
+  },
+  "evidence": {
+    "unresolved_audio_is_neutral": true,
+    "invalid_or_incomplete_attempt_is_neutral": true,
+    "media_gap_is_neutral": true,
+    "historical_session_evidence_must_not_drive_current_session_progression": true
   }
 }

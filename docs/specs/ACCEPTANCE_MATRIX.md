@@ -4,19 +4,19 @@
 |---|---|---:|---|
 | AC-01 | RTL متجاوب دون كسر على الهاتف والكمبيوتر | 1/6 | E2E + screenshots + a11y smoke |
 | AC-02 | إنشاء 15 طالبًا برموز مستقلة وآمنة | 1 | integration + authorization tests |
-| AC-03 | قبلي 30 سؤالًا وتوزيع صحيح بالحدود والبوابات | 2 | seeded E2E + boundary unit tests |
-| AC-04 | 10 أساسية و5 تقوية لكل مستوى من المحتوى المعتمد | 2 | schema/seed audit + UI sample per template |
+| AC-03 | قبلي 30 سؤالًا وتوزيع بداية صحيح بالحدود: `<50` مستوى 1، `50..<80` مستوى 2، `>=80` مستوى 3، دون بوابات تجريبية إضافية | 2 | seeded E2E + exact boundary unit tests |
+| AC-04 | لكل مستوى 10 أنشطة Core مع تقوية شرطية من محتوى معتمد في المستوى نفسه؛ الأساس الأكاديمي يحتوي 5 تقويات لكل مستوى وقد تتوسع مجموعة التقوية فقط بإضافات معتمدة ومُصدرة دون تغيير عقد 10 Core | 2/3 | schema/seed audit + mapping tests + UI sample per template |
 | AC-05 | مهمة واحدة مع حفظ المحاولات والزمن والتلميحات | 2 | integration + E2E recovery |
-| AC-06 | التسجيل يُحفظ ويرتبط بالمحاولة ويحلل عند الصلاحية | 2/4 | real adapter integration + E2E |
-| AC-07 | نتيجة موثوقة أو «تحتاج مراجعة» دون تضليل | 2/4 | confidence boundary tests + review flow |
-| AC-08 | الترقية/الثبات/الدعم/الخفض وفق القواعد | 3 | exhaustive boundary/property tests |
-| AC-09 | سجل انتقال وتجاوز يدوي بسبب وتاريخ | 3 | audit integration + admin E2E |
-| AC-10 | بعدي 30 سؤالًا ومؤشرات تحسن صحيحة | 5 | math tests + full E2E |
+| AC-06 | تسجيل قراءة الطفل يُحفظ ويرتبط بالمحاولة ويخضع للمراجعة البشرية الحالية؛ التحليل الآلي لا يصبح سلطويًا إلا بعد اعتماد مستقل | 2/4 | storage + manual-review integration + E2E |
+| AC-07 | نتيجة موثوقة أو حالة انتظار/إعادة تسجيل دون تضليل أو تحويل الدليل غير المحسوم إلى خطأ أكاديمي | 2/4 | audio state boundary tests + review flow |
+| AC-08 | التكيف المستمر يطبق V4: نشاط `>=80` نجاح، `70..<80` إعادة موجهة، `<70` تقوية؛ آخر 3 أدلة صالحة `50/30/20`؛ ترقية L1/L2 عند 6 Core على الأقل + mastery `>=85` + تغطية حرجة وحد أدنى `>=70` + لا تقوية/مراجعة معلقة؛ لا خفض تلقائي | 3 | exhaustive boundary/property/session-isolation tests |
+| AC-09 | أي تجاوز يدوي يحتاج سببًا ويحفظ التاريخ؛ يمنع تغيير مستوى غير آمن أثناء اختبار نشط أو صوت/تقوية معلقة، ولا يعيد فتح التعلم بعد بعدي نهائي معتمد | 3 | audit integration + admin edge-case tests |
+| AC-10 | L3 لا ينشئ L4 ويكتمل بعد 10 Core؛ البعدي 30 سؤالًا لا يصبح جاهزًا إلا بعد اكتمال الرحلة وتفعيل المشرف، ومؤشرات التحسن صحيحة | 3/5 | journey state tests + math tests + full E2E |
 | AC-11 | اللوحة تعرض البيانات والتسجيلات والأخطاء والزمن | 5 | seeded dashboard E2E + authorization |
 | AC-12 | Excel وPDF يطابقان مصدر بيانات اللوحة جوهريًا | 5 | golden export tests |
-| AC-13 | الصوت الفاشل/المنخفض لا يؤثر في الدرجة أو التكيف | 2/4 | domain + queue failure tests |
-| AC-14 | الاستئناف بعد الانقطاع دون ازدواج | 2/6 | idempotency + offline/retry E2E |
+| AC-13 | الصوت الفاشل/غير المحسوم/المنخفض لا يؤثر في الدرجة أو التكيف | 2/4 | domain + review/retry failure tests |
+| AC-14 | الاستئناف بعد الانقطاع دون ازدواج ودون تسرب أدلة جلسة تاريخية إلى قرار الجلسة النشطة | 2/3/6 | idempotency + session-isolation + offline/retry E2E |
 | AC-15 | تشغيل النطاق والدليل والنسخ الاحتياطي الأساسي | 6 | deployment smoke + restore drill |
+| AC-16 | بوابة الجودة تشمل تدقيق تبعيات Python/Node، فحص أسرار للشجرة الحالية، وفحص TODO/FIXME/mock/demo/fake delays/skipped tests في المسارات التنفيذية | 6 | CI security job + independent acceptance review |
 
 أي إعفاء يحتاج قرارًا مكتوبًا، سببًا، أثرًا، وموعد إغلاق. لا يكفي أن يكتب الوكيل «تم».
-

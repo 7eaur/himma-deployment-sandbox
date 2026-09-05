@@ -10,31 +10,23 @@ from db.models import User, Student
 
 
 def seed():
-    """Seed the initial researcher and optional synthetic demo students.
+    """Seed the initial researcher and optional synthetic sample students.
 
     IMPORTANT: Tables must already exist via `alembic upgrade head`.
     This script does NOT call Base.metadata.create_all().
     """
     db = SessionLocal()
 
-    admin_username = os.getenv("ADMIN_USERNAME", "admin").strip()
-    admin_password = (os.getenv("ADMIN_PASSWORD") or "").strip()
+    admin_username = os.getenv("ADMIN_USERNAME", "admin")
+    admin_password = os.getenv("ADMIN_PASSWORD")
     if not admin_password:
         raise RuntimeError(
             "ADMIN_PASSWORD environment variable is required for seeding. "
             "Do not commit a default password."
         )
-
-    admin_user = db.query(User).filter(User.username == admin_username).first()
-    if not admin_user:
+    if not db.query(User).filter(User.username == admin_username).first():
         hashed = bcrypt.hashpw(admin_password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
         db.add(User(username=admin_username, password_hash=hashed, role="researcher"))
-    elif os.getenv("ENV", "").strip().lower() == "sandbox":
-        admin_user.password_hash = bcrypt.hashpw(
-            admin_password.encode("utf-8"), bcrypt.gensalt()
-        ).decode("utf-8")
-        admin_user.is_active = True
-        admin_user.role = "researcher"
 
     if os.getenv("SEED_DEMO_STUDENTS", "false").lower() == "true":
         for i in range(1, 16):
