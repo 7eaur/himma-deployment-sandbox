@@ -76,5 +76,7 @@ def health_check():
 def readiness_check(response: Response):
     report = readiness_report()
     if report["status"] != "ready":
+        if os.environ.get("ENV", "").strip().lower() == "sandbox":
+            print(f"Sandbox readiness diagnostics: {report['checks']}", flush=True)
         response.status_code = 503
     return report
