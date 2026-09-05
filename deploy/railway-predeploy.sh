@@ -22,6 +22,9 @@ if [[ "${STUDENT_QA_MODE:-}" == "smoke" || "${STUDENT_QA_MODE:-}" == "deep" ]]; 
 elif [[ "${STUDENT_QA_MODE:-}" == "full" ]]; then
   printf '%s\n' '[himma-sandbox] running isolated full student E2E...'
   PYTHONPATH=/app/services/api python /app/deploy/student_full_e2e.py
+elif [[ "${STUDENT_QA_MODE:-}" == "placement" ]]; then
+  printf '%s\n' '[himma-sandbox] running isolated L1/L2 placement E2E...'
+  PYTHONPATH=/app/services/api:/app/deploy python /app/deploy/student_placement_e2e.py
 fi
 
 printf '%s\n' '[himma-sandbox] pre-deploy database preparation complete.'
