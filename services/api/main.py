@@ -113,10 +113,6 @@ def _sandbox_content_diagnostics() -> None:
                     or ((item.template_data or {}).get("posttest_experience") or {}).get("version") != "HIMMA-POSTTEST-2026-09-01"
                     for item in posttest
                 ),
-                "learning_round_mismatch": sum(
-                    len(((item.template_data or {}).get("learning_experience") or {}).get("rounds") or []) != len(item.steps)
-                    for item in learning
-                ),
             }
             print(f"Sandbox content diagnostics: {diagnostics}", flush=True)
         finally:
