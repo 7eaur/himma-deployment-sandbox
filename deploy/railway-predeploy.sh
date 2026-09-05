@@ -1,60 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Optional one-time migration/audit hooks used while moving the sandbox from
-# external Supabase services to Railway-managed resources. Audit modes are
-# read-only. Migration helpers never delete source data and verify the target
-# before reporting success. Leave both mode variables empty during normal
-# deployments.
-if [[ -n "${MIGRATION_MODE:-}" ]]; then
-  case "${MIGRATION_MODE}" in
-    audit|migrate)
-      printf '%s\n' "[himma-sandbox] database ${MIGRATION_MODE} step..."
-      python /app/deploy/migrate_supabase_to_railway.py
-      ;;
-    *)
-      printf '%s\n' "[himma-sandbox] unsupported MIGRATION_MODE=${MIGRATION_MODE}" >&2
-      exit 2
-      ;;
-  esac
-fi
-
-if [[ -n "${STORAGE_MIGRATION_MODE:-}" ]]; then
-  case "${STORAGE_MIGRATION_MODE}" in
-    audit|migrate)
-      printf '%s\n' "[himma-sandbox] storage ${STORAGE_MIGRATION_MODE} step..."
-      python /app/deploy/migrate_storage_to_railway.py
-      ;;
-    *)
-      printf '%s\n' "[himma-sandbox] unsupported STORAGE_MIGRATION_MODE=${STORAGE_MIGRATION_MODE}" >&2
-      exit 2
-      ;;
-  esac
-fi
-
-if [[ -n "${BUCKET_CORS_MODE:-}" ]]; then
-  case "${BUCKET_CORS_MODE}" in
-    apply)
-      printf '%s\n' '[himma-sandbox] applying Railway bucket CORS...'
-      python /app/deploy/configure_railway_bucket_cors.py
-      ;;
-    *)
-      printf '%s\n' "[himma-sandbox] unsupported BUCKET_CORS_MODE=${BUCKET_CORS_MODE}" >&2
-      exit 2
-      ;;
-  esac
-fi
-
-# Maintenance mode is used only while migrating the sandbox infrastructure.
-# After any requested migration/audit hook completes, it deliberately skips
-# the normal schema/content seed so diagnostic/copy runs finish quickly while
-# the currently healthy deployment remains live.
-if [[ "${DEPLOYMENT_MAINTENANCE_MODE:-false}" == "true" ]]; then
-  printf '%s\n' '[himma-sandbox] maintenance pre-deploy: normal seed skipped.'
-  exit 0
-fi
-
-# Sandbox deployment preparation: keep schema and approved runtime projection aligned.
+# Railway is the only active relational database/runtime storage backend for
+# this sandbox. Deployment preparation is intentionally limited to schema and
+# approved runtime-content projection; legacy cross-provider migration hooks
+# are not part of normal runtime anymore.
 cd /app/services/api
 
 printf '%s\n' '[himma-sandbox] applying Alembic migrations...'
