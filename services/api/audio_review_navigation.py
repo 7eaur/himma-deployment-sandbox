@@ -29,7 +29,7 @@ from activities_v4 import _next_unused_core_item, _resolve_active_session
 from adaptation import evaluate_student
 from adaptation_runtime import prepare_next_for_student
 from audio_review_policy import PENDING_REVIEW_STATUSES, has_unresolved_audio, review_summary
-from db.models import Attempt, AttemptResponse, AudioSubmission, ContentItem, ContentStep, Student
+from db.models import Attempt, AttemptResponse, AudioSubmission, AuditLog, ContentItem, ContentStep, Student
 from dependencies import get_current_student, get_db
 
 router = APIRouter(tags=["Activities asynchronous audio review"])
@@ -53,6 +53,15 @@ def _latest_audio(db: Session, attempt: Attempt, step: ContentStep) -> tuple[Att
     return response, audio
 
 
+def _rerecord_explicitly_opened(db: Session, submission_id: int) -> bool:
+    return db.query(AuditLog.id).filter(
+        AuditLog.actor_role == "student",
+        AuditLog.action == "student.audio.rerecord.begin",
+        AuditLog.entity_type == "AudioSubmission",
+        AuditLog.entity_id == str(submission_id),
+    ).first() is not None
+
+
 def _navigation_step_state(db: Session, attempt: Attempt, step: ContentStep) -> dict[str, Any]:
     response, audio = _latest_audio(db, attempt, step)
     if audio is None:
@@ -65,20 +74,20 @@ def _navigation_step_state(db: Session, attempt: Attempt, step: ContentStep) -> 
         "audio_review_status": audio.status,
         "awaiting_audio_review": False,
         "rerecord_required": False,
+        "rerecord_opened": False,
     }
     if audio.status in PENDING_REVIEW_STATUSES:
         # The learner has done their part. Keep the evidence neutral, but do not
         # make them sit on this screen while the supervisor reviews it.
         return {**base, "done": True, "last_correct": None, "awaiting_audio_review": True}
     if audio.status == "rerecord_required":
-        # Reviewer requests live on the dashboard. The attempt is reopened only
-        # when the learner explicitly chooses "إعادة التسجيل" there.
-        explicitly_opened = attempt.status == "in_progress"
+        opened = _rerecord_explicitly_opened(db, audio.id)
         return {
             **base,
-            "done": not explicitly_opened,
+            "done": not opened,
             "last_correct": None,
             "rerecord_required": True,
+            "rerecord_opened": opened,
         }
     if audio.status == "graded":
         return {**base, "done": True, "last_correct": response.is_correct if response else None}
@@ -89,7 +98,7 @@ def _navigation_step_payload(db: Session, item: ContentItem, attempt: Attempt, s
     payload = stage2_step_payload(db, item, attempt, step)
     state = _navigation_step_state(db, attempt, step)
     payload["attempts_used"] = state["attempts_used"]
-    payload["retry"] = bool(state.get("rerecord_required") and attempt.status == "in_progress")
+    payload["retry"] = bool(state.get("rerecord_required") and state.get("rerecord_opened"))
     payload["hint_available"] = payload["retry"]
     payload["audio_review_status"] = state.get("audio_review_status")
     payload["awaiting_audio_review"] = bool(state.get("awaiting_audio_review"))
