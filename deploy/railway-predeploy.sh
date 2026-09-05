@@ -1,10 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Maintenance mode is used only while migrating the sandbox infrastructure.
+# It deliberately skips the normal schema/content seed so a diagnostic or copy
+# run can start quickly while the currently healthy deployment remains live.
+if [[ "${DEPLOYMENT_MAINTENANCE_MODE:-false}" == "true" ]]; then
+  printf '%s\n' '[himma-sandbox] maintenance pre-deploy: normal seed skipped.'
+  exit 0
+fi
+
 # Optional one-time migration/audit hooks used while moving the sandbox from
-# external Supabase services to Railway-managed resources.  Audit modes are
-# read-only.  Migration helpers never delete source data and verify the target
-# before reporting success.  Leave both mode variables empty during normal
+# external Supabase services to Railway-managed resources. Audit modes are
+# read-only. Migration helpers never delete source data and verify the target
+# before reporting success. Leave both mode variables empty during normal
 # deployments.
 if [[ -n "${MIGRATION_MODE:-}" ]]; then
   case "${MIGRATION_MODE}" in
@@ -20,7 +28,7 @@ if [[ -n "${MIGRATION_MODE:-}" ]]; then
 fi
 
 if [[ -n "${STORAGE_MIGRATION_MODE:-}" ]]; then
-  case "${STORAGE_MIGRATION_MODE}" in
+  case "${STORAGE_MIGRATION_MODE" in
     audit|migrate)
       printf '%s\n' "[himma-sandbox] storage ${STORAGE_MIGRATION_MODE} step..."
       python /app/deploy/migrate_storage_to_railway.py
