@@ -84,7 +84,7 @@ def _researcher_login(client):
 
 
 class TestLearningAudioRuntime:
-    def test_uploaded_audio_stays_pending_until_supervisor_grade(self, client, monkeypatch):
+    def test_uploaded_audio_stays_pending_but_navigation_continues(self, client, monkeypatch):
         _student_login(client)
         student_id, session_id, item_id, step_id, attempt_id = _create_audio_attempt(client)
         monkeypatch.setattr(activity_runtime.storage, "verify_audio", lambda *args, **kwargs: None)
@@ -97,31 +97,38 @@ class TestLearningAudioRuntime:
         assert submitted.status_code == 200, submitted.text
         assert submitted.json()["awaiting_review"] is True
         assert submitted.json()["is_correct"] is None
-        assert submitted.json()["activity_complete"] is False
 
         db = SessionLocal()
-        attempt = db.query(Attempt).filter(Attempt.id == attempt_id).one()
         response = db.query(AttemptResponse).filter(
             AttemptResponse.attempt_id == attempt_id,
             AttemptResponse.step_id == step_id,
         ).one()
         audio = db.query(AudioSubmission).filter(AudioSubmission.response_id == response.id).one()
-        assert attempt.status == "in_progress"
+        submission_id = audio.id
         assert response.is_correct is None
         assert audio.status == "uploaded"
-        submission_id = audio.id
         db.close()
 
+        # The submitted recording remains unresolved, but the learner is allowed
+        # to leave that reading round and continue their remaining learning work.
         current = client.get(f"/activities/session/{session_id}/next")
         assert current.status_code == 200, current.text
-        assert current.json()["item"]["id"] == item_id
-        assert current.json()["awaiting_audio_review"] is True
-        assert current.json()["audio_review_status"] == "uploaded"
+        current_payload = current.json()
+        assert current_payload is None or not (
+            current_payload["item"]["id"] == item_id
+            and current_payload["step"]["id"] == step_id
+        )
 
-        learning_view = client.get(f"/learning-experience/session/{session_id}")
-        assert learning_view.status_code == 200, learning_view.text
-        assert learning_view.json()["awaiting_audio_review"] is True
-        assert learning_view.json()["audio_review_status"] == "uploaded"
+        status = client.get("/activities/status")
+        assert status.status_code == 200, status.text
+        assert status.json()["audio_review_pending"] is True
+        assert status.json()["pending_count"] >= 1
+
+        dashboard_tasks = client.get("/review/student-audio")
+        assert dashboard_tasks.status_code == 200, dashboard_tasks.text
+        task = next(row for row in dashboard_tasks.json() if row["id"] == submission_id)
+        assert task["status"] == "uploaded"
+        assert task["can_rerecord"] is False
 
         _researcher_login(client)
         graded = client.post(
@@ -137,24 +144,20 @@ class TestLearningAudioRuntime:
         assert graded.status_code == 200, graded.text
 
         _student_login(client)
-        advanced = client.get(f"/activities/session/{session_id}/next")
-        assert advanced.status_code == 200, advanced.text
-        assert advanced.json()["item"]["id"] == item_id
-        assert advanced.json()["step"]["id"] != step_id
-        assert advanced.json()["awaiting_audio_review"] is False
+        dashboard_tasks = client.get("/review/student-audio")
+        assert dashboard_tasks.status_code == 200
+        assert all(row["id"] != submission_id for row in dashboard_tasks.json())
 
         db = SessionLocal()
-        attempt = db.query(Attempt).filter(Attempt.id == attempt_id).one()
         response = db.query(AttemptResponse).filter(
             AttemptResponse.attempt_id == attempt_id,
             AttemptResponse.step_id == step_id,
         ).one()
         audio = db.query(AudioSubmission).filter(AudioSubmission.response_id == response.id).one()
-        assert attempt.status == "in_progress"
         assert audio.status == "graded"
         db.close()
 
-    def test_invalid_review_reopens_same_reading_step_for_rerecord(self, client, monkeypatch):
+    def test_invalid_learning_review_waits_for_dashboard_open_before_rerecord(self, client, monkeypatch):
         _student_login(client)
         student_id, session_id, item_id, step_id, attempt_id = _create_audio_attempt(client)
         monkeypatch.setattr(activity_runtime.storage, "verify_audio", lambda *args, **kwargs: None)
@@ -165,6 +168,11 @@ class TestLearningAudioRuntime:
             headers={"Idempotency-Key": "learning-audio-rerecord-0001"},
         )
         assert first.status_code == 200, first.text
+
+        # Move the learner forward once so the audio attempt is no longer the
+        # active navigation target while the supervisor is reviewing it.
+        advanced_before_review = client.get(f"/activities/session/{session_id}/next")
+        assert advanced_before_review.status_code == 200
 
         db = SessionLocal()
         response = db.query(AttemptResponse).filter(
@@ -180,14 +188,36 @@ class TestLearningAudioRuntime:
             json={"is_valid": False},
         )
         assert rejected.status_code == 200, rejected.text
+        assert rejected.json()["rerecord_queued"] is True
 
         _student_login(client)
+        tasks = client.get("/review/student-audio")
+        assert tasks.status_code == 200, tasks.text
+        task = next(row for row in tasks.json() if row["id"] == submission_id)
+        assert task["status"] == "rerecord_required"
+        assert task["can_rerecord"] is True
+
+        # A reviewer request alone must not pull the learner back into the old
+        # reading round. Reopening happens only after their dashboard action.
         current = client.get(f"/activities/session/{session_id}/next")
         assert current.status_code == 200, current.text
-        assert current.json()["item"]["id"] == item_id
-        assert current.json()["audio_review_status"] == "rerecord_required"
-        assert current.json()["awaiting_audio_review"] is False
-        assert current.json()["retry"] is True
+        current_payload = current.json()
+        assert current_payload is None or not (
+            current_payload["item"]["id"] == item_id
+            and current_payload["step"]["id"] == step_id
+        )
+
+        opened = client.post(f"/review/student-audio/{submission_id}/begin-rerecord")
+        assert opened.status_code == 200, opened.text
+        assert opened.json()["item_id"] == item_id
+        assert opened.json()["step_id"] == step_id
+
+        rerecord = client.get(f"/activities/session/{session_id}/next")
+        assert rerecord.status_code == 200, rerecord.text
+        assert rerecord.json()["item"]["id"] == item_id
+        assert rerecord.json()["step"]["id"] == step_id
+        assert rerecord.json()["audio_review_status"] == "rerecord_required"
+        assert rerecord.json()["retry"] is True
 
         second = client.post(
             f"/activities/session/{session_id}/attempt/{item_id}/submit",
