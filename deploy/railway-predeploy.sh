@@ -16,4 +16,9 @@ python seed_all.py
 printf '%s\n' '[himma-sandbox] ensuring researcher seed exists...'
 python -m db.seed
 
+if [[ "${STUDENT_QA_MODE:-}" == "smoke" ]]; then
+  printf '%s\n' '[himma-sandbox] running hosted student journey smoke checks...'
+  PYTHONPATH=/app/services/api python /app/deploy/student_smoke.py
+fi
+
 printf '%s\n' '[himma-sandbox] pre-deploy database preparation complete.'
