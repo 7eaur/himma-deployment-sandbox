@@ -19,16 +19,12 @@ function goToStudentLogin() {
 export default function StudentAuthBoundary({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isLoginPage = pathname === "/student/login";
-  const [authorized, setAuthorized] = useState(isLoginPage);
+  const [verifiedPath, setVerifiedPath] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isLoginPage) {
-      setAuthorized(true);
-      return;
-    }
+    if (isLoginPage) return;
 
     let cancelled = false;
-    setAuthorized(false);
 
     const verify = async () => {
       try {
@@ -37,7 +33,7 @@ export default function StudentAuthBoundary({ children }: { children: React.Reac
         if (cancelled) return;
 
         if (response.ok && data?.role === "student") {
-          setAuthorized(true);
+          setVerifiedPath(pathname);
           return;
         }
 
@@ -54,6 +50,6 @@ export default function StudentAuthBoundary({ children }: { children: React.Reac
   }, [isLoginPage, pathname]);
 
   if (isLoginPage) return <>{children}</>;
-  if (!authorized) return null;
+  if (verifiedPath !== pathname) return null;
   return <>{children}</>;
 }
