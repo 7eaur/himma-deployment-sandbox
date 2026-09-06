@@ -12,7 +12,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
 
 from activities import _activity_session_or_404
-from activity_runtime import effective_step_state
+from audio_review_navigation import _navigation_step_state
 from content_runtime import canonical_interaction, item_assets, media_gaps, step_assets
 from db.models import Attempt, ContentItem, ContentStep, Student
 from dependencies import get_current_student, get_db
@@ -65,7 +65,12 @@ def current_learning_experience(
         raise HTTPException(status_code=409, detail="تعذر تحميل بيانات عرض النشاط")
 
     steps = sorted(item.steps, key=lambda value: value.order_index)
-    step = next((value for value in steps if not effective_step_state(db, attempt, value)["done"]), None)
+
+    # IMPORTANT: the screen must follow the same navigation state used by
+    # `/activities/session/{session_id}/next`. Pending audio is academically
+    # unresolved, but it is navigation-complete so the learner can continue to
+    # the next round/activity while the supervisor reviews it in the background.
+    step = next((value for value in steps if not _navigation_step_state(db, attempt, value)["done"]), None)
     if step is None:
         return None
 
@@ -84,7 +89,7 @@ def current_learning_experience(
     if not round_data:
         raise HTTPException(status_code=409, detail="تعذر العثور على بيانات الجولة الحالية")
 
-    state = effective_step_state(db, attempt, step)
+    state = _navigation_step_state(db, attempt, step)
     interaction = canonical_interaction(item)
     awaiting_audio_review = bool(state.get("awaiting_audio_review"))
     audio_review_status = state.get("audio_review_status")
