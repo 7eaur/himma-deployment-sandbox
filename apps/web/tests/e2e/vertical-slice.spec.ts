@@ -283,9 +283,7 @@ async function reviewPendingLearningAudio(
   accessCode: string,
   learningSessionId: string,
 ) {
-  const hold = page.getByTestId("student-audio-review-hold");
-  await expect(hold).toBeVisible({ timeout: 10000 });
-  await expect(hold.getByRole("heading", { name: /عند المشرف للمراجعة/ })).toBeVisible();
+  await expect(page.getByTestId("student-audio-review-hold")).toBeHidden({ timeout: 10000 });
 
   await context.clearCookies();
   await loginAsSupervisor(request, context);
@@ -300,7 +298,7 @@ async function reviewPendingLearningAudio(
   await context.clearCookies();
   await loginAsStudent(request, context, accessCode);
   await page.goto(`/student/activity/${learningSessionId}`);
-  await expect(page.getByTestId("student-audio-review-hold")).toHaveCount(0, { timeout: 10000 });
+  await expect(page.getByTestId("student-audio-review-hold")).toBeHidden({ timeout: 10000 });
 }
 
 test.describe("Himma recovered vertical slice", () => {
@@ -457,9 +455,9 @@ test.describe("Himma recovered vertical slice", () => {
       await answerActivityVisual(page, current);
 
       if (readingRound) {
-        await expect(page.getByTestId("student-audio-review-hold")).toBeVisible({ timeout: 10000 });
+        await expect(page.getByTestId("student-audio-review-hold")).toBeHidden({ timeout: 10000 });
         if (!capturedLearningAudioHold) {
-          await shot(page, "13-learning-audio-awaiting-supervisor");
+          await shot(page, "13-learning-audio-continues-without-review-message");
           capturedLearningAudioHold = true;
         }
         await reviewPendingLearningAudio(page, context, request, accessCode, learningSessionId!);
