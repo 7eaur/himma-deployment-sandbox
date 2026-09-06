@@ -15,6 +15,7 @@ from db.models import (
     Student,
     User,
 )
+from learning_experience import current_learning_experience
 from review import begin_student_rerecord, get_student_audio_reviews, grade_audio_submission
 
 
@@ -226,5 +227,119 @@ def test_pending_audio_holds_level_promotion(monkeypatch):
         assert student.current_level == 1
         assert session.assigned_level == 1
         assert session.status == "in_progress"
+    finally:
+        db.close()
+
+
+def test_pending_audio_advances_to_next_round_in_same_activity():
+    """A pending recording must not be redisplayed by the learning view.
+
+    This is the exact production regression: `/next` chose round 2 using the
+    nonblocking navigation state, then `/learning-experience` used the old
+    academic state and rendered round 1 again, making the learner wait for review.
+    """
+    db = TestingSessionLocal()
+    try:
+        student = db.query(Student).filter(Student.access_code == "STU001").one()
+        skill = Skill(
+            skill_key="audio-multiround-nonblocking",
+            name="قراءة متعددة الجولات",
+            description="test",
+            level_id=1,
+            canonical_skill_id="TEST-AUDIO-MULTIROUND-NONBLOCKING",
+        )
+        db.add(skill)
+        db.flush()
+        item = ContentItem(
+            stable_key="TEST-AUDIO-MULTIROUND-CORE-01",
+            kind="core_activity",
+            level_id=1,
+            skill_id=skill.id,
+            interaction_type="read_aloud",
+            order_index=1,
+            version="test",
+            status="approved",
+            checksum="c" * 64,
+            template_data={
+                "title": "نشاط قراءة متعدد الجولات",
+                "learning_experience_version": "HIMMA-LEARNING-2026-09-01-R2",
+                "learning_experience": {
+                    "rounds": [
+                        {
+                            "round_number": 1,
+                            "round_total": 2,
+                            "skill": "قراءة جهرية",
+                            "encouragement": "أحسنت، واصل",
+                            "hint": "اقرأ بهدوء",
+                            "question_text": "اقرأ الجملة الأولى",
+                            "instruction_text": "سجل قراءتك",
+                        },
+                        {
+                            "round_number": 2,
+                            "round_total": 2,
+                            "skill": "قراءة جهرية",
+                            "encouragement": "ممتاز، أكمل",
+                            "hint": "خذ وقتك",
+                            "question_text": "اقرأ الجملة الثانية",
+                            "instruction_text": "سجل قراءتك",
+                        },
+                    ]
+                },
+            },
+        )
+        db.add(item)
+        db.flush()
+        first_step = ContentStep(
+            item_id=item.id,
+            order_index=1,
+            prompt_text="اقرأ الأولى",
+            expected_reading_text="قرأ سامر كتابًا",
+        )
+        second_step = ContentStep(
+            item_id=item.id,
+            order_index=2,
+            prompt_text="اقرأ الثانية",
+            expected_reading_text="ذهب سامر إلى المدرسة",
+        )
+        db.add_all([first_step, second_step])
+        db.flush()
+        session = AssessmentSession(
+            student_id=student.id,
+            session_type="core",
+            status="in_progress",
+            assigned_level=1,
+        )
+        db.add(session)
+        db.flush()
+        attempt = Attempt(session_id=session.id, item_id=item.id, status="in_progress")
+        db.add(attempt)
+        db.flush()
+        response = AttemptResponse(
+            attempt_id=attempt.id,
+            step_id=first_step.id,
+            selected_option_id=None,
+            is_correct=None,
+            elapsed_seconds=2,
+        )
+        db.add(response)
+        db.flush()
+        db.add(AudioSubmission(
+            response_id=response.id,
+            storage_key=f"audio/{student.id}/multiround.webm",
+            file_size=100,
+            mime_type="audio/webm",
+            duration_seconds=2,
+            status="uploaded",
+        ))
+        db.commit()
+
+        navigation_payload = next_activity_step(session.id, db=db, student=student)
+        assert navigation_payload is not None
+        assert navigation_payload["step"]["id"] == second_step.id
+
+        view_payload = current_learning_experience(session.id, db=db, student=student)
+        assert view_payload is not None
+        assert view_payload["step"]["id"] == second_step.id
+        assert view_payload["round"]["round_number"] == 2
     finally:
         db.close()
