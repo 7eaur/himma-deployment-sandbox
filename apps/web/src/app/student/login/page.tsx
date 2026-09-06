@@ -2,11 +2,23 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { KeyRound } from "lucide-react";
 
+function safeStudentNextPath() {
+  if (typeof window === "undefined") return "/student";
+  const value = new URLSearchParams(window.location.search).get("next") || "/student";
+  if (!value.startsWith("/student") || value.startsWith("//") || value === "/student/login") {
+    return "/student";
+  }
+  return value;
+}
+
+function enterStudentArea() {
+  if (typeof window === "undefined") return;
+  window.location.replace(safeStudentNextPath());
+}
+
 export default function StudentLogin() {
-  const router = useRouter();
   const [accessCode, setAccessCode] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -17,14 +29,14 @@ export default function StudentLogin() {
       .then(async (response) => {
         const data = await response.json().catch(() => null);
         if (!cancelled && response.ok && data?.role === "student") {
-          router.replace("/student");
+          enterStudentArea();
         }
       })
       .catch(() => undefined);
     return () => {
       cancelled = true;
     };
-  }, [router]);
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -46,8 +58,10 @@ export default function StudentLogin() {
         setError(data?.detail || "رمز الدخول غير صحيح. تحقّق من الأرقام وحاول مرة أخرى.");
         return;
       }
-      router.replace("/student");
-      router.refresh();
+
+      // Hard navigation is intentional here: the new HttpOnly cookie is read by
+      // the route guard immediately and the protected page starts from fresh data.
+      enterStudentArea();
     } catch {
       setError("تعذر الاتصال بالخادم الآن. حاول مرة أخرى بعد قليل.");
     } finally {
