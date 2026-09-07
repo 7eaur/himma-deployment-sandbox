@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { Check, ClipboardList, Info, LogOut, Mic, MicOff, RotateCcw, Star, Target, Volume2 } from "lucide-react";
+import { Check, ClipboardList, Info, LogOut, Mic, MicOff, Pause, Play, RotateCcw, Star, Target, Volume2 } from "lucide-react";
+import { classifyStudentRecovery, playFeedbackSound, shuffleForPresentation, type StudentRecoveryAction } from "../../../../lib/student-experience";
 import styles from "./session.module.css";
 
 type Interaction =
@@ -19,6 +20,8 @@ type Interaction =
   | "build_word"
   | "read_aloud"
   | "timed_read_aloud";
+
+type PlaybackState = "idle" | "playing" | "paused";
 
 interface ContentOption { id: number; text: string; order_index: number; }
 interface ContentAsset {
@@ -83,10 +86,6 @@ const LISTEN = new Set<Interaction>(["listen_choose_one", "listen_choose_image",
 const READ = new Set<Interaction>(["read_aloud", "timed_read_aloud"]);
 const LEVEL_LABELS = ["الاستعداد للقراءة", "بناء الكلمة", "الطلاقة والفهم"];
 
-function stableOptionOrder(values: ContentOption[]) {
-  return [...values].sort((a, b) => ((a.id * 17) % 97) - ((b.id * 17) % 97));
-}
-
 export default function SessionPage() {
   const params = useParams();
   const router = useRouter();
@@ -96,7 +95,8 @@ export default function SessionPage() {
   const [progress, setProgress] = useState<ProgressPayload | null>(null);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [error, setError] = useState("");
-  const [isListening, setIsListening] = useState(false);
+  const [errorAction, setErrorAction] = useState<StudentRecoveryAction>("retry");
+  const [playbackState, setPlaybackState] = useState<PlaybackState>("idle");
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -108,19 +108,45 @@ export default function SessionPage() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const stepStartedAtRef = useRef(0);
   const playbackRef = useRef<HTMLAudioElement | null>(null);
+  const recordingPreviewRef = useRef<HTMLAudioElement | null>(null);
 
   const step = item?.steps[0] ?? null;
   const interaction = item?.interaction_type;
   const presentation = item?.presentation;
-  const options = useMemo(() => stableOptionOrder(step?.options ?? []), [step]);
+  const options = useMemo(() => shuffleForPresentation(step?.options ?? []), [step]);
   const audioAssets = useMemo(() => step?.assets.filter((asset) => asset.asset_type === "audio") ?? [], [step]);
   const imageAssets = useMemo(() => step?.assets.filter((asset) => asset.asset_type === "image") ?? [], [step]);
   const contextAssets = useMemo(() => item?.item_assets.filter((asset) => asset.asset_type === "image") ?? [], [item]);
+  const optionRank = useMemo(() => new Map(options.map((option, index) => [option.id, index])), [options]);
+  const imageOptions = useMemo(
+    () => imageAssets.filter((asset) => asset.option_id).sort((a, b) => (optionRank.get(Number(a.option_id)) ?? 999) - (optionRank.get(Number(b.option_id)) ?? 999)),
+    [imageAssets, optionRank],
+  );
   const answered = progress?.completed_items ?? 0;
   const total = progress?.total_items || 30;
   const currentNumber = presentation?.question_number ?? Math.min(answered + 1, total);
   const percent = Math.min(100, Math.round((answered / Math.max(1, total)) * 100));
   const targetCount = step?.required_selection_count ?? 0;
+
+  const stopPrompt = useCallback(() => {
+    const audio = playbackRef.current;
+    if (audio) {
+      audio.onended = null;
+      audio.onerror = null;
+      audio.pause();
+      audio.currentTime = 0;
+    }
+    playbackRef.current = null;
+    setPlaybackState("idle");
+  }, []);
+
+  const stopRecordedPreview = useCallback(() => {
+    const preview = recordingPreviewRef.current;
+    if (preview) {
+      preview.pause();
+      preview.currentTime = 0;
+    }
+  }, []);
 
   const operationKey = (kind: "answer" | "upload") => {
     if (!item || !step) return "";
@@ -141,7 +167,10 @@ export default function SessionPage() {
       if (key) window.sessionStorage.removeItem(key);
     }
   };
-  const clearQuestionState = () => {
+
+  const clearQuestionState = useCallback(() => {
+    stopPrompt();
+    stopRecordedPreview();
     setSelectedIds([]);
     setAudioBlob(null);
     setAudioUrl((current) => {
@@ -150,7 +179,7 @@ export default function SessionPage() {
     });
     setRecordingSeconds(0);
     setError("");
-  };
+  }, [stopPrompt, stopRecordedPreview]);
 
   const fetchProgress = useCallback(async () => {
     const response = await fetch(`/api/assessment/session/${sessionId}/progress`, { cache: "no-store" });
@@ -158,8 +187,11 @@ export default function SessionPage() {
   }, [sessionId]);
 
   const finishSession = useCallback(async () => {
+    stopPrompt();
+    stopRecordedPreview();
     setPhase("finishing");
     setError("");
+    setErrorAction("retry");
     try {
       const response = await fetch(`/api/assessment/session/${sessionId}/finish`, { method: "POST" });
       const data = await response.json().catch(() => null);
@@ -168,19 +200,34 @@ export default function SessionPage() {
         setPhase("waiting");
         return;
       }
-      if (!response.ok) throw new Error(detail || "تعذر إنهاء الاختبار");
+      if (!response.ok) {
+        const recovery = classifyStudentRecovery(response.status, detail);
+        if (recovery === "login") {
+          router.replace(`/student/login?next=${encodeURIComponent(`/student/session/${sessionId}`)}`);
+          return;
+        }
+        setError(detail || "تعذر إنهاء الاختبار");
+        setErrorAction(recovery);
+        setPhase("error");
+        return;
+      }
       setFinalScore(Number(data.final_score));
       setAssignedLevel(Number(data.assigned_level));
+      playFeedbackSound("complete");
       setPhase("done");
     } catch (err) {
       setError(err instanceof Error ? err.message : "تعذر إنهاء الاختبار");
+      setErrorAction("retry");
       setPhase("error");
     }
-  }, [sessionId]);
+  }, [router, sessionId, stopPrompt, stopRecordedPreview]);
 
   const fetchNext = useCallback(async () => {
+    stopPrompt();
+    stopRecordedPreview();
     setPhase("loading");
     setError("");
+    setErrorAction("retry");
     try {
       const response = await fetch(`/api/assessment-view/session/${sessionId}/next`, { cache: "no-store" });
       const data = await response.json().catch(() => null);
@@ -189,7 +236,18 @@ export default function SessionPage() {
         setPhase("waiting");
         return;
       }
-      if (!response.ok) throw new Error(detail || "تعذر تحميل السؤال");
+      if (!response.ok) {
+        const recovery = classifyStudentRecovery(response.status, detail);
+        if (recovery === "login") {
+          router.replace(`/student/login?next=${encodeURIComponent(`/student/session/${sessionId}`)}`);
+          return;
+        }
+        setError(detail || "تعذر تحميل السؤال");
+        setErrorAction(recovery);
+        setPhase("error");
+        setItem(null);
+        return;
+      }
       if (!data) {
         await finishSession();
         return;
@@ -201,9 +259,11 @@ export default function SessionPage() {
       setPhase("active");
     } catch (err) {
       setError(err instanceof Error ? err.message : "تعذر تحميل السؤال");
+      setErrorAction("retry");
       setPhase("error");
+      setItem(null);
     }
-  }, [fetchProgress, finishSession, sessionId]);
+  }, [clearQuestionState, fetchProgress, finishSession, router, sessionId, stopPrompt, stopRecordedPreview]);
 
   useEffect(() => {
     const kickoff = window.setTimeout(() => void fetchNext(), 0);
@@ -211,30 +271,50 @@ export default function SessionPage() {
       window.clearTimeout(kickoff);
       if (timerRef.current) clearInterval(timerRef.current);
       if (recorderRef.current?.state === "recording") recorderRef.current.stop();
-      playbackRef.current?.pause();
+      const audio = playbackRef.current;
+      if (audio) {
+        audio.onended = null;
+        audio.onerror = null;
+        audio.pause();
+      }
+      const preview = recordingPreviewRef.current;
+      if (preview) preview.pause();
     };
   }, [fetchNext]);
 
-  const playPrompt = async () => {
-    if (!audioAssets.length || isListening) return;
-    setIsListening(true);
-    setError("");
-    try {
-      for (const asset of audioAssets) {
-        await new Promise<void>((resolve, reject) => {
-          const audio = new Audio(asset.url);
-          playbackRef.current = audio;
-          audio.onended = () => resolve();
-          audio.onerror = () => reject(new Error("تعذر تشغيل الصوت"));
-          void audio.play().catch(reject);
-        });
-      }
-    } catch {
-      setError("تعذر تشغيل الصوت. تحقق من مستوى الصوت في الجهاز ثم حاول مرة أخرى.");
-    } finally {
-      setIsListening(false);
-      playbackRef.current = null;
+  const playAssetAt = useCallback((index: number) => {
+    if (index >= audioAssets.length) {
+      stopPrompt();
+      return;
     }
+    const audio = new Audio(audioAssets[index].url);
+    audio.volume = 1;
+    playbackRef.current = audio;
+    audio.onended = () => playAssetAt(index + 1);
+    audio.onerror = () => {
+      stopPrompt();
+      setError("تعذر تشغيل الصوت. تحقق من مستوى الصوت في الجهاز ثم حاول مرة أخرى.");
+    };
+    setPlaybackState("playing");
+    void audio.play().catch(() => {
+      stopPrompt();
+      setError("تعذر تشغيل الصوت. تحقق من مستوى الصوت في الجهاز ثم حاول مرة أخرى.");
+    });
+  }, [audioAssets, stopPrompt]);
+
+  const togglePromptPlayback = () => {
+    const audio = playbackRef.current;
+    if (playbackState === "playing" && audio) {
+      audio.pause();
+      setPlaybackState("paused");
+      return;
+    }
+    if (playbackState === "paused" && audio) {
+      void audio.play().then(() => setPlaybackState("playing")).catch(() => setError("تعذر استئناف الصوت. حاول مرة أخرى."));
+      return;
+    }
+    setError("");
+    playAssetAt(0);
   };
 
   const toggleOption = (optionId: number) => {
@@ -263,6 +343,7 @@ export default function SessionPage() {
 
   const submitAnswer = async () => {
     if (!item || !step || !interaction) return;
+    stopPrompt();
     setPhase("submitting");
     setError("");
     const elapsed = Math.min(3600, Math.max(0, Math.floor((Date.now() - stepStartedAtRef.current) / 1000)));
@@ -278,6 +359,7 @@ export default function SessionPage() {
       const data = await response.json().catch(() => null);
       if (!response.ok) throw new Error(data?.detail || "تعذر حفظ الإجابة");
       clearOperationKeys();
+      playFeedbackSound("transition");
       await fetchProgress();
       await fetchNext();
     } catch (err) {
@@ -287,6 +369,7 @@ export default function SessionPage() {
   };
 
   const startRecording = async () => {
+    stopPrompt();
     setError("");
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -322,6 +405,7 @@ export default function SessionPage() {
 
   const uploadReading = async () => {
     if (!item || !step || !audioBlob) return;
+    stopRecordedPreview();
     setPhase("submitting");
     setError("");
     try {
@@ -350,12 +434,25 @@ export default function SessionPage() {
       const data = await submit.json().catch(() => null);
       if (!submit.ok) throw new Error(data?.detail || "تعذر حفظ القراءة");
       clearOperationKeys();
+      playFeedbackSound("transition");
       await fetchProgress();
       await fetchNext();
     } catch (err) {
       setError(err instanceof Error ? err.message : "تعذر حفظ القراءة");
       setPhase("active");
     }
+  };
+
+  const recoverFromError = () => {
+    if (errorAction === "dashboard") {
+      router.replace("/student");
+      return;
+    }
+    if (errorAction === "login") {
+      router.replace(`/student/login?next=${encodeURIComponent(`/student/session/${sessionId}`)}`);
+      return;
+    }
+    void fetchNext();
   };
 
   if (phase === "done" && assignedLevel !== null) {
@@ -405,13 +502,14 @@ export default function SessionPage() {
   }
 
   if (phase === "error" || !item || !step || !interaction || !presentation) {
+    const label = errorAction === "retry" ? "حاول مرة أخرى" : errorAction === "login" ? "تسجيل الدخول" : "العودة إلى مساري";
     return (
       <div className={styles.page} dir="rtl" data-testid="assessment-session" data-phase="error">
         <div className={styles.loadingState}>
           <Image src="/brand/logo-navy.svg" alt="هِمّة" width={128} height={46} />
           <h1>تعذر فتح السؤال</h1>
-          <p>{error || "بيانات عرض السؤال غير مكتملة."}</p>
-          <button className={styles.primary} onClick={() => void fetchNext()}>حاول مرة أخرى</button>
+          <p>{error || "هذا السؤال لم يعد متاحًا من هذا الرابط."}</p>
+          <button className={styles.primary} onClick={recoverFromError}>{label}</button>
         </div>
       </div>
     );
@@ -425,7 +523,7 @@ export default function SessionPage() {
   const stimulusText = String(presentation.stimulus?.text || "");
   const hasMediaGap = step.media_gaps.length > 0;
   const imageChoice = interaction === "choose_image" || interaction === "listen_choose_image";
-  const sequenceWithImages = ORDER.has(interaction) && imageAssets.some((asset) => asset.option_id);
+  const sequenceWithImages = ORDER.has(interaction) && imageOptions.length > 0;
   const canSubmit = Boolean(
     (SINGLE.has(interaction) && selectedIds.length === 1)
     || (MULTI.has(interaction) && targetCount > 0 && selectedIds.length === targetCount)
@@ -434,13 +532,15 @@ export default function SessionPage() {
   const visualAsset = contextAssets[0] || (stimulusKind === "image" ? imageAssets.find((asset) => !asset.option_id) || imageAssets[0] : undefined);
   const sideCharacter = READ.has(interaction) ? "/characters/girl/encourage.png" : "/characters/girl/explain.png";
   const assessmentLabel = item.kind === "pretest_question" ? "الاختبار القبلي" : "الاختبار البعدي";
+  const listenLabel = playbackState === "playing" ? "إيقاف مؤقت" : playbackState === "paused" ? "متابعة" : "استمع";
+  const listenIcon = playbackState === "playing" ? <Pause size={34} aria-hidden="true" /> : playbackState === "paused" ? <Play size={34} aria-hidden="true" /> : <Volume2 size={34} aria-hidden="true" />;
 
   return (
     <div className={styles.page} dir="rtl" data-testid="assessment-session" data-phase={phase === "submitting" ? "submitting" : "question"}>
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <div className={styles.brandCluster}><Image src="/brand/logo-navy.svg" alt="هِمّة" width={124} height={44} priority /></div>
-          <button className={styles.exit} type="button" onClick={() => router.push("/student")}><LogOut size={21} /><span>خروج</span></button>
+          <button className={styles.exit} type="button" onClick={() => { stopPrompt(); stopRecordedPreview(); router.push("/student"); }}><LogOut size={21} /><span>خروج</span></button>
         </div>
       </header>
 
@@ -469,8 +569,8 @@ export default function SessionPage() {
             )}
 
             {LISTEN.has(interaction) && (
-              <button className={`${styles.listenButton} ${isListening ? styles.listenPulse : ""}`} onClick={() => void playPrompt()} disabled={isListening || !audioAssets.length} data-testid="listen-prompt" type="button">
-                <Volume2 size={34} aria-hidden="true" /><span>{isListening ? "استمع..." : "استمع"}</span>
+              <button className={`${styles.listenButton} ${playbackState === "playing" ? styles.listenPulse : ""}`} onClick={togglePromptPlayback} disabled={!audioAssets.length} data-testid="listen-prompt" type="button" aria-label={listenLabel}>
+                {listenIcon}<span>{listenLabel}</span>
               </button>
             )}
 
@@ -483,7 +583,7 @@ export default function SessionPage() {
 
             {!hasMediaGap && imageChoice && (
               <div className={styles.imageOptions} data-testid="image-options">
-                {imageAssets.filter((asset) => asset.option_id).map((asset) => {
+                {imageOptions.map((asset) => {
                   const optionId = Number(asset.option_id);
                   const selected = selectedIds.includes(optionId);
                   return (
@@ -508,7 +608,7 @@ export default function SessionPage() {
                 </div>
                 {sequenceWithImages && interaction !== "build_word" ? (
                   <div className={styles.imageOptions} data-testid="sequence-image-options">
-                    {imageAssets.filter((asset) => asset.option_id && !selectedIds.includes(Number(asset.option_id))).map((asset) => (
+                    {imageOptions.filter((asset) => !selectedIds.includes(Number(asset.option_id))).map((asset) => (
                       <button key={`${asset.asset_id}-${asset.option_id}`} className={styles.imageOption} onClick={() => toggleOption(Number(asset.option_id))} disabled={targetCount > 0 && selectedIds.length >= targetCount} type="button">
                         <Image src={asset.url} alt={asset.semantic_text || "عنصر ترتيب"} width={220} height={150} unoptimized /><span className={styles.imageLabel}>{asset.semantic_text}</span>
                       </button>
@@ -543,7 +643,7 @@ export default function SessionPage() {
                   </>
                 ) : (
                   <>
-                    {audioUrl && <audio className={styles.audioPreview} src={audioUrl} controls />}
+                    {audioUrl && <audio ref={recordingPreviewRef} className={styles.audioPreview} src={audioUrl} controls onPlay={(event) => { event.currentTarget.volume = 1; }} />}
                     <p className={styles.previewText}>استمع إلى تسجيلك، ثم أرسله أو أعد المحاولة.</p>
                     <div className={styles.inlineActions}>
                       <button className={styles.secondary} type="button" onClick={() => { clearQuestionState(); stepStartedAtRef.current = Date.now(); }}><RotateCcw size={18} /> إعادة التسجيل</button>
