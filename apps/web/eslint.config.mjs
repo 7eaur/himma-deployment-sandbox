@@ -7,14 +7,14 @@ const eslintConfig = defineConfig([
   ...nextTs,
   {
     files: [
-      "src/app/student/session/[id]/page.tsx",
-      "src/app/student/activity/[id]/page.tsx",
+      "src/app/student/session/**/page.tsx",
+      "src/app/student/activity/**/page.tsx",
     ],
     rules: {
-      // These two pages intentionally keep one short-lived Audio element per
-      // prompt and chain multi-asset prompts through onended. Every navigation,
-      // submit and unmount path clears that handler before the payload changes,
-      // so the self-recursive callback cannot survive into a later render.
+      // These two student runtimes intentionally keep one short-lived Audio
+      // element per prompt and chain multi-asset prompts through onended.
+      // Navigation, submit, payload change and unmount all clear that handler
+      // before the callback can survive into another question/activity.
       "react-hooks/immutability": "off",
     },
   },
