@@ -61,7 +61,7 @@ export default function StudentExperienceEffects() {
       const audio = new OriginalAudio(src);
       enhancePromptLoudness(audio);
       return audio;
-    } as typeof Audio;
+    } as unknown as typeof Audio;
     EnhancedAudio.prototype = OriginalAudio.prototype;
 
     try {
