@@ -61,6 +61,7 @@ export default function StudentActivityPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [adaptiveHold, setAdaptiveHold] = useState(false);
   const [error, setError] = useState("");
   const [errorAction, setErrorAction] = useState<StudentRecoveryAction>("retry");
   const [playbackState, setPlaybackState] = useState<PlaybackState>("idle");
@@ -75,7 +76,6 @@ export default function StudentActivityPage() {
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const playbackRef = useRef<HTMLAudioElement | null>(null);
-  const playbackIndexRef = useRef(0);
   const recordingPreviewRef = useRef<HTMLAudioElement | null>(null);
 
   const interaction = view?.interaction_type;
@@ -107,7 +107,6 @@ export default function StudentActivityPage() {
       audio.currentTime = 0;
     }
     playbackRef.current = null;
-    playbackIndexRef.current = 0;
     setPlaybackState("idle");
   }, []);
 
@@ -158,6 +157,7 @@ export default function StudentActivityPage() {
     stopPrompt();
     stopRecordedPreview();
     setLoading(true);
+    setAdaptiveHold(false);
     setError("");
     setErrorAction("retry");
     try {
@@ -165,6 +165,11 @@ export default function StudentActivityPage() {
       const advanceData = await advance.json().catch(() => null);
       if (!advance.ok) {
         const detail = String(advanceData?.detail || "تعذر تجهيز النشاط");
+        if (advance.status === 409 && detail.includes("ربط نشاط تقوية")) {
+          setAdaptiveHold(true);
+          setView(null);
+          return;
+        }
         const recovery = classifyStudentRecovery(advance.status, detail);
         if (recovery === "login") {
           router.replace(`/student/login?next=${encodeURIComponent(`/student/activity/${sessionId}`)}`);
@@ -227,8 +232,6 @@ export default function StudentActivityPage() {
         audio.onerror = null;
         audio.pause();
       }
-      const preview = recordingPreviewRef.current;
-      if (preview) preview.pause();
     };
   }, [loadCurrent]);
 
@@ -239,7 +242,6 @@ export default function StudentActivityPage() {
     }
     const audio = new Audio(audioAssets[index].url);
     audio.volume = 1;
-    playbackIndexRef.current = index;
     playbackRef.current = audio;
     audio.onended = () => playAssetAt(index + 1);
     audio.onerror = () => {
@@ -322,7 +324,7 @@ export default function StudentActivityPage() {
         startedAtRef.current = Date.now();
         return;
       }
-      playFeedbackSound(result.is_correct ? "correct" : "transition");
+      playFeedbackSound(result.is_correct ? "correct" : "incorrect");
       await loadCurrent();
     } catch (err) {
       setError(err instanceof Error ? err.message : "تعذر حفظ الإجابة");
@@ -423,6 +425,10 @@ export default function StudentActivityPage() {
   };
 
   if (loading) return <div className={styles.page} dir="rtl" data-testid="activity-session" data-phase="loading"><div className={styles.loadingState}><Image src="/brand/logo-navy.svg" alt="هِمّة" width={128} height={46}/><div className={styles.spinner}/><p>جاري تجهيز النشاط...</p></div></div>;
+
+  if (adaptiveHold) {
+    return <div className={styles.resultPage} dir="rtl" data-testid="activity-session" data-phase="adaptive_hold"><div className={styles.resultCard}><div className={styles.resultContent} data-testid="student-adaptive-hold"><span className={styles.resultBadge}><Sparkles size={18}/> خطوة مخصّصة لك</span><h1 className={styles.resultTitle}>نجهّز لك الخطوة الأنسب</h1><p className={styles.resultText}>أنجزت ما عليك هنا. يحتاج مسارك إلى اختيار تدريب تقوية مناسب قبل أن تكمل، ولن يضيع أي جزء من تقدمك.</p><button className={styles.primary} onClick={() => router.push("/student")}>العودة إلى مساري</button></div><div className={styles.resultVisual}><Image src="/characters/girl/encourage.png" alt="شخصية هِمّة تشجع الطالب" width={320} height={390}/></div></div></div>;
+  }
 
   if (celebration) {
     const nextActivity = Math.min(celebration.totalActivities, celebration.completedActivity + 1);
