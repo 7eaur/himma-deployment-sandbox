@@ -8,9 +8,9 @@ export type FeedbackSound = "correct" | "incorrect" | "transition" | "complete";
 export function classifyStudentRecovery(status: number, detail = ""): StudentRecoveryAction {
   if (status === 401) return "login";
   const normalized = detail.toLowerCase();
-  const terminalDetail = /(غير موجود|انتهت|انتهى|مكتمل|مكتملة|مغلق|مغلقة|not found|expired|finished|closed)/i.test(normalized);
-  if (status === 404 || status === 410 || (status === 409 && terminalDetail)) return "dashboard";
-  if (status === 403) return "dashboard";
+  const terminalDetail = /(غير موجود|غير متاح|انتهت|انتهى|مكتمل|مكتملة|مغلق|مغلقة|not found|expired|finished|closed|unavailable)/i.test(normalized);
+  if (status === 403 || status === 404 || status === 410) return "dashboard";
+  if (status >= 400 && status < 500 && terminalDetail) return "dashboard";
   return "retry";
 }
 
