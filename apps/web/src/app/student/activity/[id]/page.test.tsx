@@ -5,7 +5,7 @@ const push = jest.fn();
 
 jest.mock("next/navigation", () => ({
   useParams: () => ({ id: "42" }),
-  useRouter: () => ({ push }),
+  useRouter: () => ({ push, replace: jest.fn() }),
 }));
 
 function response(body: unknown) {
@@ -75,7 +75,7 @@ describe("Student activity page", () => {
     expect(screen.getByTestId("activity-session")).toHaveAttribute("data-activity-kind", "reinforcement");
   });
 
-  it("points an L2 completion to L3 instead of advertising the posttest too early", async () => {
+  it("returns an L2 completion to the authoritative student journey instead of hardcoding the next route", async () => {
     global.fetch = jest
       .fn()
       .mockResolvedValueOnce(response(null))
@@ -91,9 +91,9 @@ describe("Student activity page", () => {
     render(<StudentActivityPage />);
 
     expect(await screen.findByRole("heading", { name: "أحسنت، أكملت بناء الكلمة" })).toBeInTheDocument();
-    expect(screen.getByText(/خطوتك التالية هي الطلاقة والفهم/)).toBeInTheDocument();
+    expect(screen.getByText(/ارجع إلى مسارك لتظهر لك الخطوة التالية المناسبة/)).toBeInTheDocument();
     expect(screen.queryByText((content, element) => element?.tagName === "P" && content.includes("البعدي"))).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "الانتقال إلى خطوتي التالية" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "العودة إلى مساري" })).toBeEnabled();
   });
 
   it("mentions the posttest only after completing L3", async () => {
