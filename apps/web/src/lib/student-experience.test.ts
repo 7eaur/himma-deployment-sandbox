@@ -6,6 +6,7 @@ describe("student experience helpers", () => {
   });
 
   test("routes dead or expired student resources back to the dashboard", () => {
+    expect(classifyStudentRecovery(400, "الجلسة غير موجودة أو انتهت")).toBe("dashboard");
     expect(classifyStudentRecovery(404, "الجلسة غير موجودة")).toBe("dashboard");
     expect(classifyStudentRecovery(410, "انتهت الجلسة")).toBe("dashboard");
     expect(classifyStudentRecovery(409, "الجلسة انتهت")).toBe("dashboard");
