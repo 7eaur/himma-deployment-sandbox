@@ -35,10 +35,51 @@ export function shuffleForPresentation<T>(values: readonly T[]): T[] {
 }
 
 let feedbackContext: AudioContext | null = null;
+let promptContext: AudioContext | null = null;
 
 type WindowWithWebkitAudio = Window & typeof globalThis & {
   webkitAudioContext?: typeof AudioContext;
 };
+
+function audioContextConstructor() {
+  if (typeof window === "undefined") return null;
+  return window.AudioContext || (window as WindowWithWebkitAudio).webkitAudioContext || null;
+}
+
+/**
+ * Give quiet same-origin educational prompts a modest loudness lift while a
+ * compressor protects against harsh peaks. Cross-origin media remains on the
+ * browser's normal full-volume path so a missing CORS header can never mute it.
+ */
+export function enhancePromptLoudness(audio: HTMLAudioElement, gainValue = 1.35) {
+  audio.volume = 1;
+  const AudioContextCtor = audioContextConstructor();
+  if (!AudioContextCtor || typeof window === "undefined") return;
+
+  try {
+    const sourceUrl = new URL(audio.src, window.location.href);
+    if (sourceUrl.origin !== window.location.origin) return;
+
+    promptContext ??= new AudioContextCtor();
+    const context = promptContext;
+    if (context.state === "suspended") void context.resume();
+
+    const source = context.createMediaElementSource(audio);
+    const gain = context.createGain();
+    const compressor = context.createDynamicsCompressor();
+    gain.gain.value = Math.max(1, Math.min(1.6, gainValue));
+    compressor.threshold.value = -14;
+    compressor.knee.value = 18;
+    compressor.ratio.value = 4;
+    compressor.attack.value = 0.004;
+    compressor.release.value = 0.2;
+    source.connect(gain);
+    gain.connect(compressor);
+    compressor.connect(context.destination);
+  } catch {
+    // Full HTML-media volume is already set above; enhancement is optional.
+  }
+}
 
 /**
  * Lightweight UI feedback tones generated locally. They do not depend on a
@@ -46,8 +87,7 @@ type WindowWithWebkitAudio = Window & typeof globalThis & {
  * remains the dominant audio channel.
  */
 export function playFeedbackSound(kind: FeedbackSound) {
-  if (typeof window === "undefined") return;
-  const AudioContextCtor = window.AudioContext || (window as WindowWithWebkitAudio).webkitAudioContext;
+  const AudioContextCtor = audioContextConstructor();
   if (!AudioContextCtor) return;
 
   try {
