@@ -15,6 +15,7 @@ from learning_experience import router as learning_experience_router
 from adaptation import router as adaptation_router
 from adaptation_runtime import router as adaptation_runtime_router
 from reinforcement_review import router as reinforcement_review_router
+from content_preview import router as content_preview_router
 from media import router as media_router
 from speech_analysis import router as speech_analysis_router
 from journey import router as journey_router
@@ -62,6 +63,7 @@ app.include_router(activities_router)
 app.include_router(adaptation_router)
 app.include_router(adaptation_runtime_router)
 app.include_router(reinforcement_review_router)
+app.include_router(content_preview_router)
 app.include_router(media_router)
 app.include_router(review_router)
 app.include_router(recordings_router)
