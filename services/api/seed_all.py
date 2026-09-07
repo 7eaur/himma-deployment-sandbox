@@ -13,6 +13,7 @@ import seed_l1_auditory_story_replacement
 import seed_pretest_experience_2026_09_01
 import seed_active_option_contract
 import seed_db_runtime_contract
+import seed_runtime_media_invariants
 import seed_learning_posttest_projection_runtime
 from db.database import SessionLocal
 from db.models import ContentItem
@@ -24,6 +25,7 @@ LEARNING_VERSION = seed_learning_posttest_projection_runtime.LEARNING_VERSION
 POSTTEST_VERSION = seed_learning_posttest_projection_runtime.POSTTEST_VERSION
 DB_RUNTIME_VERSION = seed_db_runtime_contract.VERSION
 OPTION_CONTRACT_VERSION = seed_active_option_contract.VERSION
+MEDIA_OPTION_VERSION = seed_runtime_media_invariants.VERSION
 
 
 def _base_stable_keys() -> set[str]:
@@ -51,10 +53,11 @@ def run_seed_all() -> dict[str, int]:
     auditory_story_changes = seed_l1_auditory_story_replacement.run_seed()
     pretest_experience_changes = seed_pretest_experience_2026_09_01.run_seed()
 
-    # All option-changing overlays have now run.  Reconcile the exact current
+    # All option-changing overlays have now run. Reconcile the exact current
     # presentation before the DB-only runtime/media snapshot is generated.
     option_contract_result = seed_active_option_contract.run_seed()
     db_runtime_changes = seed_db_runtime_contract.run_seed()
+    media_contract_result = seed_runtime_media_invariants.run_seed()
     projection_result = seed_learning_posttest_projection_runtime.run_seed()
 
     db = SessionLocal()
@@ -69,6 +72,7 @@ def run_seed_all() -> dict[str, int]:
         posttest_marked = sum(1 for item in all_items if item.kind == "posttest_question" and (item.template_data or {}).get("posttest_experience_version") == POSTTEST_VERSION)
         db_runtime_marked = sum(1 for item in all_items if ((item.template_data or {}).get("db_runtime") or {}).get("version") == DB_RUNTIME_VERSION)
         option_contract_marked = sum(1 for item in all_items if (item.template_data or {}).get("active_option_contract_version") == OPTION_CONTRACT_VERSION)
+        media_contract_marked = sum(1 for item in all_items if (item.template_data or {}).get("media_option_contract_version") == MEDIA_OPTION_VERSION)
         auditory_source_items = sum(1 for item in all_items if (item.template_data or {}).get("auditory_story_version") == seed_l1_auditory_story_replacement.VERSION)
     finally:
         db.close()
@@ -82,6 +86,7 @@ def run_seed_all() -> dict[str, int]:
     if posttest_marked != 30: raise RuntimeError(f"Expected {POSTTEST_VERSION} on 30 posttest items, got {posttest_marked}")
     if db_runtime_marked != 125: raise RuntimeError(f"Expected {DB_RUNTIME_VERSION} on 125 items, got {db_runtime_marked}")
     if option_contract_marked != 125: raise RuntimeError(f"Expected {OPTION_CONTRACT_VERSION} on 125 items, got {option_contract_marked}")
+    if media_contract_marked != 125: raise RuntimeError(f"Expected {MEDIA_OPTION_VERSION} on 125 items, got {media_contract_marked}")
     if auditory_source_items != 2: raise RuntimeError(f"Expected 2 versioned auditory story items, got {auditory_source_items}")
 
     result = {
@@ -91,6 +96,8 @@ def run_seed_all() -> dict[str, int]:
         "option_contract_activated": option_contract_result["activated"],
         "option_contract_retired": option_contract_result["retired"],
         "option_contract_items": option_contract_marked,
+        "media_mapping_changes": media_contract_result["mapping_changes"],
+        "media_contract_items": media_contract_marked,
         "student_experience_v2_changes": student_experience_changes, "student_experience_v2_items": v2_marked,
         "auditory_story_changes": auditory_story_changes, "auditory_source_items": auditory_source_items,
         "pretest_experience_changes": pretest_experience_changes, "pretest_experience_items": pretest_marked,
