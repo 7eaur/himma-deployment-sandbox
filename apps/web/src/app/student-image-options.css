@@ -1,0 +1,13 @@
+/*
+ * Student image-option invariant
+ * ------------------------------
+ * When an educational image is the answer itself, its semantic label is kept
+ * in the <img alt> text for accessibility/data semantics but is never rendered
+ * as visible answer text below the image.  Assessment, learning activities and
+ * the supervisor read-only preview all reuse CSS-module classes containing the
+ * local name `imageOption`, so this global invariant covers every renderer.
+ */
+button[class*="imageOption"] > img + span,
+div[class*="imageOption"] > img + span {
+  display: none !important;
+}
