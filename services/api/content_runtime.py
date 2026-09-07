@@ -17,6 +17,7 @@ DB_RUNTIME_VERSION = "HIMMA-DB-RUNTIME-1.0"
 READ = {"read_aloud", "timed_read_aloud"}
 LISTEN = {"listen_choose_one", "listen_choose_image", "listen_choose_many"}
 ORDER = {"sequence", "memory_sequence", "path_sequence", "build_word"}
+IMAGE_ORDER = {"sequence", "memory_sequence", "path_sequence"}
 
 ITEM_ASSET_SEMANTIC_FALLBACKS = {
     ("PRE-Q24", "STY-01"): "نص الاختبار القبلي",
@@ -125,25 +126,59 @@ def _option_id_by_order(step: ContentStep, order_index: Any) -> int | None:
         wanted = int(order_index)
     except (TypeError, ValueError):
         return None
+    # ContentStep.options is intentionally the active option relationship.
     option = next((value for value in step.options if int(value.order_index) == wanted), None)
     return int(option.id) if option is not None else None
+
+
+def _option_image_usage(item: ContentItem, usage: str | None) -> bool:
+    if usage == "choice":
+        return True
+    return usage == "illustration" and canonical_interaction(item) in IMAGE_ORDER
+
+
+def _dedupe_option_images(assets: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """One logical option must render as one card, even if legacy links repeat."""
+    result: list[dict[str, Any]] = []
+    seen_asset_keys: set[tuple[str, str, int | None]] = set()
+    seen_image_options: set[int] = set()
+    for asset in assets:
+        option_id = asset.get("option_id")
+        asset_type = str(asset.get("asset_type") or "")
+        asset_id = str(asset.get("asset_id") or "")
+        key = (asset_id, asset_type, int(option_id) if option_id is not None else None)
+        if key in seen_asset_keys:
+            continue
+        if asset_type == "image" and option_id is not None:
+            logical_id = int(option_id)
+            if logical_id in seen_image_options:
+                continue
+            seen_image_options.add(logical_id)
+        seen_asset_keys.add(key)
+        result.append(asset)
+    return result
 
 
 def step_assets(item: ContentItem, step: ContentStep) -> list[dict[str, Any]]:
     runtime_assets = list(_runtime_round(item, step).get("assets") or [])
     if runtime_assets:
-        return [
-            {
+        result: list[dict[str, Any]] = []
+        for value in runtime_assets:
+            if not value.get("asset_id") or not value.get("asset_type"):
+                continue
+            usage = value.get("usage")
+            option_id = None
+            if str(value.get("asset_type")) == "image" and _option_image_usage(item, usage):
+                option_id = _option_id_by_order(step, value.get("option_order_index"))
+            result.append({
                 "asset_id": str(value.get("asset_id") or ""),
                 "asset_type": str(value.get("asset_type") or ""),
-                "usage": value.get("usage"),
+                "usage": usage,
                 "semantic_text": value.get("semantic_text"),
                 "url": f"/api/media/{value.get('asset_id')}",
-                "option_id": _option_id_by_order(step, value.get("option_order_index")),
-            }
-            for value in runtime_assets
-            if value.get("asset_id") and value.get("asset_type")
-        ]
+                "option_id": option_id,
+            })
+        return _dedupe_option_images(result)
 
     result: list[dict[str, Any]] = []
     image_index = 0
@@ -151,7 +186,11 @@ def step_assets(item: ContentItem, step: ContentStep) -> list[dict[str, Any]]:
     for link in sorted(step.assets, key=lambda value: value.id or 0):
         option_id = None
         semantic = None
-        if link.asset_type == "image" and link.usage_context in {"choice", "illustration"} and image_index < len(options):
+        if (
+            link.asset_type == "image"
+            and _option_image_usage(item, link.usage_context)
+            and image_index < len(options)
+        ):
             option_id = int(options[image_index].id)
             semantic = options[image_index].text
             image_index += 1
@@ -163,7 +202,7 @@ def step_assets(item: ContentItem, step: ContentStep) -> list[dict[str, Any]]:
             "url": f"/api/media/{link.manifest_asset_id}",
             "option_id": option_id,
         })
-    return result
+    return _dedupe_option_images(result)
 
 
 def item_assets(item: ContentItem) -> list[dict[str, Any]]:
