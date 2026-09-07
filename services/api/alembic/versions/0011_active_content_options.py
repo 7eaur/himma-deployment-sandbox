@@ -3,10 +3,10 @@
 Revision ID: 0011_active_content_options
 Revises: 0010_researcher_notifications
 
-Published student responses may reference historical ContentOption rows.  Instead
+Published student responses may reference historical ContentOption rows. Instead
 of deleting those rows when presentation contracts evolve, current choices are
-marked active/inactive.  Student runtime relationships expose active choices
-only while historical responses retain their original foreign keys.
+marked active/inactive. Student runtime relationships expose active choices only
+while historical responses retain their original foreign keys.
 """
 from alembic import op
 import sqlalchemy as sa
@@ -23,13 +23,13 @@ def upgrade() -> None:
         sa.Column("is_active", sa.Boolean(), nullable=False, server_default=sa.true()),
     )
     op.create_index(
-        "ix_content_options_step_active_order",
+        "ix_content_options_is_active",
         "content_options",
-        ["step_id", "is_active", "order_index"],
+        ["is_active"],
         unique=False,
     )
 
 
 def downgrade() -> None:
-    op.drop_index("ix_content_options_step_active_order", table_name="content_options")
+    op.drop_index("ix_content_options_is_active", table_name="content_options")
     op.drop_column("content_options", "is_active")
