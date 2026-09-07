@@ -127,6 +127,19 @@ export default function StudentActivityPage() {
     return data;
   }, [sessionId]);
 
+  const operationKey = (kind: "answer" | "upload") => `himma:activity:${sessionId}:${step?.id ?? 0}:${(view?.attempts_used ?? 0) + 1}:${kind}`;
+  const idempotencyKey = (kind: "answer" | "upload") => {
+    const key = operationKey(kind);
+    const existing = window.sessionStorage.getItem(key);
+    if (existing) return existing;
+    const created = crypto.randomUUID();
+    window.sessionStorage.setItem(key, created);
+    return created;
+  };
+  const clearKeys = () => {
+    for (const kind of ["answer", "upload"] as const) window.sessionStorage.removeItem(operationKey(kind));
+  };
+
   const resetRoundState = useCallback(() => {
     stopPrompt();
     stopRecordedPreview();
