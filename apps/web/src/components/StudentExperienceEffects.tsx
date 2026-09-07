@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { enhancePromptLoudness } from "@/lib/student-experience";
 
 type Tone = "select" | "listen";
 
@@ -24,7 +25,7 @@ function playTone(kind: Tone, enabled: boolean) {
 
   const context = new AudioContextCtor();
   const master = context.createGain();
-  master.gain.value = 0.11;
+  master.gain.value = 0.14;
   master.connect(context.destination);
 
   let cursor = context.currentTime;
@@ -48,6 +49,31 @@ function playTone(kind: Tone, enabled: boolean) {
 
 export default function StudentExperienceEffects() {
   const [enabled] = useState(initialSoundPreference);
+
+  useEffect(() => {
+    // Student prompt audio is created with `new Audio(...)` by the assessment
+    // and learning runtimes. Wrap only that constructor while the student
+    // subtree is mounted so same-origin educational speech receives the safe
+    // gain/compressor boost; native recording previews remain untouched.
+    const audioWindow = window as typeof window & { Audio: typeof Audio };
+    const OriginalAudio = audioWindow.Audio;
+    const EnhancedAudio = function EnhancedAudio(src?: string) {
+      const audio = new OriginalAudio(src);
+      enhancePromptLoudness(audio);
+      return audio;
+    } as typeof Audio;
+    EnhancedAudio.prototype = OriginalAudio.prototype;
+
+    try {
+      audioWindow.Audio = EnhancedAudio;
+    } catch {
+      // Browsers that disallow constructor replacement still play at volume=1.
+    }
+
+    return () => {
+      if (audioWindow.Audio === EnhancedAudio) audioWindow.Audio = OriginalAudio;
+    };
+  }, []);
 
   useEffect(() => {
     const rootSelector = '[data-testid="activity-session"], [data-testid="assessment-session"]';
