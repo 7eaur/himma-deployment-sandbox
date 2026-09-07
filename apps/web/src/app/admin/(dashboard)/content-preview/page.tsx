@@ -138,7 +138,7 @@ export default function AdminContentPreviewPage() {
   const currentSection = journey?.sections[sectionIndex] ?? null;
   const currentItem = currentSection?.items[itemIndex] ?? null;
   const currentStep = currentItem?.steps[stepIndex] ?? null;
-  const interaction = currentItem?.interaction_type ?? null;
+  const interaction: Interaction = currentItem?.interaction_type ?? "choose_one";
 
   const options = useMemo(() => shuffleForPresentation(currentStep?.options ?? []), [currentStep]);
   const audioAssets = useMemo(
@@ -315,7 +315,6 @@ export default function AdminContentPreviewPage() {
   };
 
   const toggleOption = (id: number) => {
-    if (!interaction) return;
     if (SINGLE.has(interaction)) {
       setSelected([id]);
       return;
@@ -430,7 +429,6 @@ export default function AdminContentPreviewPage() {
   const lastPosition = sectionIndex === journey.sections.length - 1 && itemIndex === currentSection.items.length - 1 && stepIndex === currentItem.steps.length - 1;
 
   const renderOptions = () => {
-    if (!interaction) return null;
     if (isImageChoice) {
       return <div className={studentStyles.imageOptions} data-testid="preview-image-options">{imageOptions.map((asset) => {
         const id = Number(asset.option_id);
@@ -491,7 +489,7 @@ export default function AdminContentPreviewPage() {
                 <div className={studentStyles.resultContent}>
                   <span className={studentStyles.resultBadge}><Sparkles size={18} /> إنجاز جديد</span>
                   <h1 className={studentStyles.resultTitle}>{currentItem.kind === "reinforcement_activity" ? "أحسنت، أنجزت تدريب التقوية!" : `أحسنت، أكملت النشاط ${currentItem.order_index}!`}</h1>
-                  <p className={studentStyles.resultText}>أنجزت جولات {skill} الخمس في هذه المعاينة.</p>
+                  <p className={studentStyles.resultText}>أنجزت جولات {skill} وعددها {currentItem.steps.length} بنجاح في هذه المعاينة.</p>
                   <div className={studentStyles.score}>{currentItem.order_index}/{currentSection.item_count}</div>
                   <p className={studentStyles.resultLevel}>{celebrationNext}</p>
                   <button className={studentStyles.primary} type="button" onClick={advancePastCurrentItem}>متابعة الرحلة</button>
@@ -520,7 +518,7 @@ export default function AdminContentPreviewPage() {
 
                   {!hasMediaGap && interaction !== "memory_sequence" && ORDER.has(interaction) && <><div className={studentStyles.sequenceBoard}>{selected.length === 0 ? <span className={studentStyles.sequenceHint}>ابدأ بالعنصر الأول ثم أكمل بالترتيب.</span> : selected.map((id, index) => <span className={studentStyles.sequenceChip} key={id}><span className={studentStyles.number}>{index + 1}</span>{options.find((option) => option.id === id)?.text}</span>)}</div><div className={studentStyles.options}>{options.filter((option) => !selected.includes(option.id)).map((option) => <button key={option.id} className={studentStyles.option} type="button" onClick={() => toggleOption(option.id)}>{option.text}</button>)}</div></>}
 
-                  {!hasMediaGap && interaction && !ORDER.has(interaction) && !READ.has(interaction) && renderOptions()}
+                  {!hasMediaGap && !ORDER.has(interaction) && !READ.has(interaction) && renderOptions()}
 
                   {!hasMediaGap && READ.has(interaction) && <div className={studentStyles.recordPanel}>{!audioUrl ? <><button className={`${studentStyles.recordButton} ${isRecording ? studentStyles.recordButtonRecording : ""}`} type="button" onClick={isRecording ? stopRecording : () => void startRecording()} aria-label={isRecording ? "إيقاف التسجيل" : "بدء التسجيل"}>{isRecording ? <MicOff size={30} /> : <Mic size={30} />}</button><p className={studentStyles.recordLabel}>{isRecording ? "جاري التسجيل... اضغط للإيقاف" : "اضغط لبدء التسجيل"}</p>{isRecording && <p className={studentStyles.timer}>{String(Math.floor(recordingSeconds / 60)).padStart(2, "0")}:{String(recordingSeconds % 60).padStart(2, "0")}</p>}</> : <><audio ref={recordingPreviewRef} className={studentStyles.audioPreview} src={audioUrl} controls /><div className={studentStyles.inlineActions}><button className={studentStyles.secondary} type="button" onClick={resetInteraction}><RotateCcw size={17} /> إعادة التسجيل</button></div></>}<p className={styles.localRecordingNote}>التسجيل محلي داخل جهازك ولا يتم رفعه أو حفظه.</p></div>}
                 </div>
@@ -532,7 +530,7 @@ export default function AdminContentPreviewPage() {
           )}
         </div>
         <div className={styles.navBar}>
-          <div className={styles.navGroup}><button type="button" className={styles.navButton} onClick={goPrevious} disabled={firstPosition}><ChevronRight size={18} /> السابق</button><button type="button" className={styles.navButtonPrimary} onClick={showCelebration ? advancePastCurrentItem : goNext}>{journeyDone ? "تم" : lastPosition && !showCelebration ? "إنهاء المعاينة" : "التالي"}<ChevronLeft size={18} /></button></div>
+          <div className={styles.navGroup}><button type="button" className={styles.navButton} onClick={goPrevious} disabled={firstPosition}><ChevronRight size={18} /> السابق</button><button type="button" className={styles.navButtonPrimary} onClick={showCelebration ? advancePastCurrentItem : goNext} disabled={journeyDone}>{journeyDone ? "تم" : lastPosition && !showCelebration ? "إنهاء المعاينة" : "التالي"}<ChevronLeft size={18} /></button></div>
           <span className={styles.position}>{currentSection.label} · {itemLabel}</span>
         </div>
       </section>
