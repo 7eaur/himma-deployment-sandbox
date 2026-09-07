@@ -10,6 +10,7 @@ from sqlalchemy import (
     Numeric,
     String,
     UniqueConstraint,
+    and_,
     text,
 )
 from sqlalchemy.dialects.postgresql import JSONB
@@ -128,12 +129,25 @@ class ContentStep(Base):
     expected_reading_text = Column(String, nullable=True)
 
     item = relationship("ContentItem", back_populates="steps")
-    options = relationship("ContentOption", back_populates="step", cascade="all, delete", order_by="ContentOption.order_index")
+    # Published responses may point at retired ContentOption rows.  Runtime code
+    # intentionally sees active choices only; retired rows stay in the table so
+    # old AttemptResponse foreign keys remain valid and reports stay auditable.
+    options = relationship(
+        "ContentOption",
+        primaryjoin=lambda: and_(
+            ContentStep.id == ContentOption.step_id,
+            ContentOption.is_active.is_(True),
+        ),
+        back_populates="step",
+        cascade="all, delete",
+        passive_deletes=True,
+        order_by="ContentOption.order_index",
+    )
     assets = relationship("ContentAssetLink", back_populates="step", cascade="all, delete")
 
 
 class ContentOption(Base):
-    """Options for multiple choice or similar templates."""
+    """Version-safe choices for multiple choice or similar templates."""
     __tablename__ = "content_options"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -141,6 +155,7 @@ class ContentOption(Base):
     text = Column(String, nullable=False)
     is_correct = Column(Boolean, nullable=False, default=False)
     order_index = Column(Integer, nullable=False)
+    is_active = Column(Boolean, nullable=False, default=True, server_default="true", index=True)
 
     step = relationship("ContentStep", back_populates="options")
 
